@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { Bell, ChevronDown } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import logo from '@/assets/logo.png'
 
 export default function Navbar() {
   // Mock authentication state - replace with actual auth logic
@@ -12,17 +13,11 @@ export default function Navbar() {
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center relative">
-              {/* Lightbulb icon */}
-              <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 2C8.13 2 5 5.13 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.87-3.13-7-7-7zM9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1z"/>
-              </svg>
-              {/* Light rays */}
-              <div className="absolute -top-1 -left-1 w-2 h-2 bg-yellow-400 rounded-full"></div>
-              <div className="absolute -top-1 -right-1 w-2 h-2 bg-yellow-400 rounded-full"></div>
-              <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 w-1.5 h-1.5 bg-yellow-400 rounded-full"></div>
-            </div>
-            <span className="text-xl font-bold text-gray-900">EduHTrainerCo</span>
+            <img 
+              src={logo} 
+              alt="RANK ONE REVIEW" 
+              className="h-8 w-auto"
+            />
           </div>
 
           {/* Navigation Links */}
