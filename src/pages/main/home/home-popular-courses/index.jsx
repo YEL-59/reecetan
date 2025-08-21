@@ -91,7 +91,7 @@ const HomePopularCourses = () => {
 	}, [activeTab, courses])
 
 	return (
-		<section className="py-16 bg-white">
+		<section className="py-16 bg-white" data-aos="fade-up">
 			<div className="container mx-auto px-4 sm:px-6 lg:px-8">
 				{/* Header */}
 				<div className="text-center mb-8">
@@ -104,7 +104,7 @@ const HomePopularCourses = () => {
 				</div>
 
 				{/* Tabs */}
-				<div className="flex flex-wrap gap-3 justify-center mb-10">
+				<div className="flex flex-wrap gap-3 justify-center mb-10" data-aos="zoom-in">
 					{ALL_TABS.map((label) => (
 						<Tab key={label} label={label} active={activeTab === label} onClick={() => setActiveTab(label)} />
 					))}
@@ -112,8 +112,10 @@ const HomePopularCourses = () => {
 
 				{/* Grid */}
 				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-					{filtered.map((c) => (
-						<CourseCard key={c.id} course={c} onEnroll={() => {}} onOpen={(course) => setOpenCourse(course)} />
+					{filtered.map((c, idx) => (
+						<div key={c.id} data-aos="fade-up" data-aos-delay={idx * 50}>
+							<CourseCard course={c} onEnroll={() => {}} onOpen={(course) => setOpenCourse(course)} />
+						</div>
 					))}
 				</div>
 			</div>

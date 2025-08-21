@@ -23,7 +23,7 @@ const HomeHero = () => {
       <div className="absolute bottom-20 left-16 w-40 h-40 bg-blue-400/5 rounded-full blur-2xl"></div> */}
       
       {/* Right side image fixed at bottom */}
-      <div className="absolute bottom-0 right-40 w-full lg:w-1/2 h-full flex items-end justify-end">
+      <div className="absolute bottom-0 right-40 w-full lg:w-1/2 h-full flex items-end justify-end" data-aos="fade-left">
         <div className="relative w-full max-w-lg h-full flex items-end">
           <img 
             src={homeRight} 
@@ -36,7 +36,7 @@ const HomeHero = () => {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center min-h-[500px]">
           {/* Left Side - Text Content */}
-          <div className="space-y-8 text-white">
+          <div className="space-y-8 text-white" data-aos="fade-up">
             {/* Main Headline */}
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
               Get Our Online Courses
@@ -53,7 +53,7 @@ const HomeHero = () => {
             </p>
             
             {/* Search Bar */}
-            <div className="bg-white rounded-lg p-2 flex items-center max-w-md">
+            <div className="bg-white rounded-lg p-2 flex items-center max-w-md" data-aos="zoom-in" data-aos-delay="100">
               <div className="flex items-center flex-1 px-3">
                 <Search className="w-5 h-5 text-gray-400 mr-3" />
                 <input

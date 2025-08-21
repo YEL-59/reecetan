@@ -31,7 +31,7 @@ const HomeTopCourses = () => {
   ]
 
   return (
-    <section className="py-16 bg-white">
+    <section className="py-16 bg-white" data-aos="fade-up">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header Section */}
         <div className="text-center mb-16">
@@ -46,7 +46,7 @@ const HomeTopCourses = () => {
         {/* Main Content Area */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
           {/* Left Side - Students Image */}
-          <div className="relative">
+          <div className="relative" data-aos="zoom-in">
             <img 
               src={topCourse} 
               alt="Students in lab coats"
@@ -57,7 +57,7 @@ const HomeTopCourses = () => {
           {/* Right Side - Course List */}
           <div className="space-y-0">
             {courses.map((course, index) => (
-              <div key={course.id}>
+              <div key={course.id} data-aos="fade-left" data-aos-delay={index * 80}>
                 <div className="py-2">
                   <h3 className="text-xl font-bold text-gray-800 mb-2">
                     {course.title}
@@ -77,8 +77,8 @@ const HomeTopCourses = () => {
             ))}
 
             {/* Call to Action Button */}
-            <div className="pt-8">
-              <Button className="bg-primary hover:bg-primary/90 text-white px-8 py-4 rounded-full font-semibold text-lg">
+            <div className="pt-8" data-aos="fade-up" data-aos-delay="200">
+              <Button className="bg-primary hover:bg-primary/90 text-white px-8 py-4 rounded-lg font-semibold text-lg">
                 Explore All Courses
                 <ArrowRight className="ml-2 w-5 h-5" />
               </Button>
