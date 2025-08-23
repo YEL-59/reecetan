@@ -10,6 +10,8 @@ import CourseDetails from "@/pages/dashboard/my-courses/components/CourseDetails
 import CourseOutline from "@/pages/dashboard/my-courses/components/CourseOutline";
 import Lesson from "@/pages/dashboard/my-courses/components/Lesson";
 import Quiz from "@/pages/dashboard/my-courses/components/Quiz";
+import QuizAnalysis from "@/pages/dashboard/quiz-analysis";
+import Certificates from "@/pages/dashboard/certificates";
 import Home from "@/pages/main/home";
 import AboutUs from "@/pages/main/aboutus";
 import ContactUs from "@/pages/main/contactus";
@@ -60,8 +62,9 @@ export const router = createBrowserRouter([
       { path: "my-courses/:courseId/outline", element: <CourseOutline /> },
       { path: "my-courses/:courseId/lesson/:lessonId/topic/:topicId", element: <Lesson /> },
       { path: "my-courses/:courseId/quiz/:quizId", element: <Quiz /> },
+      { path: "quiz-analytics", element: <QuizAnalysis /> },
       { path: "analytics", element: <div>Analytics Page</div> },
-      { path: "certifications", element: <div>Certifications Page</div> },
+      { path: "certifications", element: <Certificates /> },
     ],
   },
   {

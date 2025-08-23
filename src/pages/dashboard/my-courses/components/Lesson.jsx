@@ -162,7 +162,7 @@ const Lesson = () => {
                             />
 
                             {/* Custom Video Controls Overlay */}
-                            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
+                            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3 sm:p-4">
                                 <div className="space-y-2">
                                     {/* Progress Bar */}
                                     <div
@@ -177,7 +177,7 @@ const Lesson = () => {
 
                                     {/* Controls */}
                                     <div className="flex items-center justify-between text-white">
-                                        <div className="flex items-center space-x-4">
+                                        <div className="flex items-center space-x-3 sm:space-x-4">
                                             <button onClick={handlePlayPause} className="hover:text-blue-400">
                                                 {isPlaying ? <Pause className="w-6 h-6" /> : <Play className="w-6 h-6" />}
                                             </button>
@@ -190,7 +190,7 @@ const Lesson = () => {
                                                     step="0.1"
                                                     value={volume}
                                                     onChange={(e) => setVolume(parseFloat(e.target.value))}
-                                                    className="w-20"
+                                                    className="w-16 sm:w-20"
                                                 />
                                             </div>
                                             <span className="text-sm">
@@ -215,9 +215,9 @@ const Lesson = () => {
                     {/* Lesson Info */}
                     <Card>
                         <CardContent className="p-6">
-                            <div className="flex items-start justify-between mb-4">
+                            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-4">
                                 <div>
-                                    <h1 className="text-2xl font-bold text-gray-900 mb-2">
+                                    <h1 className="text-xl md:text-2xl font-bold text-gray-900 mb-2">
                                         {lesson.currentTopic.title}
                                     </h1>
                                     <p className="text-gray-600">{lesson.currentTopic.description}</p>
@@ -229,7 +229,7 @@ const Lesson = () => {
                             </div>
 
                             {/* Navigation */}
-                            <div className="flex items-center justify-between pt-4 border-t">
+                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-4 border-t">
                                 {getPreviousTopic() ? (
                                     <Link
                                         to={`/dashboard/my-courses/${courseId}/lesson/${lessonId}/topic/${getPreviousTopic().id}`}
@@ -320,10 +320,10 @@ const Lesson = () => {
                                     key={topic.id}
                                     to={`/dashboard/my-courses/${courseId}/lesson/${lessonId}/topic/${topic.id}`}
                                     className={`block p-3 rounded-lg transition-colors ${topic.id === parseInt(topicId)
-                                            ? 'bg-blue-100 border border-blue-300'
-                                            : topic.completed
-                                                ? 'bg-green-50 border border-green-200 hover:bg-green-100'
-                                                : 'bg-gray-50 border border-gray-200 hover:bg-gray-100'
+                                        ? 'bg-blue-100 border border-blue-300'
+                                        : topic.completed
+                                            ? 'bg-green-50 border border-green-200 hover:bg-green-100'
+                                            : 'bg-gray-50 border border-gray-200 hover:bg-gray-100'
                                         }`}
                                 >
                                     <div className="flex items-center justify-between">

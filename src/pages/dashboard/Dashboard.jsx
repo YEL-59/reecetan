@@ -120,7 +120,7 @@ export default function Dashboard() {
           {continueLearning.map((course) => (
             <Card key={course.id} className="shadow-sm">
               <CardContent className="p-6">
-                <div className="flex items-center space-x-4">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                   {/* Course Thumbnail */}
                   <div className="w-20 h-20 bg-gray-200 rounded-lg flex-shrink-0">
                     <img
@@ -157,7 +157,7 @@ export default function Dashboard() {
                   </div>
 
                   {/* Continue Button */}
-                  <Button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2">
+                  <Button className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2">
                     <PlayCircle className="w-4 h-4" />
                     <span>Continue</span>
                   </Button>

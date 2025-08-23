@@ -110,7 +110,7 @@ const CourseOutline = () => {
                 Back to Course Details
             </Link>
 
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 lg:gap-8">
                 {/* Left Sidebar - Course Content */}
                 <div className="lg:col-span-1">
                     <Card className="sticky top-20">
@@ -126,10 +126,10 @@ const CourseOutline = () => {
                                     <button
                                         onClick={() => toggleLesson(lesson.id)}
                                         className={`w-full flex items-center justify-between p-3 rounded-lg text-left transition-colors ${lesson.completed
-                                                ? 'bg-green-50 border border-green-200'
-                                                : lesson.locked
-                                                    ? 'bg-gray-50 border border-gray-200 cursor-not-allowed'
-                                                    : 'bg-blue-50 border border-blue-200 hover:bg-blue-100'
+                                            ? 'bg-green-50 border border-green-200'
+                                            : lesson.locked
+                                                ? 'bg-gray-50 border border-gray-200 cursor-not-allowed'
+                                                : 'bg-blue-50 border border-blue-200 hover:bg-blue-100'
                                             }`}
                                         disabled={lesson.locked}
                                     >
@@ -157,8 +157,8 @@ const CourseOutline = () => {
                                                     key={topic.id}
                                                     to={`/dashboard/my-courses/${courseId}/lesson/${lesson.id}/topic/${topic.id}`}
                                                     className={`block p-2 rounded text-sm transition-colors ${topic.completed
-                                                            ? 'bg-green-50 text-green-700 hover:bg-green-100'
-                                                            : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
+                                                        ? 'bg-green-50 text-green-700 hover:bg-green-100'
+                                                        : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
                                                         }`}
                                                 >
                                                     <div className="flex items-center justify-between">
@@ -172,8 +172,8 @@ const CourseOutline = () => {
                                             <Link
                                                 to={`/dashboard/my-courses/${courseId}/quiz/${lesson.quiz.id}`}
                                                 className={`block p-2 rounded text-sm transition-colors ${lesson.quiz.completed
-                                                        ? 'bg-purple-50 text-purple-700 hover:bg-purple-100'
-                                                        : 'bg-yellow-50 text-yellow-700 hover:bg-yellow-100'
+                                                    ? 'bg-purple-50 text-purple-700 hover:bg-purple-100'
+                                                    : 'bg-yellow-50 text-yellow-700 hover:bg-yellow-100'
                                                     }`}
                                             >
                                                 <div className="flex items-center justify-between">
@@ -199,7 +199,7 @@ const CourseOutline = () => {
                     {/* Course Header */}
                     <Card>
                         <CardContent className="p-6">
-                            <div className="flex items-center justify-between mb-4">
+                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
                                 <h1 className="text-2xl font-bold text-gray-900">{course.title}</h1>
                                 <div className="flex items-center space-x-2">
                                     <Award className="w-5 h-5 text-yellow-500" />

@@ -2,48 +2,54 @@ import * as React from "react"
 import { cn } from "@/lib/utils"
 import { X } from "lucide-react"
 
-const Sheet = ({ children, ...props }) => {
-  return <div {...props}>{children}</div>
+const SheetContext = React.createContext({ open: false, setOpen: () => { } })
+
+const Sheet = ({ children }) => {
+  const [open, setOpen] = React.useState(false)
+  return (
+    <SheetContext.Provider value={{ open, setOpen }}>
+      {children}
+    </SheetContext.Provider>
+  )
 }
 
 const SheetTrigger = React.forwardRef(({ className, children, asChild, ...props }, ref) => {
-  const Comp = asChild ? React.Fragment : "button"
+  const { setOpen } = React.useContext(SheetContext)
+
+  const handleClick = (e) => {
+    if (props.onClick) props.onClick(e)
+    setOpen(true)
+  }
+
+  if (asChild && React.isValidElement(children)) {
+    return React.cloneElement(children, {
+      ref,
+      className: cn(children.props.className, className),
+      onClick: (e) => {
+        if (children.props.onClick) children.props.onClick(e)
+        handleClick(e)
+      },
+    })
+  }
+
   return (
-    <Comp ref={ref} className={cn(className)} {...props}>
+    <button ref={ref} className={cn(className)} onClick={handleClick} {...props}>
       {children}
-    </Comp>
+    </button>
   )
 })
 SheetTrigger.displayName = "SheetTrigger"
 
-const SheetContent = React.forwardRef(({
-  className,
-  side = "right",
-  children,
-  onClose,
-  ...props
-}, ref) => {
-  const [isOpen, setIsOpen] = React.useState(false)
+const SheetContent = React.forwardRef(({ className, side = "right", children }, ref) => {
+  const { open, setOpen } = React.useContext(SheetContext)
 
-  React.useEffect(() => {
-    setIsOpen(true)
-    return () => setIsOpen(false)
-  }, [])
+  const handleClose = () => setOpen(false)
 
-  const handleClose = () => {
-    setIsOpen(false)
-    if (onClose) onClose()
-  }
+  if (!open) return null
 
   return (
     <>
-      {/* Overlay */}
-      <div
-        className="fixed inset-0 z-50 bg-black/50"
-        onClick={handleClose}
-      />
-
-      {/* Sheet */}
+      <div className="fixed inset-0 z-50 bg-black/50" onClick={handleClose} />
       <div
         ref={ref}
         className={cn(
@@ -52,13 +58,9 @@ const SheetContent = React.forwardRef(({
           side === "left" && "top-0 left-0 h-full border-r",
           side === "top" && "top-0 left-0 right-0 border-b",
           side === "bottom" && "bottom-0 left-0 right-0 border-t",
-          isOpen ? "translate-x-0 translate-y-0" :
-            side === "right" ? "translate-x-full" :
-              side === "left" ? "-translate-x-full" :
-                side === "top" ? "-translate-y-full" : "translate-y-full",
+          "translate-x-0 translate-y-0",
           className
         )}
-        {...props}
       >
         <div className="flex h-full flex-col">
           <div className="flex items-center justify-between p-4 border-b">
@@ -70,9 +72,7 @@ const SheetContent = React.forwardRef(({
               <X className="h-4 w-4" />
             </button>
           </div>
-          <div className="flex-1 overflow-y-auto p-4">
-            {children}
-          </div>
+          <div className="flex-1 overflow-y-auto p-4">{children}</div>
         </div>
       </div>
     </>
@@ -81,18 +81,30 @@ const SheetContent = React.forwardRef(({
 SheetContent.displayName = "SheetContent"
 
 const SheetClose = React.forwardRef(({ className, asChild, children, ...props }, ref) => {
-  const Comp = asChild ? React.Fragment : "button"
+  const { setOpen } = React.useContext(SheetContext)
+
+  const handleClick = (e) => {
+    if (props.onClick) props.onClick(e)
+    setOpen(false)
+  }
+
+  if (asChild && React.isValidElement(children)) {
+    return React.cloneElement(children, {
+      ref,
+      className: cn(children.props.className, className),
+      onClick: (e) => {
+        if (children.props.onClick) children.props.onClick(e)
+        handleClick(e)
+      },
+    })
+  }
+
   return (
-    <Comp ref={ref} className={cn(className)} {...props}>
+    <button ref={ref} className={cn(className)} onClick={handleClick} {...props}>
       {children}
-    </Comp>
+    </button>
   )
 })
 SheetClose.displayName = "SheetClose"
 
-export {
-  Sheet,
-  SheetTrigger,
-  SheetContent,
-  SheetClose,
-}
+export { Sheet, SheetTrigger, SheetContent, SheetClose }

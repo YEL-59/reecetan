@@ -242,10 +242,10 @@ const Quiz = () => {
                                                                 <div
                                                                     key={oIndex}
                                                                     className={`p-2 rounded text-sm ${oIndex === question.correctAnswer
-                                                                            ? 'bg-green-100 text-green-800 border border-green-300'
-                                                                            : oIndex === userAnswer && userAnswer !== question.correctAnswer
-                                                                                ? 'bg-red-100 text-red-800 border border-red-300'
-                                                                                : 'bg-gray-50'
+                                                                        ? 'bg-green-100 text-green-800 border border-green-300'
+                                                                        : oIndex === userAnswer && userAnswer !== question.correctAnswer
+                                                                            ? 'bg-red-100 text-red-800 border border-red-300'
+                                                                            : 'bg-gray-50'
                                                                         }`}
                                                                 >
                                                                     <div className="flex items-center space-x-2">
@@ -312,7 +312,7 @@ const Quiz = () => {
     return (
         <div className="space-y-6 px-5 py-5">
             {/* Quiz Header */}
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <Link
                     to={`/dashboard/my-courses/${courseId}/outline`}
                     className="inline-flex items-center text-blue-600 hover:text-blue-700"
@@ -344,12 +344,12 @@ const Quiz = () => {
             <div className="max-w-4xl mx-auto">
                 <Card>
                     <CardHeader>
-                        <CardTitle className="text-xl">
+                        <CardTitle className="text-lg sm:text-xl">
                             Question {currentQuestion + 1}
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-6">
-                        <h2 className="text-lg font-medium text-gray-900">
+                        <h2 className="text-base sm:text-lg font-medium text-gray-900">
                             {currentQ.question}
                         </h2>
 
@@ -359,14 +359,14 @@ const Quiz = () => {
                                     key={index}
                                     onClick={() => handleAnswerSelect(currentQuestion, index)}
                                     className={`w-full p-4 text-left border rounded-lg transition-colors ${answers[currentQuestion] === index
-                                            ? 'border-blue-500 bg-blue-50'
-                                            : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                                        ? 'border-blue-500 bg-blue-50'
+                                        : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
                                         }`}
                                 >
                                     <div className="flex items-center space-x-3">
                                         <div className={`w-4 h-4 rounded-full border-2 ${answers[currentQuestion] === index
-                                                ? 'border-blue-500 bg-blue-500'
-                                                : 'border-gray-300'
+                                            ? 'border-blue-500 bg-blue-500'
+                                            : 'border-gray-300'
                                             }`}>
                                             {answers[currentQuestion] === index && (
                                                 <div className="w-2 h-2 bg-white rounded-full m-0.5"></div>
@@ -381,7 +381,7 @@ const Quiz = () => {
                             ))}
                         </div>
 
-                        <div className="flex justify-between">
+                        <div className="flex flex-col-reverse sm:flex-row sm:justify-between gap-3">
                             <Button
                                 variant="outline"
                                 onClick={() => setCurrentQuestion(Math.max(0, currentQuestion - 1))}
