@@ -41,7 +41,7 @@ const AboutLearningProcess = () => {
   return (
     <>
       {/* Title Section */}
-      <div className="bg-white py-16">
+      <div className="bg-white ">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-blue-900 mb-4">
             Learning <span className="text-blue-600">Process</span>
@@ -53,7 +53,7 @@ const AboutLearningProcess = () => {
       </div>
 
       {/* Main Content Section */}
-      <div className="bg-white py-16">
+      <div className="bg-white ">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Left Side - Learning Process Steps */}
@@ -93,7 +93,7 @@ const AboutLearningProcess = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div>  
     </>
   )
 }
