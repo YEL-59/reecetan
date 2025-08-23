@@ -7,13 +7,15 @@ import Register from "@/pages/auth/Register";
 import Dashboard from "@/pages/dashboard/Dashboard";
 import Home from "@/pages/main/home";
 import AboutUs from "@/pages/main/aboutus";
+import ContactUs from "@/pages/main/contactus";
 
 export const router = createBrowserRouter([
   {
     path: "/",
     element: <MainLayout />,
     children: [{ index: true, element: <Home /> },
-      { path: "aboutus", element: <AboutUs /> }],
+      { path: "aboutus", element: <AboutUs /> },
+      { path: "contactus", element: <ContactUs /> }],
   },
   {
     path: "/",
