@@ -8,14 +8,30 @@ import Dashboard from "@/pages/dashboard/Dashboard";
 import Home from "@/pages/main/home";
 import AboutUs from "@/pages/main/aboutus";
 import ContactUs from "@/pages/main/contactus";
+import NotFound from "@/pages/404";
+import Courses from "@/pages/main/courses";
+import CartPage from "@/pages/main/cart";
+import CheckoutPage from "@/pages/main/checkout";
+import CheckoutSuccess from "@/pages/main/checkout/success";
 
 export const router = createBrowserRouter([
   {
     path: "/",
     element: <MainLayout />,
-    children: [{ index: true, element: <Home /> },
+    children: [
+      
+      
+      { index: true, element: <Home /> },
       { path: "aboutus", element: <AboutUs /> },
-      { path: "contactus", element: <ContactUs /> }],
+      { path: "contactus", element: <ContactUs /> },
+      { path: "courses", element: <Courses /> },
+      { path: "cart", element: <CartPage /> },
+      { path: "checkout", element: <CheckoutPage /> },
+      { path: "checkout/success", element: <CheckoutSuccess /> }
+      
+      
+      
+    ],
   },
   {
     path: "/",
@@ -38,5 +54,9 @@ export const router = createBrowserRouter([
       { path: "messages", element: <div>Messages Page</div> },
       { path: "settings", element: <div>Settings Page</div> },
     ],
+  },
+  {
+    path: "*",
+    element: <NotFound />,
   },
 ]);

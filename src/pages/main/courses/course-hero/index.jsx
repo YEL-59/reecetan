@@ -1,7 +1,7 @@
 import React from 'react'
 import aboutHeroBg from '@/assets/aboutus/abouthero.png'
 
-const AboutHero = () => {
+const CourseHero = () => {
   return (
    <>
    
@@ -9,7 +9,7 @@ const AboutHero = () => {
      <div 
         className="relative h-64 md:h-80 lg:h-96 w-full flex items-center justify-center"
         style={{
-          backgroundImage: `url(${aboutHeroBg})`,
+          backgroundImage: ` url(${aboutHeroBg})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat'
@@ -17,7 +17,7 @@ const AboutHero = () => {
       >
         <div className="text-center z-10">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white tracking-wide">
-            About Us
+            Courses
           </h1>
         </div>
       </div>
@@ -28,4 +28,4 @@ const AboutHero = () => {
   )
 }
 
-export default AboutHero
+export default CourseHero

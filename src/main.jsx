@@ -6,6 +6,7 @@ import { router } from '@/routes/router'
 import './index.css'
 import AOS from 'aos'
 import Lenis from '@studio-freight/lenis'
+import { CartProvider } from '@/contexts/cart-context'
 
 function AppRoot() {
   useEffect(() => {
@@ -34,7 +35,9 @@ function AppRoot() {
 
   return (
     <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
-      <RouterProvider router={router} />
+      <CartProvider>
+        <RouterProvider router={router} />
+      </CartProvider>
     </ThemeProvider>
   )
 }

@@ -2,12 +2,12 @@ import { Star } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useCallback, useRef } from 'react'
 
-export default function CourseCard({ course, onEnroll, onOpen }) {
+export default function CourseCard({ course, onEnroll, onOpen, trigger = 'hover' }) {
 	const { title, image, category, rating, students, price } = course
 	const hoverTimer = useRef(null)
 
 	const handleMouseEnter = () => {
-		if (!onOpen) return
+		if (!onOpen || trigger !== 'hover') return
 		hoverTimer.current = window.setTimeout(() => onOpen(course), 350)
 	}
 	const handleMouseLeave = () => {
@@ -18,8 +18,10 @@ export default function CourseCard({ course, onEnroll, onOpen }) {
 	}
 
 	const handleClick = useCallback(() => {
-		onOpen?.(course)
-	}, [course, onOpen])
+		if (trigger === 'click') {
+			onOpen?.(course)
+		}
+	}, [course, onOpen, trigger])
 
 	return (
 		<div

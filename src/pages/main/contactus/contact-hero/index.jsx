@@ -9,7 +9,7 @@ const ContactHero = () => {
      <div 
         className="relative h-64 md:h-80 lg:h-96 w-full flex items-center justify-center"
         style={{
-          backgroundImage: `linear-gradient(135deg, rgba(30, 58, 138, 0.9) 0%, rgba(30, 58, 138, 0.8) 60%, rgba(30, 58, 138, 0.6) 100%), url(${aboutHeroBg})`,
+          backgroundImage: `url(${aboutHeroBg})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat'

@@ -3,7 +3,7 @@ import CourseCard from '@/components/course/CourseCard'
 import { Button } from '@/components/ui/button'
 import { motion, AnimatePresence } from 'framer-motion'
 
-export default function CourseModal({ course, open, onClose }) {
+export default function CourseModal({ course, open, onClose, onBuy }) {
 	if (!open || !course) return null
 	const { title, image, rating, students, price } = course
 
@@ -80,7 +80,7 @@ export default function CourseModal({ course, open, onClose }) {
 											</div>
 											<div className="flex items-center gap-3">
 												<span className="font-semibold">${price}</span>
-												<Button className="rounded-full bg-primary hover:bg-primary/90 h-9 px-5">Buy Now</Button>
+												<Button onClick={() => onBuy?.(course)} className="rounded-full bg-primary hover:bg-primary/90 h-9 px-5">Buy Now</Button>
 											</div>
 										</div>
 									</div>

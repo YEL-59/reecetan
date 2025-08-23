@@ -1,11 +1,13 @@
 import { Link } from 'react-router-dom'
-import { Bell, ChevronDown } from 'lucide-react'
+import { Bell, ChevronDown, ShoppingCart } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import logo from '@/assets/logo.png'
+import { useCart } from '@/contexts/cart-context'
 
 export default function Navbar() {
   // Mock authentication state - replace with actual auth logic
   const isAuthenticated = false // Change this to true to test logged-in state
+  const { count } = useCart()
 
   return (
     <header className="border-b bg-white">
@@ -41,6 +43,16 @@ export default function Navbar() {
 
           {/* User Section - Conditional Rendering */}
           <div className="flex items-center space-x-4">
+            {/* Cart */}
+            <Link to="/cart" className="relative p-2 text-gray-600 hover:text-gray-900 transition-colors">
+              <ShoppingCart className="w-5 h-5" />
+              {count > 0 && (
+                <span className="absolute -top-1 -right-1 bg-primary text-white text-[10px] leading-none rounded-full px-1.5 py-0.5">
+                  {count}
+                </span>
+              )}
+            </Link>
+
             {isAuthenticated ? (
               // Logged in user - show profile section
               <>
