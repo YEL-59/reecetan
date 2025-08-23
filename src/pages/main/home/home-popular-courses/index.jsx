@@ -1,6 +1,8 @@
 import { useMemo, useState } from 'react'
 import CourseCard from '@/components/course/CourseCard'
 import CourseModal from '@/components/course/CourseModal'
+import { useCart } from '@/contexts/cart-context'
+import { useNavigate } from 'react-router-dom'
 
 const ALL_TABS = [
 	'All',
@@ -83,12 +85,19 @@ const Tab = ({ label, active, onClick }) => (
 const HomePopularCourses = () => {
 	const [activeTab, setActiveTab] = useState('Nursing Programs')
 	const [openCourse, setOpenCourse] = useState(null)
+	const { add } = useCart()
+	const navigate = useNavigate()
 
 	const courses = useMemo(() => seedCourses, [])
 	const filtered = useMemo(() => {
 		if (activeTab === 'All') return courses
 		return courses.filter((c) => c.category === activeTab)
 	}, [activeTab, courses])
+
+	const enroll = (course) => {
+		add(course)
+		navigate('/checkout')
+	}
 
 	return (
 		<section className="py-16 bg-white" data-aos="fade-up">
@@ -114,14 +123,14 @@ const HomePopularCourses = () => {
 				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
 					{filtered.map((c, idx) => (
 						<div key={c.id} data-aos="fade-up" data-aos-delay={idx * 50}>
-							<CourseCard course={c} onEnroll={() => {}} onOpen={(course) => setOpenCourse(course)} />
+							<CourseCard course={c} onEnroll={enroll} onOpen={(course) => setOpenCourse(course)} trigger="click" />
 						</div>
 					))}
 				</div>
 			</div>
 
 			{/* Modal */}
-			<CourseModal course={openCourse} open={!!openCourse} onClose={() => setOpenCourse(null)} />
+			<CourseModal course={openCourse} open={!!openCourse} onClose={() => setOpenCourse(null)} onBuy={enroll} />
 		</section>
 	)
 }
