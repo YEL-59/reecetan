@@ -13,6 +13,8 @@ import Courses from "@/pages/main/courses";
 import CartPage from "@/pages/main/cart";
 import CheckoutPage from "@/pages/main/checkout";
 import CheckoutSuccess from "@/pages/main/checkout/success";
+import Testimonial from "@/pages/main/testimonial";
+import MyAccount from "@/pages/main/myaccount";
 
 export const router = createBrowserRouter([
   {
@@ -27,7 +29,9 @@ export const router = createBrowserRouter([
       { path: "courses", element: <Courses /> },
       { path: "cart", element: <CartPage /> },
       { path: "checkout", element: <CheckoutPage /> },
-      { path: "checkout/success", element: <CheckoutSuccess /> }
+      { path: "checkout/success", element: <CheckoutSuccess /> },
+      { path: "testimonial", element: <Testimonial /> },
+      { path: "myaccount", element: <MyAccount /> }
       
       
       
