@@ -25,7 +25,7 @@ export default function Navbar() {
             <Link to="/" className="text-sm font-medium text-gray-900 hover:text-blue-600 transition-colors">
               Home
             </Link>
-            <Link to="/about" className="text-sm font-medium text-gray-900 hover:text-blue-600 transition-colors">
+            <Link to="/aboutus" className="text-sm font-medium text-gray-900 hover:text-blue-600 transition-colors">
               About Us
             </Link>
             <Link to="/courses" className="text-sm font-medium text-gray-900 hover:text-blue-600 transition-colors">

@@ -6,12 +6,14 @@ import Login from "@/pages/auth/Login";
 import Register from "@/pages/auth/Register";
 import Dashboard from "@/pages/dashboard/Dashboard";
 import Home from "@/pages/main/home";
+import AboutUs from "@/pages/main/aboutus";
 
 export const router = createBrowserRouter([
   {
     path: "/",
     element: <MainLayout />,
-    children: [{ index: true, element: <Home /> }],
+    children: [{ index: true, element: <Home /> },
+      { path: "aboutus", element: <AboutUs /> }],
   },
   {
     path: "/",
