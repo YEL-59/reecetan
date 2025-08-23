@@ -5,6 +5,11 @@ import DashboardLayout from "@/layouts/DashboardLayout";
 import Login from "@/pages/auth/Login";
 import Register from "@/pages/auth/Register";
 import Dashboard from "@/pages/dashboard/Dashboard";
+import MyCourses from "@/pages/dashboard/my-courses";
+import CourseDetails from "@/pages/dashboard/my-courses/components/CourseDetails";
+import CourseOutline from "@/pages/dashboard/my-courses/components/CourseOutline";
+import Lesson from "@/pages/dashboard/my-courses/components/Lesson";
+import Quiz from "@/pages/dashboard/my-courses/components/Quiz";
 import Home from "@/pages/main/home";
 import AboutUs from "@/pages/main/aboutus";
 import ContactUs from "@/pages/main/contactus";
@@ -21,8 +26,8 @@ export const router = createBrowserRouter([
     path: "/",
     element: <MainLayout />,
     children: [
-      
-      
+
+
       { index: true, element: <Home /> },
       { path: "aboutus", element: <AboutUs /> },
       { path: "contactus", element: <ContactUs /> },
@@ -32,9 +37,9 @@ export const router = createBrowserRouter([
       { path: "checkout/success", element: <CheckoutSuccess /> },
       { path: "testimonial", element: <Testimonial /> },
       { path: "myaccount", element: <MyAccount /> }
-      
-      
-      
+
+
+
     ],
   },
   {
@@ -50,13 +55,13 @@ export const router = createBrowserRouter([
     element: <DashboardLayout />,
     children: [
       { index: true, element: <Dashboard /> },
-      { path: "recipes", element: <div>Recipes Page</div> },
-      { path: "collections", element: <div>Collections Page</div> },
+      { path: "my-courses", element: <MyCourses /> },
+      { path: "my-courses/:courseId", element: <CourseDetails /> },
+      { path: "my-courses/:courseId/outline", element: <CourseOutline /> },
+      { path: "my-courses/:courseId/lesson/:lessonId/topic/:topicId", element: <Lesson /> },
+      { path: "my-courses/:courseId/quiz/:quizId", element: <Quiz /> },
       { path: "analytics", element: <div>Analytics Page</div> },
-      { path: "users", element: <div>Users Page</div> },
-      { path: "content", element: <div>Content Page</div> },
-      { path: "messages", element: <div>Messages Page</div> },
-      { path: "settings", element: <div>Settings Page</div> },
+      { path: "certifications", element: <div>Certifications Page</div> },
     ],
   },
   {

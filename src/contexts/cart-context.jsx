@@ -31,13 +31,13 @@ export function CartProvider({ children }) {
     try {
       const raw = localStorage.getItem(STORAGE_KEY)
       if (raw) dispatch({ type: 'INIT', payload: JSON.parse(raw) })
-    } catch (_) {}
+    } catch (_) { }
   }, [])
 
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
-    } catch (_) {}
+    } catch (_) { }
   }, [state])
 
   const value = useMemo(() => {
