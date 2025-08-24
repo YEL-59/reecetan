@@ -9,20 +9,24 @@ export function ThemeProvider({ children, defaultTheme = "system", storageKey = 
 
   useEffect(() => {
     const root = window.document.documentElement
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)")
 
-    root.classList.remove("light", "dark")
-
-    if (theme === "system") {
-      const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
-        .matches
-        ? "dark"
-        : "light"
-
-      root.classList.add(systemTheme)
-      return
+    const applyTheme = (resolved) => {
+      root.classList.remove("light", "dark")
+      root.classList.add(resolved)
+      // Ensure native form controls and scrollbars match
+      root.style.colorScheme = resolved
     }
 
-    root.classList.add(theme)
+    if (theme === "system") {
+      const resolved = mediaQuery.matches ? "dark" : "light"
+      applyTheme(resolved)
+      const handler = (e) => applyTheme(e.matches ? "dark" : "light")
+      mediaQuery.addEventListener("change", handler)
+      return () => mediaQuery.removeEventListener("change", handler)
+    } else {
+      applyTheme(theme)
+    }
   }, [theme])
 
   const value = {

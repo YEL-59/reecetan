@@ -1,0 +1,59 @@
+flowchart LR
+  subgraph "Client: React + Tailwind + Shadcn"
+    A1["Routes/Pages\n- Sign In / Sign Up\n- Forgot/OTP/Reset\n- Courses / Course Details\n- Cart / Checkout / Success\n- Testimonial / Contact\n- Dashboard (My Courses, Analytics, Certificates)"]
+    A2["Contexts\n- AuthContext: tokens,user\n- CartContext: items,subtotal"]
+    A3["API Client (axios/fetch)\n- Base URL\n- Auth header injector\n- 401 refresh interceptor"]
+    A4["Local Storage\n- accessToken\n- refreshToken\n- cartDraft"]
+    A1 --> A2
+    A2 --> A3
+    A2 --> A4
+  end
+
+  subgraph "Backend API (future)"
+    B1["Auth Service\nPOST /auth/register\nPOST /auth/verify-email\nPOST /auth/login\nPOST /auth/refresh\nPOST /auth/forgot-password\nPOST /auth/verify-otp\nPOST /auth/reset-password\nPOST /auth/logout"]
+    B2["User Service\nGET /users/me\nPATCH /users/me\nGET /notifications\nPOST /notifications/read"]
+    B3["Course Service\nGET /courses?filters&search&sort&page\nGET /courses/:id\nGET /courses/:id/outline\nGET /lessons/:id\nGET /quizzes/:id"]
+    B4["Progress / Quiz\nPOST /progress\nPOST /quiz-attempts\nGET /analytics/quiz"]
+    B5["Commerce\nGET /cart\nPOST /cart/items\nDELETE /cart/items/:id\nPOST /checkout/session\nPOST /orders/confirm\nGET /orders/:id"]
+    B6["Certificates\nGET /certificates\nGET /certificates/:id/download"]
+    B7["Testimonials\nGET /testimonials\nPOST /testimonials"]
+  end
+
+  subgraph "3rd-Party"
+    C1["Email/OTP Provider"]
+    C2["Payments (Stripe)"]
+    C3["Object Storage (S3)"]
+    C4["Google Maps"]
+  end
+
+  %% Client <-> Auth
+  A3 <--> B1
+  B1 -- "tokens {access,refresh}" --> A2
+  A3 --> B2
+  A3 --> B3
+  A3 --> B4
+  A3 --> B5
+  A3 --> B6
+  A3 --> B7
+
+  %% Side flows
+  B1 --> C1
+  B5 --> C2
+  B3 --> C3
+  A1 --> C4
+
+  %% Refresh logic
+  A3 -- "401? POST /auth/refresh" --> B1
+  B1 -- "new tokens" --> A2
+
+  %% Checkout
+  A2 --> A3
+  A3 -- "POST /checkout/session" --> B5
+  B5 -- "client_secret / redirect" --> A1
+  B5 <---> C2
+  A1 --> A3
+  A3 -- "POST /orders/confirm" --> B5
+
+  %% Notifications
+  B2 -- "push/poll" --> A1
+

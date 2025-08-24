@@ -1,0 +1,43 @@
+sequenceDiagram
+  participant U as User
+  participant UI as React App (Shadcn Forms)
+  participant AUTH as Auth API
+  participant EMAIL as Email Provider
+  participant USER as User API
+  participant COURSE as Course API
+
+  Note over U,UI: Sign Up Flow (email verification)
+  U->>UI: Fill Sign Up form
+  UI->>AUTH: POST /auth/register {fullName,email,password}
+  AUTH->>EMAIL: Send OTP to email
+  EMAIL-->>U: 6-digit code
+  U->>UI: Enter OTP
+  UI->>AUTH: POST /auth/verify-email {email,otp}
+  AUTH-->>UI: 200 {accessToken, refreshToken, userId}
+  UI->>USER: GET /users/me (Authorization: Bearer accessToken)
+  USER-->>UI: user profile
+  UI->>UI: Store tokens (localStorage), set AuthContext
+  UI->>COURSE: GET /courses?limit=9&page=1
+  COURSE-->>UI: course list
+  UI-->>U: Dashboard rendered
+
+  Note over U,UI: Login + Refresh
+  U->>UI: Submit Sign In
+  UI->>AUTH: POST /auth/login {email,password}
+  AUTH-->>UI: {accessToken,refreshToken}
+  UI->>USER: GET /users/me
+  USER-->>UI: user
+  UI->>AUTH: POST /auth/refresh (on 401)
+  AUTH-->>UI: new tokens
+
+  Note over U,UI: Forgot / Reset Password
+  U->>UI: Forgot Password
+  UI->>AUTH: POST /auth/forgot-password {email}
+  AUTH->>EMAIL: Send OTP
+  U->>UI: Enter OTP
+  UI->>AUTH: POST /auth/verify-otp {email,otp}
+  AUTH-->>UI: ok
+  U->>UI: Set new password
+  UI->>AUTH: POST /auth/reset-password {email,password}
+  AUTH-->>UI: ok, login suggestion
+

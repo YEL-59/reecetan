@@ -34,7 +34,7 @@ function AppRoot() {
   }, [])
 
   return (
-    <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
+    <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
       <CartProvider>
         <RouterProvider router={router} />
       </CartProvider>
