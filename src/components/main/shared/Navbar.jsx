@@ -30,6 +30,7 @@ import {
   SheetClose,
 } from "@/components/ui/sheet"
 import { useCart } from "@/contexts/cart-context"
+import { ThemeToggle } from "@/components/theme-toggle"
 
 const Navbar = () => {
   const [isAuthenticated] = useState(true) // demo
@@ -80,7 +81,7 @@ const Navbar = () => {
   }
 
   return (
-    <nav className="bg-white border-b shadow-sm">
+    <nav className="bg-background border-b border-border shadow-sm">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
@@ -94,7 +95,7 @@ const Navbar = () => {
               <Link
                 key={link.to}
                 to={link.to}
-                className="text-gray-600 hover:text-gray-900 transition-colors"
+                className="text-muted-foreground hover:text-foreground transition-colors"
               >
                 {link.label}
               </Link>
@@ -105,10 +106,13 @@ const Navbar = () => {
           <div className="hidden md:flex items-center space-x-4">
             {isAuthenticated ? (
               <>
+                {/* Theme Toggle */}
+                <ThemeToggle />
+
                 {/* Cart Icon */}
                 <Link
                   to="/cart"
-                  className="relative p-2 text-gray-600 hover:text-gray-900"
+                  className="relative p-2 text-muted-foreground hover:text-foreground"
                 >
                   <ShoppingCart className="w-5 h-5" />
                   {itemCount > 0 && (
@@ -132,7 +136,7 @@ const Navbar = () => {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="w-80 p-0" align="end">
                     <div className="flex items-center justify-between p-4 border-b">
-                      <h3 className="font-semibold text-gray-900">Notifications</h3>
+                      <h3 className="font-semibold text-foreground">Notifications</h3>
                       <Button variant="ghost" size="icon" className="h-6 w-6">
                         <X className="w-4 h-4" />
                       </Button>
@@ -151,10 +155,10 @@ const Navbar = () => {
                               <notification.icon className="w-4 h-4 text-white" />
                             </div>
                             <div className="flex-1 min-w-0">
-                              <p className="text-sm text-gray-900 leading-relaxed">
+                              <p className="text-sm text-foreground leading-relaxed">
                                 {notification.message}
                               </p>
-                              <p className="text-xs text-gray-500 mt-1">
+                              <p className="text-xs text-muted-foreground mt-1">
                                 {notification.time}
                               </p>
                             </div>
@@ -175,12 +179,12 @@ const Navbar = () => {
                       </div>
                     ) : (
                       <div className="p-8 text-center">
-                        <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                          <Bell className="w-8 h-8 text-gray-400" />
+                        <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
+                          <Bell className="w-8 h-8 text-muted-foreground" />
                         </div>
-                        <h3 className="font-semibold text-gray-900 mb-2">No Notifications</h3>
-                        <p className="text-sm text-gray-500">No new notifications.</p>
-                        <p className="text-sm text-gray-500">You're all caught up!</p>
+                        <h3 className="font-semibold text-foreground mb-2">No Notifications</h3>
+                        <p className="text-sm text-muted-foreground">No new notifications.</p>
+                        <p className="text-sm text-muted-foreground">You're all caught up!</p>
                       </div>
                     )}
                   </DropdownMenuContent>
@@ -198,10 +202,10 @@ const Navbar = () => {
                         alt="Profile"
                         className="w-8 h-8 rounded-full object-cover"
                       />
-                      <span className="text-sm font-medium text-gray-900">
+                      <span className="text-sm font-medium text-foreground">
                         Olivia Rhye
                       </span>
-                      <ChevronDown className="w-4 h-4 text-gray-600" />
+                      <ChevronDown className="w-4 h-4 text-muted-foreground" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="w-56" align="end">
@@ -213,10 +217,10 @@ const Navbar = () => {
                           className="w-10 h-10 rounded-full object-cover"
                         />
                         <div>
-                          <p className="text-sm font-medium text-gray-900">
+                          <p className="text-sm font-medium text-foreground">
                             Olivia Rhye
                           </p>
-                          <p className="text-xs text-gray-500">
+                          <p className="text-xs text-muted-foreground">
                             olivia@untitledui.com
                           </p>
                         </div>
@@ -247,6 +251,8 @@ const Navbar = () => {
               </>
             ) : (
               <div className="flex items-center space-x-4">
+                {/* Theme Toggle for non-authenticated users */}
+                <ThemeToggle />
                 <Link to="/login">
                   <Button variant="outline">Login</Button>
                 </Link>
@@ -262,7 +268,7 @@ const Navbar = () => {
             {/* Cart */}
             <Link
               to="/cart"
-              className="relative p-2 text-gray-600 hover:text-gray-900"
+              className="relative p-2 text-muted-foreground hover:text-foreground"
             >
               <ShoppingCart className="w-5 h-5" />
               {itemCount > 0 && (
@@ -286,7 +292,7 @@ const Navbar = () => {
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-80 p-0" align="end">
                 <div className="flex items-center justify-between p-4 border-b">
-                  <h3 className="font-semibold text-gray-900">Notifications</h3>
+                  <h3 className="font-semibold text-foreground">Notifications</h3>
                   <Button variant="ghost" size="icon" className="h-6 w-6">
                     <X className="w-4 h-4" />
                   </Button>
@@ -305,10 +311,10 @@ const Navbar = () => {
                           <notification.icon className="w-4 h-4 text-white" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm text-gray-900 leading-relaxed">
+                          <p className="text-sm text-foreground leading-relaxed">
                             {notification.message}
                           </p>
-                          <p className="text-xs text-gray-500 mt-1">
+                          <p className="text-xs text-muted-foreground mt-1">
                             {notification.time}
                           </p>
                         </div>
@@ -329,12 +335,12 @@ const Navbar = () => {
                   </div>
                 ) : (
                   <div className="p-8 text-center">
-                    <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <Bell className="w-8 h-8 text-gray-400" />
+                    <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
+                      <Bell className="w-8 h-8 text-muted-foreground" />
                     </div>
-                    <h3 className="font-semibold text-gray-900 mb-2">No Notifications</h3>
-                    <p className="text-sm text-gray-500">No new notifications.</p>
-                    <p className="text-sm text-gray-500">You're all caught up!</p>
+                    <h3 className="font-semibold text-foreground mb-2">No Notifications</h3>
+                    <p className="text-sm text-muted-foreground">No new notifications.</p>
+                    <p className="text-sm text-muted-foreground">You're all caught up!</p>
                   </div>
                 )}
               </DropdownMenuContent>
@@ -353,7 +359,7 @@ const Navbar = () => {
                     <SheetClose asChild key={link.to}>
                       <Link
                         to={link.to}
-                        className="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 rounded-md"
+                        className="block px-3 py-2 text-base font-medium text-foreground hover:bg-accent rounded-md"
                       >
                         {link.label}
                       </Link>
@@ -365,7 +371,7 @@ const Navbar = () => {
                       <SheetClose asChild>
                         <Link
                           to="/dashboard"
-                          className="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 rounded-md"
+                          className="flex items-center gap-2 px-3 py-2 hover:bg-accent rounded-md"
                         >
                           <Home className="w-5 h-5" />
                           Dashboard
@@ -374,13 +380,13 @@ const Navbar = () => {
                       <SheetClose asChild>
                         <Link
                           to="/myaccount"
-                          className="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 rounded-md"
+                          className="flex items-center gap-2 px-3 py-2 hover:bg-accent rounded-md"
                         >
                           <User className="w-5 h-5" />
                           My Account
                         </Link>
                       </SheetClose>
-                      <button className="w-full flex items-center gap-2 px-3 py-2 hover:bg-gray-100 rounded-md">
+                      <button className="w-full flex items-center gap-2 px-3 py-2 hover:bg-accent rounded-md">
                         <LogOut className="w-5 h-5" />
                         Log out
                       </button>

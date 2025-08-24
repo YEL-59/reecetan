@@ -7,6 +7,11 @@ import './index.css'
 import AOS from 'aos'
 import Lenis from '@studio-freight/lenis'
 import { CartProvider } from '@/contexts/cart-context'
+import { Provider as ReduxProvider } from 'react-redux'
+import { store } from '@/store'
+import { QueryClientProvider } from '@tanstack/react-query'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import { queryClient } from '@/lib/queryClient'
 
 function AppRoot() {
   useEffect(() => {
@@ -34,11 +39,16 @@ function AppRoot() {
   }, [])
 
   return (
-    <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
-      <CartProvider>
-        <RouterProvider router={router} />
-      </CartProvider>
-    </ThemeProvider>
+    <ReduxProvider store={store}>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
+          <CartProvider>
+            <RouterProvider router={router} />
+          </CartProvider>
+        </ThemeProvider>
+        <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-left" />
+      </QueryClientProvider>
+    </ReduxProvider>
   )
 }
 

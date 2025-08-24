@@ -1,4 +1,6 @@
 import React, { createContext, useContext, useEffect, useMemo, useReducer } from 'react'
+import { useAppDispatch, useAppSelector } from '@/store/hooks'
+import { addItem, removeItem, clearCart } from '@/store/slices/cartSlice'
 
 const STORAGE_KEY = 'cart:v1'
 
@@ -26,6 +28,8 @@ function cartReducer(state, action) {
 
 export function CartProvider({ children }) {
   const [state, dispatch] = useReducer(cartReducer, { items: [] })
+  const rDispatch = useAppDispatch()
+  const rCart = useAppSelector(s => s.cart)
 
   useEffect(() => {
     try {
@@ -41,15 +45,19 @@ export function CartProvider({ children }) {
   }, [state])
 
   const value = useMemo(() => {
-    const add = (course) => dispatch({ type: 'ADD', payload: course })
-    const remove = (id) => dispatch({ type: 'REMOVE', payload: id })
-    const clear = () => dispatch({ type: 'CLEAR' })
+    // If Redux is mounted, prefer Redux; else fall back to local reducer.
+    const usingRedux = Array.isArray(rCart?.items)
+    const items = usingRedux ? rCart.items : state.items
 
-    const subtotal = state.items.reduce((sum, i) => sum + Number(i.price || 0) * (i.qty || 1), 0)
-    const count = state.items.reduce((sum, i) => sum + (i.qty || 1), 0)
+    const add = (course) => usingRedux ? rDispatch(addItem(course)) : dispatch({ type: 'ADD', payload: course })
+    const remove = (id) => usingRedux ? rDispatch(removeItem(id)) : dispatch({ type: 'REMOVE', payload: id })
+    const clear = () => usingRedux ? rDispatch(clearCart()) : dispatch({ type: 'CLEAR' })
 
-    return { items: state.items, add, remove, clear, subtotal, count }
-  }, [state])
+    const subtotal = items.reduce((sum, i) => sum + Number(i.price || 0) * (i.qty || 1), 0)
+    const count = items.reduce((sum, i) => sum + (i.qty || 1), 0)
+
+    return { items, add, remove, clear, subtotal, count }
+  }, [state, rCart, rDispatch])
 
   return (
     <CartContext.Provider value={value}>
