@@ -3,8 +3,8 @@ import MainLayout from './layouts/MainLayout'
 import AuthLayout from './layouts/AuthLayout'
 import DashboardLayout from './layouts/DashboardLayout'
 import Landing from './pages/Landing'
-import Login from './pages/auth/Login'
-import Register from './pages/auth/Register'
+import Login from './pages/auth/signin'
+import Register from './pages/auth/signup'
 import Dashboard from './pages/dashboard/Dashboard'
 
 function App() {

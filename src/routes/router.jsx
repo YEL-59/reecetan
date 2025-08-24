@@ -2,8 +2,8 @@ import { createBrowserRouter } from "react-router-dom";
 import MainLayout from "@/layouts/MainLayout";
 import AuthLayout from "@/layouts/AuthLayout";
 import DashboardLayout from "@/layouts/DashboardLayout";
-import Login from "@/pages/auth/Login";
-import Register from "@/pages/auth/Register";
+import Login from "@/pages/auth/signin";
+import Register from "@/pages/auth/signup";
 import Dashboard from "@/pages/dashboard/Dashboard";
 import MyCourses from "@/pages/dashboard/my-courses";
 import CourseDetails from "@/pages/dashboard/my-courses/components/CourseDetails";
@@ -22,6 +22,10 @@ import CheckoutPage from "@/pages/main/checkout";
 import CheckoutSuccess from "@/pages/main/checkout/success";
 import Testimonial from "@/pages/main/testimonial";
 import MyAccount from "@/pages/main/myaccount";
+import ForgetPassword from "@/pages/auth/forget-password";
+import ForgetPasswordOtp from "@/pages/auth/forget-password-otp";
+import ResetPassword from "@/pages/auth/reset-password";
+import EmailVerification from "@/pages/auth/email-verifi";
 
 export const router = createBrowserRouter([
   {
@@ -48,8 +52,12 @@ export const router = createBrowserRouter([
     path: "/",
     element: <AuthLayout />,
     children: [
-      { path: "login", element: <Login /> },
+      { path: "signin", element: <Login /> },
       { path: "register", element: <Register /> },
+      { path: "forget-password", element: <ForgetPassword /> },
+      { path: "forget-password-otp", element: <ForgetPasswordOtp /> },
+      { path: "reset-password", element: <ResetPassword /> },
+      { path: "email-verification", element: <EmailVerification /> },
     ],
   },
   {
