@@ -116,11 +116,10 @@ const Navbar = () => {
                 <Link
                   key={link.to}
                   to={link.to}
-                  className={`transition-colors ${
-                    isActive
+                  className={`transition-colors ${isActive
                       ? "text-foreground font-semibold"
                       : "text-muted-foreground hover:text-foreground font-medium hover:font-semibold"
-                  }`}
+                    }`}
                 >
                   {link.label}
                 </Link>
@@ -183,9 +182,8 @@ const Navbar = () => {
                         {notifications.map((notification) => (
                           <div
                             key={notification.id}
-                            className={`flex items-start gap-3 p-4 hover:bg-gray-50 cursor-pointer ${
-                              !notification.isRead ? "bg-blue-50" : ""
-                            }`}
+                            className={`flex items-start gap-3 p-4 hover:bg-gray-50 cursor-pointer ${!notification.isRead ? "bg-blue-50" : ""
+                              }`}
                             onClick={() => markAsRead(notification.id)}
                           >
                             <div
@@ -361,9 +359,8 @@ const Navbar = () => {
                     {notifications.map((notification) => (
                       <div
                         key={notification.id}
-                        className={`flex items-start gap-3 p-4 hover:bg-gray-50 cursor-pointer ${
-                          !notification.isRead ? "bg-blue-50" : ""
-                        }`}
+                        className={`flex items-start gap-3 p-4 hover:bg-gray-50 cursor-pointer ${!notification.isRead ? "bg-blue-50" : ""
+                          }`}
                         onClick={() => markAsRead(notification.id)}
                       >
                         <div
@@ -428,11 +425,10 @@ const Navbar = () => {
                       <SheetClose asChild key={link.to}>
                         <Link
                           to={link.to}
-                          className={`block px-3 py-2 text-base rounded-md ${
-                            isActive
+                          className={`block px-3 py-2 text-base rounded-md ${isActive
                               ? "font-semibold text-foreground bg-accent"
                               : "font-medium text-foreground hover:bg-accent"
-                          }`}
+                            }`}
                         >
                           {link.label}
                         </Link>
