@@ -1,6 +1,7 @@
 import { Outlet } from 'react-router-dom'
 import Navbar from '@/components/main/shared/Navbar'
 import Footer from '@/components/main/shared/Footer'
+import AIChatBot from '@/components/AIChatBot'
 
 export default function MainLayout() {
   return (
@@ -10,6 +11,7 @@ export default function MainLayout() {
         <Outlet />
       </main>
       <Footer />
+      <AIChatBot />
     </div>
   )
 }

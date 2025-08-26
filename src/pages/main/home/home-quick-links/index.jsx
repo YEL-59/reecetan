@@ -30,16 +30,16 @@ const quickLinks = [
 
 const QuickLinkCard = ({ link }) => {
   return (
-    <div className="bg-white rounded-xl shadow-sm border p-6 hover:shadow-md transition-shadow">
+    <div className="bg-white rounded-xl shadow-sm border p-6 hover:shadow-md transition-shadow text-center">
       {/* Icon */}
-      <div className="w-16 h-16 rounded-lg overflow-hidden mb-4">
-        <img 
-          src={link.icon} 
+      <div className="w-16 h-16 rounded-lg overflow-hidden mb-4 mx-auto" >
+        <img
+          src={link.icon}
           alt={link.title}
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover mx-auto"
         />
       </div>
-      
+
       {/* Content */}
       <h3 className="text-lg font-semibold text-gray-900 mb-2">
         {link.title}
@@ -47,9 +47,9 @@ const QuickLinkCard = ({ link }) => {
       <p className="text-sm text-gray-600 mb-4 leading-relaxed">
         {link.description}
       </p>
-      
+
       {/* Button */}
-      <Button 
+      <Button
         className="w-full bg-primary hover:bg-primary/90 text-white rounded-lg"
         onClick={() => window.open(link.href, '_blank')}
       >

@@ -47,8 +47,8 @@ const HomeTopCourses = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
           {/* Left Side - Students Image */}
           <div className="relative" data-aos="zoom-in">
-            <img 
-              src={topCourse} 
+            <img
+              src={topCourse}
               alt="Students in lab coats"
               className="w-full h-auto rounded-2xl shadow-lg"
             />
@@ -64,21 +64,21 @@ const HomeTopCourses = () => {
                   </h3>
                   <p className="text-gray-500  leading-relaxed">
                     {course.description}{' '}
-                    <a 
-                      href="#" 
+                    <a
+                      href="#"
                       className="text-green-600 hover:text-green-700 font-medium transition-colors"
                     >
                       {course.link}
                     </a>
                   </p>
                 </div>
-               
+
               </div>
             ))}
 
             {/* Call to Action Button */}
             <div className="pt-8" data-aos="fade-up" data-aos-delay="200">
-              <Button className="bg-primary hover:bg-primary/90 text-white px-8 py-4 rounded-lg font-semibold text-lg">
+              <Button className="bg-primary hover:bg-primary/90 text-white px-8 py-4 rounded-full font-semibold text-lg">
                 Explore All Courses
                 <ArrowRight className="ml-2 w-5 h-5" />
               </Button>

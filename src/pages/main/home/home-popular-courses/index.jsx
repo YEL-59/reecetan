@@ -90,7 +90,7 @@ const Tab = ({ label, active, onClick }) => (
 )
 
 const HomePopularCourses = () => {
-	const [activeTab, setActiveTab] = useState('Nursing Programs')
+	const [activeTab, setActiveTab] = useState('All')
 	const [openCourse, setOpenCourse] = useState(null)
 	const [isSheetOpen, setIsSheetOpen] = useState(false)
 	const { add } = useCart()

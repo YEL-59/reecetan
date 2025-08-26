@@ -2,8 +2,11 @@ import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import homeBg from "@/assets/home/home-bg.png";
 import homeRight from "@/assets/home/home-right.png";
+import { useAOS } from "@/hooks/useAOS";
 
 const HomeHero = () => {
+  useAOS(); // Initialize AOS for this component
+
   return (
     <section
       className="relative min-h-[550px] sm:min-h-[600px] md:min-h-[650px] overflow-hidden"
