@@ -38,7 +38,7 @@ const HomeSlider = () => {
 				{images.map((image, index) => (
 					<div
 						key={index}
-						className="flex-shrink-0 w-48 h-32 md:w-56 md:h-36 lg:w-64 lg:h-40"
+						className="flex-shrink-0 w-48 h-32 md:w-56 md:h-36 lg:w-64 lg:h-80 "
 					>
 						<img
 							src={image}

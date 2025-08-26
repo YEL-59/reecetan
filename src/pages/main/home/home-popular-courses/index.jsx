@@ -3,6 +3,14 @@ import CourseCard from '@/components/course/CourseCard'
 import CourseModal from '@/components/course/CourseModal'
 import { useCart } from '@/contexts/cart-context'
 import { useNavigate } from 'react-router-dom'
+import { Button } from '@/components/ui/button'
+import {
+	Sheet,
+	SheetContent,
+	SheetHeader,
+	SheetTitle,
+	SheetTrigger,
+} from '@/components/ui/sheet'
 
 const ALL_TABS = [
 	'All',
@@ -73,9 +81,8 @@ const seedCourses = [
 
 const Tab = ({ label, active, onClick }) => (
 	<button
-		className={`px-4 py-2 rounded-full text-sm font-medium border transition-colors ${
-			active ? 'bg-primary text-white border-primary' : 'bg-white text-gray-700 border-gray-200 hover:bg-gray-50'
-		}`}
+		className={`px-4 py-2 rounded-full text-sm font-medium border transition-colors ${active ? 'bg-primary text-white border-primary' : 'bg-white text-gray-700 border-gray-200 hover:bg-gray-50'
+			}`}
 		onClick={onClick}
 	>
 		{label}
@@ -85,6 +92,7 @@ const Tab = ({ label, active, onClick }) => (
 const HomePopularCourses = () => {
 	const [activeTab, setActiveTab] = useState('Nursing Programs')
 	const [openCourse, setOpenCourse] = useState(null)
+	const [isSheetOpen, setIsSheetOpen] = useState(false)
 	const { add } = useCart()
 	const navigate = useNavigate()
 
@@ -112,16 +120,67 @@ const HomePopularCourses = () => {
 					</p>
 				</div>
 
-				{/* Tabs */}
-				<div className="flex flex-wrap gap-3 justify-center mb-10" data-aos="zoom-in">
+				{/* Desktop: Tabs */}
+				<div className="hidden md:flex flex-wrap gap-3 justify-center mb-10" data-aos="zoom-in">
 					{ALL_TABS.map((label) => (
 						<Tab key={label} label={label} active={activeTab === label} onClick={() => setActiveTab(label)} />
 					))}
 				</div>
 
-				{/* Grid */}
-				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-					{filtered.map((c, idx) => (
+				{/* Mobile: View All Button */}
+				<div className="md:hidden flex justify-center mb-8">
+					<Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+						<SheetTrigger asChild>
+							<Button className="bg-primary hover:bg-primary/90 text-white px-8 py-3 rounded-full">
+								View All Courses
+							</Button>
+						</SheetTrigger>
+						<SheetContent side="bottom" className="h-[80vh] overflow-y-auto">
+							<SheetHeader className="mb-6">
+								<SheetTitle className="text-2xl font-bold text-center">
+									Popular Courses
+								</SheetTitle>
+							</SheetHeader>
+
+							{/* Mobile Tabs in Sheet */}
+							<div className="flex flex-wrap gap-2 justify-center mb-6">
+								{ALL_TABS.map((label) => (
+									<Tab key={label} label={label} active={activeTab === label} onClick={() => setActiveTab(label)} />
+								))}
+							</div>
+
+							{/* Mobile Course Grid in Sheet */}
+							<div className="grid grid-cols-1 gap-4 pb-6">
+								{filtered.map((c, idx) => (
+									<div key={c.id}>
+										<CourseCard
+											course={c}
+											onEnroll={enroll}
+											onOpen={(course) => {
+												setOpenCourse(course)
+												setIsSheetOpen(false)
+											}}
+											trigger="click"
+										/>
+									</div>
+								))}
+							</div>
+						</SheetContent>
+					</Sheet>
+				</div>
+
+				{/* Desktop: Grid */}
+				<div className="hidden md:grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+					{filtered.slice(0, 6).map((c, idx) => (
+						<div key={c.id} data-aos="fade-up" data-aos-delay={idx * 50}>
+							<CourseCard course={c} onEnroll={enroll} onOpen={(course) => setOpenCourse(course)} trigger="click" />
+						</div>
+					))}
+				</div>
+
+				{/* Mobile: Preview Cards (2-3 cards) */}
+				<div className="md:hidden grid grid-cols-1 gap-4">
+					{filtered.slice(0, 2).map((c, idx) => (
 						<div key={c.id} data-aos="fade-up" data-aos-delay={idx * 50}>
 							<CourseCard course={c} onEnroll={enroll} onOpen={(course) => setOpenCourse(course)} trigger="click" />
 						</div>

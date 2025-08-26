@@ -1,5 +1,5 @@
-import React, { useState } from "react"
-import { Link } from "react-router-dom"
+import React, { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import {
   Bell,
   ChevronDown,
@@ -12,9 +12,9 @@ import {
   Mail,
   Gift,
   Car,
-} from "lucide-react"
+} from "lucide-react";
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,18 +22,21 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 import {
   Sheet,
   SheetContent,
   SheetTrigger,
   SheetClose,
-} from "@/components/ui/sheet"
-import { useCart } from "@/contexts/cart-context"
-import { ThemeToggle } from "@/components/theme-toggle"
+} from "@/components/ui/sheet";
+import { useCart } from "@/contexts/cart-context";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 const Navbar = () => {
-  const [isAuthenticated] = useState(true) // demo
+  const location = useLocation();
+  const [isAuthenticated] = useState(true); // demo
+  const [notificationOpen, setNotificationOpen] = useState(false);
+  const [mobileNotificationOpen, setMobileNotificationOpen] = useState(false);
   const [notifications, setNotifications] = useState([
     {
       id: 1,
@@ -59,8 +62,8 @@ const Navbar = () => {
       time: "Yesterday",
       isRead: false,
     },
-  ])
-  const { itemCount } = useCart()
+  ]);
+  const { itemCount } = useCart();
 
   const links = [
     { to: "/", label: "Home" },
@@ -68,17 +71,29 @@ const Navbar = () => {
     { to: "/courses", label: "Courses" },
     { to: "/testimonial", label: "Testimonials" },
     { to: "/contactus", label: "Contact" },
-  ]
+  ];
 
-  const unreadCount = notifications.filter(n => !n.isRead).length
+  const unreadCount = notifications.filter((n) => !n.isRead).length;
 
   const markAllAsRead = () => {
-    setNotifications(prev => prev.map(n => ({ ...n, isRead: true })))
-  }
+    setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
+  };
 
   const markAsRead = (id) => {
-    setNotifications(prev => prev.map(n => n.id === id ? { ...n, isRead: true } : n))
-  }
+    setNotifications((prev) =>
+      prev.map((n) => (n.id === id ? { ...n, isRead: true } : n))
+    );
+  };
+
+  const handleNotificationClose = () => {
+    markAllAsRead();
+    setNotificationOpen(false);
+  };
+
+  const handleMobileNotificationClose = () => {
+    markAllAsRead();
+    setMobileNotificationOpen(false);
+  };
 
   return (
     <nav className="bg-background border-b border-border shadow-sm">
@@ -86,20 +101,31 @@ const Navbar = () => {
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
-            <img src="/src/assets/logo.png" alt="Logo" className="h-8 w-auto" />
+            <img
+              src="/src/assets/logo.png"
+              alt="Logo"
+              className="h-10 w-auto"
+            />
           </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            {links.map((link) => (
-              <Link
-                key={link.to}
-                to={link.to}
-                className="text-muted-foreground hover:text-foreground transition-colors"
-              >
-                {link.label}
-              </Link>
-            ))}
+            {links.map((link) => {
+              const isActive = location.pathname === link.to;
+              return (
+                <Link
+                  key={link.to}
+                  to={link.to}
+                  className={`transition-colors ${
+                    isActive
+                      ? "text-foreground font-semibold"
+                      : "text-muted-foreground hover:text-foreground font-medium hover:font-semibold"
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
           </div>
 
           {/* Desktop Right Side */}
@@ -107,7 +133,7 @@ const Navbar = () => {
             {isAuthenticated ? (
               <>
                 {/* Theme Toggle */}
-                <ThemeToggle />
+                {/* <ThemeToggle /> */}
 
                 {/* Cart Icon */}
                 <Link
@@ -123,7 +149,10 @@ const Navbar = () => {
                 </Link>
 
                 {/* Notification Dropdown */}
-                <DropdownMenu>
+                <DropdownMenu
+                  open={notificationOpen}
+                  onOpenChange={setNotificationOpen}
+                >
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="icon" className="relative">
                       <Bell className="w-5 h-5" />
@@ -136,8 +165,15 @@ const Navbar = () => {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="w-80 p-0" align="end">
                     <div className="flex items-center justify-between p-4 border-b">
-                      <h3 className="font-semibold text-foreground">Notifications</h3>
-                      <Button variant="ghost" size="icon" className="h-6 w-6">
+                      <h3 className="font-semibold text-foreground">
+                        Notifications
+                      </h3>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-6 w-6"
+                        onClick={handleNotificationClose}
+                      >
                         <X className="w-4 h-4" />
                       </Button>
                     </div>
@@ -147,11 +183,14 @@ const Navbar = () => {
                         {notifications.map((notification) => (
                           <div
                             key={notification.id}
-                            className={`flex items-start gap-3 p-4 hover:bg-gray-50 cursor-pointer ${!notification.isRead ? 'bg-blue-50' : ''
-                              }`}
+                            className={`flex items-start gap-3 p-4 hover:bg-gray-50 cursor-pointer ${
+                              !notification.isRead ? "bg-blue-50" : ""
+                            }`}
                             onClick={() => markAsRead(notification.id)}
                           >
-                            <div className={`p-2 rounded-full ${notification.iconBg}`}>
+                            <div
+                              className={`p-2 rounded-full ${notification.iconBg}`}
+                            >
                               <notification.icon className="w-4 h-4 text-white" />
                             </div>
                             <div className="flex-1 min-w-0">
@@ -182,9 +221,15 @@ const Navbar = () => {
                         <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
                           <Bell className="w-8 h-8 text-muted-foreground" />
                         </div>
-                        <h3 className="font-semibold text-foreground mb-2">No Notifications</h3>
-                        <p className="text-sm text-muted-foreground">No new notifications.</p>
-                        <p className="text-sm text-muted-foreground">You're all caught up!</p>
+                        <h3 className="font-semibold text-foreground mb-2">
+                          No Notifications
+                        </h3>
+                        <p className="text-sm text-muted-foreground">
+                          No new notifications.
+                        </p>
+                        <p className="text-sm text-muted-foreground">
+                          You're all caught up!
+                        </p>
                       </div>
                     )}
                   </DropdownMenuContent>
@@ -264,7 +309,7 @@ const Navbar = () => {
           </div>
 
           {/* Mobile Menu */}
-          <div className="md:hidden flex items-center gap-2">
+          <div className="md:hidden flex items-center gap-2 px-2">
             {/* Cart */}
             <Link
               to="/cart"
@@ -279,7 +324,10 @@ const Navbar = () => {
             </Link>
 
             {/* Notification for Mobile */}
-            <DropdownMenu>
+            <DropdownMenu
+              open={mobileNotificationOpen}
+              onOpenChange={setMobileNotificationOpen}
+            >
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" className="relative">
                   <Bell className="w-5 h-5" />
@@ -290,10 +338,20 @@ const Navbar = () => {
                   )}
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-80 p-0" align="end">
+              <DropdownMenuContent
+                className="w-[calc(100vw-2rem)] max-w-80 p-0"
+                align="end"
+              >
                 <div className="flex items-center justify-between p-4 border-b">
-                  <h3 className="font-semibold text-foreground">Notifications</h3>
-                  <Button variant="ghost" size="icon" className="h-6 w-6">
+                  <h3 className="font-semibold text-foreground">
+                    Notifications
+                  </h3>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-6 w-6"
+                    onClick={handleMobileNotificationClose}
+                  >
                     <X className="w-4 h-4" />
                   </Button>
                 </div>
@@ -303,11 +361,14 @@ const Navbar = () => {
                     {notifications.map((notification) => (
                       <div
                         key={notification.id}
-                        className={`flex items-start gap-3 p-4 hover:bg-gray-50 cursor-pointer ${!notification.isRead ? 'bg-blue-50' : ''
-                          }`}
+                        className={`flex items-start gap-3 p-4 hover:bg-gray-50 cursor-pointer ${
+                          !notification.isRead ? "bg-blue-50" : ""
+                        }`}
                         onClick={() => markAsRead(notification.id)}
                       >
-                        <div className={`p-2 rounded-full ${notification.iconBg}`}>
+                        <div
+                          className={`p-2 rounded-full ${notification.iconBg}`}
+                        >
                           <notification.icon className="w-4 h-4 text-white" />
                         </div>
                         <div className="flex-1 min-w-0">
@@ -338,9 +399,15 @@ const Navbar = () => {
                     <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
                       <Bell className="w-8 h-8 text-muted-foreground" />
                     </div>
-                    <h3 className="font-semibold text-foreground mb-2">No Notifications</h3>
-                    <p className="text-sm text-muted-foreground">No new notifications.</p>
-                    <p className="text-sm text-muted-foreground">You're all caught up!</p>
+                    <h3 className="font-semibold text-foreground mb-2">
+                      No Notifications
+                    </h3>
+                    <p className="text-sm text-muted-foreground">
+                      No new notifications.
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      You're all caught up!
+                    </p>
                   </div>
                 )}
               </DropdownMenuContent>
@@ -354,17 +421,24 @@ const Navbar = () => {
                 </Button>
               </SheetTrigger>
               <SheetContent side="right" className="w-72 sm:w-80">
-                <div className="mt-4 space-y-2">
-                  {links.map((link) => (
-                    <SheetClose asChild key={link.to}>
-                      <Link
-                        to={link.to}
-                        className="block px-3 py-2 text-base font-medium text-foreground hover:bg-accent rounded-md"
-                      >
-                        {link.label}
-                      </Link>
-                    </SheetClose>
-                  ))}
+                <div className="space-y-2 px-2">
+                  {links.map((link) => {
+                    const isActive = location.pathname === link.to;
+                    return (
+                      <SheetClose asChild key={link.to}>
+                        <Link
+                          to={link.to}
+                          className={`block px-3 py-2 text-base rounded-md ${
+                            isActive
+                              ? "font-semibold text-foreground bg-accent"
+                              : "font-medium text-foreground hover:bg-accent"
+                          }`}
+                        >
+                          {link.label}
+                        </Link>
+                      </SheetClose>
+                    );
+                  })}
 
                   {isAuthenticated ? (
                     <div className="pt-4 border-t space-y-2">
@@ -414,7 +488,7 @@ const Navbar = () => {
         </div>
       </div>
     </nav>
-  )
-}
+  );
+};
 
-export default Navbar
+export default Navbar;
