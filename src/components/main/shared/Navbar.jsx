@@ -117,8 +117,8 @@ const Navbar = () => {
                   key={link.to}
                   to={link.to}
                   className={`transition-colors ${isActive
-                      ? "text-foreground font-semibold"
-                      : "text-muted-foreground hover:text-foreground font-medium hover:font-semibold"
+                    ? "text-foreground font-semibold"
+                    : "text-muted-foreground hover:text-foreground font-medium hover:font-semibold"
                     }`}
                 >
                   {link.label}
@@ -134,8 +134,8 @@ const Navbar = () => {
                 {/* Theme Toggle */}
                 {/* <ThemeToggle /> */}
 
-                {/* Cart Icon */}
-                <Link
+                {/* Cart Icon - Hidden */}
+                {/* <Link
                   to="/cart"
                   className="relative p-2 text-muted-foreground hover:text-foreground"
                 >
@@ -145,7 +145,7 @@ const Navbar = () => {
                       {itemCount}
                     </span>
                   )}
-                </Link>
+                </Link> */}
 
                 {/* Notification Dropdown */}
                 <DropdownMenu
@@ -308,8 +308,8 @@ const Navbar = () => {
 
           {/* Mobile Menu */}
           <div className="md:hidden flex items-center gap-2 px-2">
-            {/* Cart */}
-            <Link
+            {/* Cart - Hidden */}
+            {/* <Link
               to="/cart"
               className="relative p-2 text-muted-foreground hover:text-foreground"
             >
@@ -319,7 +319,7 @@ const Navbar = () => {
                   {itemCount}
                 </span>
               )}
-            </Link>
+            </Link> */}
 
             {/* Notification for Mobile */}
             <DropdownMenu
@@ -426,8 +426,8 @@ const Navbar = () => {
                         <Link
                           to={link.to}
                           className={`block px-3 py-2 text-base rounded-md ${isActive
-                              ? "font-semibold text-foreground bg-accent"
-                              : "font-medium text-foreground hover:bg-accent"
+                            ? "font-semibold text-foreground bg-accent"
+                            : "font-medium text-foreground hover:bg-accent"
                             }`}
                         >
                           {link.label}

@@ -18,7 +18,7 @@ import ContactUs from "@/pages/main/contactus";
 import NotFound from "@/pages/404";
 import Courses from "@/pages/main/courses";
 import CartPage from "@/pages/main/cart";
-import CheckoutPage from "@/pages/main/checkout";
+import CheckoutPage from "@/pages/CheckoutPage";
 import CheckoutSuccess from "@/pages/main/checkout/success";
 import Testimonial from "@/pages/main/testimonial";
 import MyAccount from "@/pages/main/myaccount";

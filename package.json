@@ -29,6 +29,7 @@
     "react-dom": "^19.1.1",
     "react-fast-marquee": "^1.6.5",
     "react-hook-form": "^7.62.0",
+    "react-hot-toast": "^2.6.0",
     "react-redux": "^9.2.0",
     "react-router-dom": "^6.28.0",
     "tailwind-merge": "^2.6.0",

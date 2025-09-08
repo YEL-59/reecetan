@@ -2,10 +2,35 @@ import { X, Star, CheckCircle2, PlayCircle } from 'lucide-react'
 import CourseCard from '@/components/course/CourseCard'
 import { Button } from '@/components/ui/button'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useState } from 'react'
+import OrderSummaryModal from '@/components/OrderSummaryModal'
+import { useNavigate } from 'react-router-dom'
 
 export default function CourseModal({ course, open, onClose, onBuy }) {
 	if (!open || !course) return null
 	const { title, image, rating, students, price } = course
+	const [showOrderModal, setShowOrderModal] = useState(false)
+	const navigate = useNavigate()
+
+	const handleBuyNow = (e) => {
+		e?.stopPropagation()
+		e?.preventDefault()
+		setShowOrderModal(true)
+	}
+
+	const handlePaymentNow = (orderData) => {
+		setShowOrderModal(false)
+		onClose() // Close the course modal
+		navigate('/checkout', { state: { orderData } })
+	}
+
+	const handleModalClose = (e) => {
+		if (e) {
+			e.stopPropagation()
+			e.preventDefault()
+		}
+		setShowOrderModal(false)
+	}
 
 	const modules = course.modules || [
 		{
@@ -52,42 +77,42 @@ export default function CourseModal({ course, open, onClose, onBuy }) {
 						exit={{ opacity: 0 }}
 					/>
 
-					{/* Modal */}
-					<div className="absolute inset-0 overflow-y-auto">
-						<div className="min-h-full py-6 sm:py-8 px-3 sm:px-6 lg:px-8 flex justify-center">
-							<motion.div
-								className="w-full max-w-5xl bg-white rounded-2xl shadow-xl overflow-hidden"
-								initial={{ y: 24, scale: 0.98 }}
-								animate={{ y: 0, scale: 1 }}
-								exit={{ y: 24, scale: 0.98 }}
-								transition={{ type: 'spring', stiffness: 240, damping: 24 }}
-							>
-								{/* Header image */}
-								<div className="relative h-52 sm:h-64 md:h-72">
-									<img src={image} alt={title} className="absolute inset-0 w-full h-full object-cover" />
-									<div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/85 via-black/50 to-transparent" />
-									<button onClick={onClose} className="absolute top-3 right-3 w-9 h-9 rounded-full bg-black/50 hover:bg-black/60 flex items-center justify-center text-white">
-										<X className="w-5 h-5" />
-									</button>
+					{/* Modal Container with Custom Scrolling */}
+					<div className="absolute inset-0 flex items-center justify-center p-4">
+						<motion.div
+							className="w-full max-w-5xl max-h-[90vh] bg-white rounded-2xl shadow-xl overflow-hidden flex flex-col"
+							initial={{ y: 24, scale: 0.98 }}
+							animate={{ y: 0, scale: 1 }}
+							exit={{ y: 24, scale: 0.98 }}
+							transition={{ type: 'spring', stiffness: 240, damping: 24 }}
+						>
+							{/* Header image - Fixed */}
+							<div className="relative h-52 sm:h-64 md:h-72 flex-shrink-0">
+								<img src={image} alt={title} className="absolute inset-0 w-full h-full object-cover" />
+								<div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/85 via-black/50 to-transparent" />
+								<button onClick={onClose} className="absolute top-3 right-3 w-9 h-9 rounded-full bg-black/50 hover:bg-black/60 flex items-center justify-center text-white">
+									<X className="w-5 h-5" />
+								</button>
 
-									<div className="absolute inset-x-0 bottom-0 p-4 sm:p-6 text-white">
-										<h3 className="text-base sm:text-lg md:text-xl font-semibold">{title}</h3>
-										<div className="mt-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-sm">
-											<div className="flex items-center gap-2">
-												<Star className="w-4 h-4 text-amber-400 fill-amber-400" />
-												<span className="font-medium">{rating.toFixed(1)}</span>
-												<span className="text-white/80">{students.toLocaleString()} Students</span>
-											</div>
-											<div className="flex items-center gap-3">
-												<span className="font-semibold">${price}</span>
-												<Button onClick={() => onBuy?.(course)} className="rounded-full bg-primary hover:bg-primary/90 h-9 px-5">Buy Now</Button>
-											</div>
+								<div className="absolute inset-x-0 bottom-0 p-4 sm:p-6 text-white">
+									<h3 className="text-base sm:text-lg md:text-xl font-semibold">{title}</h3>
+									<div className="mt-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-sm">
+										<div className="flex items-center gap-2">
+											<Star className="w-4 h-4 text-amber-400 fill-amber-400" />
+											<span className="font-medium">{rating.toFixed(1)}</span>
+											<span className="text-white/80">{students.toLocaleString()} Students</span>
+										</div>
+										<div className="flex items-center gap-3">
+											<span className="font-semibold">${price}</span>
+											<Button onClick={handleBuyNow} className="rounded-full bg-primary hover:bg-primary/90 h-9 px-5">Buy Now</Button>
 										</div>
 									</div>
 								</div>
+							</div>
 
-								{/* Body */}
-								<div className="p-4 sm:p-6 space-y-8">
+							{/* Body - Scrollable */}
+							<div className="flex-1 scrollbar-blue modal-scroll-container">
+								<div className="p-4 sm:p-6 pb-8 space-y-8">
 									<p className="text-sm sm:text-base text-gray-600">
 										Master essential nursing skills and prepare for your CNA certification with comprehensive training covering patient care, safety protocols, and professionalism in healthcare environments.
 									</p>
@@ -159,12 +184,20 @@ export default function CourseModal({ course, open, onClose, onBuy }) {
 									<div>
 										<h4 className="font-semibold mb-3">More Like This</h4>
 										<div className="max-w-xs">
-											<CourseCard course={course} onEnroll={() => {}} />
+											<CourseCard course={course} onEnroll={() => { }} />
 										</div>
 									</div>
 								</div>
-							</motion.div>
-						</div>
+							</div>
+
+							{/* Order Summary Modal */}
+							<OrderSummaryModal
+								course={course}
+								isOpen={showOrderModal}
+								onClose={handleModalClose}
+								onPaymentNow={handlePaymentNow}
+							/>
+						</motion.div>
 					</div>
 				</motion.div>
 			)}

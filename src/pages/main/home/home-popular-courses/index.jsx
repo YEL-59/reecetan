@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import CourseCard from '@/components/course/CourseCard'
 import CourseModal from '@/components/course/CourseModal'
-import { useCart } from '@/contexts/cart-context'
+// import { useCart } from '@/contexts/cart-context' // Cart system hidden
 import { useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import {
@@ -93,7 +93,6 @@ const HomePopularCourses = () => {
 	const [activeTab, setActiveTab] = useState('All')
 	const [openCourse, setOpenCourse] = useState(null)
 	const [isSheetOpen, setIsSheetOpen] = useState(false)
-	const { add } = useCart()
 	const navigate = useNavigate()
 
 	const courses = useMemo(() => seedCourses, [])
@@ -102,9 +101,10 @@ const HomePopularCourses = () => {
 		return courses.filter((c) => c.category === activeTab)
 	}, [activeTab, courses])
 
+	// Enroll function is now handled by CourseCard component directly
 	const enroll = (course) => {
-		add(course)
-		navigate('/checkout')
+		// This function is no longer needed as CourseCard handles its own modal
+		console.log('Enrolling in:', course.title)
 	}
 
 	return (

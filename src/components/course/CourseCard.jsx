@@ -1,10 +1,14 @@
 import { Star } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { useCallback, useRef } from 'react'
+import { useCallback, useRef, useState } from 'react'
+import OrderSummaryModal from '@/components/OrderSummaryModal'
+import { useNavigate } from 'react-router-dom'
 
 export default function CourseCard({ course, onEnroll, onOpen, trigger = 'hover' }) {
 	const { title, image, category, rating, students, price } = course
 	const hoverTimer = useRef(null)
+	const [showOrderModal, setShowOrderModal] = useState(false)
+	const navigate = useNavigate()
 
 	const handleMouseEnter = () => {
 		if (!onOpen || trigger !== 'hover') return
@@ -22,6 +26,25 @@ export default function CourseCard({ course, onEnroll, onOpen, trigger = 'hover'
 			onOpen?.(course)
 		}
 	}, [course, onOpen, trigger])
+
+	const handleEnrollClick = (e) => {
+		e.stopPropagation()
+		e.preventDefault()
+		setShowOrderModal(true)
+	}
+
+	const handlePaymentNow = (orderData) => {
+		setShowOrderModal(false)
+		navigate('/checkout', { state: { orderData } })
+	}
+
+	const handleModalClose = (e) => {
+		if (e) {
+			e.stopPropagation()
+			e.preventDefault()
+		}
+		setShowOrderModal(false)
+	}
 
 	return (
 		<div
@@ -63,13 +86,21 @@ export default function CourseCard({ course, onEnroll, onOpen, trigger = 'hover'
 				<div className="mt-3">
 					<Button
 						variant="outline"
-						onClick={(e) => { e.stopPropagation(); onEnroll?.(course) }}
+						onClick={handleEnrollClick}
 						className="w-[140px] h-8 rounded-full border-primary text-primary bg-transparent hover:bg-primary/10"
 					>
 						Enroll Now
 					</Button>
 				</div>
 			</div>
+
+			{/* Order Summary Modal */}
+			<OrderSummaryModal
+				course={course}
+				isOpen={showOrderModal}
+				onClose={handleModalClose}
+				onPaymentNow={handlePaymentNow}
+			/>
 		</div>
 	)
 }

@@ -12,6 +12,7 @@ import { store } from '@/store'
 import { QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { queryClient } from '@/lib/queryClient'
+import { Toaster } from 'react-hot-toast'
 
 function AppRoot() {
   useEffect(() => {
@@ -47,6 +48,29 @@ function AppRoot() {
           </CartProvider>
         </ThemeProvider>
         <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-left" />
+        <Toaster
+          position="top-right"
+          toastOptions={{
+            duration: 4000,
+            style: {
+              background: 'var(--background)',
+              color: 'var(--foreground)',
+              border: '1px solid var(--border)',
+            },
+            success: {
+              iconTheme: {
+                primary: '#10B981',
+                secondary: '#ffffff',
+              },
+            },
+            error: {
+              iconTheme: {
+                primary: '#EF4444',
+                secondary: '#ffffff',
+              },
+            },
+          }}
+        />
       </QueryClientProvider>
     </ReduxProvider>
   )

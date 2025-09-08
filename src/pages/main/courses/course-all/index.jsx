@@ -2,7 +2,7 @@ import { useMemo, useState, useEffect } from 'react'
 import CourseCard from '@/components/course/CourseCard'
 import CourseModal from '@/components/course/CourseModal'
 import { Search } from 'lucide-react'
-import { useCart } from '@/contexts/cart-context'
+// import { useCart } from '@/contexts/cart-context' // Cart system hidden
 import { useNavigate } from 'react-router-dom'
 
 const CATEGORY_OPTIONS = [
@@ -15,32 +15,32 @@ const CATEGORY_OPTIONS = [
 const LEVEL_OPTIONS = ['Beginner', 'Intermediate', 'Advanced']
 
 const SEED_COURSES = [
-  { id: 1,  title: 'Complete Medical Terminology Course', category: 'Health Care',          rating: 4.8, students: 123, price: 50, image: 'https://images.unsplash.com/photo-1580281658208-2cf4e1b1d4b3?q=80&w=1200&auto=format&fit=crop', level: 'Beginner' },
-  { id: 2,  title: 'Nursing Fundamentals Bootcamp',      category: 'Nursing Programs',       rating: 4.7, students: 231, price: 60, image: 'https://images.unsplash.com/photo-1579154204601-01588f351e74?q=80&w=1200&auto=format&fit=crop', level: 'Beginner' },
-  { id: 3,  title: 'Medical Basics: Anatomy Essentials',  category: 'Medical Basics',         rating: 4.9, students: 543, price: 70, image: 'https://images.unsplash.com/photo-1583316175707-1ff2d1f2f4d5?q=80&w=1200&auto=format&fit=crop', level: 'Intermediate' },
-  { id: 4,  title: 'Professional Communication for Nurses', category: 'Professional Skills', rating: 4.6, students: 98,  price: 45, image: 'https://images.unsplash.com/photo-1551601651-8fc8fd76d297?q=80&w=1200&auto=format&fit=crop', level: 'Beginner' },
-  { id: 5,  title: 'Emotional Care & Patient Empathy',    category: 'Emotional Care',        rating: 4.8, students: 412, price: 55, image: 'https://images.unsplash.com/photo-1600959907703-125ba1374a12?q=80&w=1200&auto=format&fit=crop', level: 'Intermediate' },
-  { id: 6,  title: 'Exam Prep: Mock Boards Practice',     category: 'Exam Prep',              rating: 4.7, students: 827, price: 65, image: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=1200&auto=format&fit=crop', level: 'Advanced' },
-  { id: 7,  title: 'Clinical Procedures Mastery',         category: 'Health Care',            rating: 4.8, students: 256, price: 80, image: 'https://images.unsplash.com/photo-1582719478510-9ff3aa56a7d3?q=80&w=1200&auto=format&fit=crop', level: 'Advanced' },
-  { id: 8,  title: 'Pediatric Nursing Essentials',        category: 'Nursing Programs',       rating: 4.7, students: 199, price: 58, image: 'https://images.unsplash.com/photo-1584433144859-1fc3ab64a957?q=80&w=1200&auto=format&fit=crop', level: 'Intermediate' },
-  { id: 9,  title: 'Pathophysiology Basics',              category: 'Medical Basics',         rating: 4.9, students: 334, price: 62, image: 'https://images.unsplash.com/photo-1559757175-08c4e7a4a74b?q=80&w=1200&auto=format&fit=crop', level: 'Beginner' },
-  { id: 10, title: 'Leadership in Healthcare',            category: 'Professional Skills',    rating: 4.6, students: 288, price: 75, image: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?q=80&w=1200&auto=format&fit=crop', level: 'Advanced' },
-  { id: 11, title: 'Patient Psychology & Care',           category: 'Emotional Care',         rating: 4.7, students: 167, price: 54, image: 'https://images.unsplash.com/photo-1520975916090-3105956dac38?q=80&w=1200&auto=format&fit=crop', level: 'Intermediate' },
-  { id: 12, title: 'NCLEX Comprehensive Review',          category: 'Exam Prep',              rating: 4.8, students: 904, price: 85, image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=1200&auto=format&fit=crop', level: 'Advanced' },
-  { id: 13, title: 'Geriatric Care Fundamentals',         category: 'Health Care',            rating: 4.5, students: 140, price: 49, image: 'https://images.unsplash.com/photo-1505751172876-fa1923c5c528?q=80&w=1200&auto=format&fit=crop', level: 'Beginner' },
-  { id: 14, title: 'Nursing Pharmacology',                category: 'Nursing Programs',       rating: 4.7, students: 377, price: 68, image: 'https://images.unsplash.com/photo-1584985231208-6a1c10ca7b9d?q=80&w=1200&auto=format&fit=crop', level: 'Advanced' },
-  { id: 15, title: 'Microbiology Essentials',             category: 'Medical Basics',         rating: 4.8, students: 220, price: 61, image: 'https://images.unsplash.com/photo-1582719478251-e26c88b06803?q=80&w=1200&auto=format&fit=crop', level: 'Intermediate' },
-  { id: 16, title: 'Effective Healthcare Presentations',  category: 'Professional Skills',    rating: 4.4, students: 96,  price: 40, image: 'https://images.unsplash.com/photo-1551836022-4c4c79ecde51?q=80&w=1200&auto=format&fit=crop', level: 'Beginner' },
-  { id: 17, title: 'Therapeutic Communication',           category: 'Emotional Care',         rating: 4.6, students: 410, price: 59, image: 'https://images.unsplash.com/photo-1519345182560-3f2917c472ef?q=80&w=1200&auto=format&fit=crop', level: 'Beginner' },
-  { id: 18, title: 'Rapid Fire Exams: Drill Sessions',    category: 'Exam Prep',              rating: 4.7, students: 740, price: 72, image: 'https://images.unsplash.com/photo-1513258496099-48168024aec0?q=80&w=1200&auto=format&fit=crop', level: 'Intermediate' }
+  { id: 1, title: 'Complete Medical Terminology Course', category: 'Health Care', rating: 4.8, students: 123, price: 50, image: 'https://images.unsplash.com/photo-1580281658208-2cf4e1b1d4b3?q=80&w=1200&auto=format&fit=crop', level: 'Beginner' },
+  { id: 2, title: 'Nursing Fundamentals Bootcamp', category: 'Nursing Programs', rating: 4.7, students: 231, price: 60, image: 'https://images.unsplash.com/photo-1579154204601-01588f351e74?q=80&w=1200&auto=format&fit=crop', level: 'Beginner' },
+  { id: 3, title: 'Medical Basics: Anatomy Essentials', category: 'Medical Basics', rating: 4.9, students: 543, price: 70, image: 'https://images.unsplash.com/photo-1583316175707-1ff2d1f2f4d5?q=80&w=1200&auto=format&fit=crop', level: 'Intermediate' },
+  { id: 4, title: 'Professional Communication for Nurses', category: 'Professional Skills', rating: 4.6, students: 98, price: 45, image: 'https://images.unsplash.com/photo-1551601651-8fc8fd76d297?q=80&w=1200&auto=format&fit=crop', level: 'Beginner' },
+  { id: 5, title: 'Emotional Care & Patient Empathy', category: 'Emotional Care', rating: 4.8, students: 412, price: 55, image: 'https://images.unsplash.com/photo-1600959907703-125ba1374a12?q=80&w=1200&auto=format&fit=crop', level: 'Intermediate' },
+  { id: 6, title: 'Exam Prep: Mock Boards Practice', category: 'Exam Prep', rating: 4.7, students: 827, price: 65, image: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=1200&auto=format&fit=crop', level: 'Advanced' },
+  { id: 7, title: 'Clinical Procedures Mastery', category: 'Health Care', rating: 4.8, students: 256, price: 80, image: 'https://images.unsplash.com/photo-1582719478510-9ff3aa56a7d3?q=80&w=1200&auto=format&fit=crop', level: 'Advanced' },
+  { id: 8, title: 'Pediatric Nursing Essentials', category: 'Nursing Programs', rating: 4.7, students: 199, price: 58, image: 'https://images.unsplash.com/photo-1584433144859-1fc3ab64a957?q=80&w=1200&auto=format&fit=crop', level: 'Intermediate' },
+  { id: 9, title: 'Pathophysiology Basics', category: 'Medical Basics', rating: 4.9, students: 334, price: 62, image: 'https://images.unsplash.com/photo-1559757175-08c4e7a4a74b?q=80&w=1200&auto=format&fit=crop', level: 'Beginner' },
+  { id: 10, title: 'Leadership in Healthcare', category: 'Professional Skills', rating: 4.6, students: 288, price: 75, image: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?q=80&w=1200&auto=format&fit=crop', level: 'Advanced' },
+  { id: 11, title: 'Patient Psychology & Care', category: 'Emotional Care', rating: 4.7, students: 167, price: 54, image: 'https://images.unsplash.com/photo-1520975916090-3105956dac38?q=80&w=1200&auto=format&fit=crop', level: 'Intermediate' },
+  { id: 12, title: 'NCLEX Comprehensive Review', category: 'Exam Prep', rating: 4.8, students: 904, price: 85, image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=1200&auto=format&fit=crop', level: 'Advanced' },
+  { id: 13, title: 'Geriatric Care Fundamentals', category: 'Health Care', rating: 4.5, students: 140, price: 49, image: 'https://images.unsplash.com/photo-1505751172876-fa1923c5c528?q=80&w=1200&auto=format&fit=crop', level: 'Beginner' },
+  { id: 14, title: 'Nursing Pharmacology', category: 'Nursing Programs', rating: 4.7, students: 377, price: 68, image: 'https://images.unsplash.com/photo-1584985231208-6a1c10ca7b9d?q=80&w=1200&auto=format&fit=crop', level: 'Advanced' },
+  { id: 15, title: 'Microbiology Essentials', category: 'Medical Basics', rating: 4.8, students: 220, price: 61, image: 'https://images.unsplash.com/photo-1582719478251-e26c88b06803?q=80&w=1200&auto=format&fit=crop', level: 'Intermediate' },
+  { id: 16, title: 'Effective Healthcare Presentations', category: 'Professional Skills', rating: 4.4, students: 96, price: 40, image: 'https://images.unsplash.com/photo-1551836022-4c4c79ecde51?q=80&w=1200&auto=format&fit=crop', level: 'Beginner' },
+  { id: 17, title: 'Therapeutic Communication', category: 'Emotional Care', rating: 4.6, students: 410, price: 59, image: 'https://images.unsplash.com/photo-1519345182560-3f2917c472ef?q=80&w=1200&auto=format&fit=crop', level: 'Beginner' },
+  { id: 18, title: 'Rapid Fire Exams: Drill Sessions', category: 'Exam Prep', rating: 4.7, students: 740, price: 72, image: 'https://images.unsplash.com/photo-1513258496099-48168024aec0?q=80&w=1200&auto=format&fit=crop', level: 'Intermediate' }
 ]
 
 const SORT_OPTIONS = [
   { value: 'default', label: 'Default Sorting' },
-  { value: 'rating',  label: 'Rating' },
-  { value: 'price-asc',  label: 'Price: Low to High' },
+  { value: 'rating', label: 'Rating' },
+  { value: 'price-asc', label: 'Price: Low to High' },
   { value: 'price-desc', label: 'Price: High to Low' },
-  { value: 'students',   label: 'Most Students' }
+  { value: 'students', label: 'Most Students' }
 ]
 
 const ITEMS_PER_PAGE = 9
@@ -53,7 +53,7 @@ const CourseAll = () => {
   const [sortBy, setSortBy] = useState('default')
   const [page, setPage] = useState(1)
   const [openCourse, setOpenCourse] = useState(null)
-  const { add } = useCart()
+  // const { add } = useCart() // Cart system hidden
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -82,16 +82,16 @@ const CourseAll = () => {
 
     switch (sortBy) {
       case 'rating':
-        list = [...list].sort((a,b) => b.rating - a.rating)
+        list = [...list].sort((a, b) => b.rating - a.rating)
         break
       case 'price-asc':
-        list = [...list].sort((a,b) => a.price - b.price)
+        list = [...list].sort((a, b) => a.price - b.price)
         break
       case 'price-desc':
-        list = [...list].sort((a,b) => b.price - a.price)
+        list = [...list].sort((a, b) => b.price - a.price)
         break
       case 'students':
-        list = [...list].sort((a,b) => b.students - a.students)
+        list = [...list].sort((a, b) => b.students - a.students)
         break
       default:
         break
@@ -120,9 +120,10 @@ const CourseAll = () => {
     setSelectedLevels(next)
   }
 
+  // Enroll function is now handled by CourseCard component directly
   const enroll = (course) => {
-    add(course)
-    navigate('/checkout')
+    // This function is no longer needed as CourseCard handles its own modal
+    console.log('Enrolling in:', course.title)
   }
 
   return (
