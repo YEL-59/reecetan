@@ -1,13 +1,10 @@
 import { axiosPrivate, axiosPublic } from "@/lib/axios.config";
 import {
-  matchOtpSchema,
   resetPasswordSchema,
-  sendOtpSchema,
   signInSchema,
   signUpSchema,
-  updatePasswordSchema,
-  updateProfileSchema,
 } from "@/schemas/auth.schemas";
+import { secureTokenManager } from "@/lib/secure-auth";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -51,7 +48,7 @@ const testConsole = {
   }
 };
 
-// 🔐 Sign Up Hook
+// 🔐 Sign Up Hook - Matches your /api/register endpoint
 export const useSignUp = () => {
   const navigate = useNavigate();
 
@@ -61,10 +58,7 @@ export const useSignUp = () => {
       name: "",
       email: "",
       password: "",
-      phone_number: "",
-      address: "",
       password_confirmation: "",
-      terms_and_conditions: false,
     },
   });
 
@@ -72,50 +66,74 @@ export const useSignUp = () => {
     mutationFn: async (payload) => {
       testConsole.loading("USER REGISTRATION");
       
-      const formData = new FormData();
-      Object.entries(payload).forEach(([key, value]) => {
-        if (key === "terms_and_conditions") {
-          formData.append(key, value ? "1" : "0");
-        } else if (value !== undefined && value !== null) {
-          formData.append(key, value);
-        }
-      });
+      // Matches your Postman collection format exactly
+      const data = {
+        name: payload.name,
+        email: payload.email,
+        password: payload.password,
+        password_confirmation: payload.password_confirmation
+      };
 
-      const res = await axiosPublic.post("/auth/register", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      const res = await axiosPublic.post("/register", data);
+      
+      // Debug: Log the full response
+      console.log('🔍 API Response Status:', res.status);
+      console.log('🔍 API Response Data:', res.data);
+      
+      // Check if the response indicates an error
+      if (res.data && (res.data.status === false || res.data.success === false || res.data.error)) {
+        console.log('❌ API returned error in response body:', res.data);
+        throw new Error(res.data.message || res.data.error || "Registration failed");
+      }
+      
+      // Check if we have the required fields for successful registration
+      if (!res.data.access_token || !res.data.user) {
+        console.log('❌ API response missing required fields:', res.data);
+        throw new Error("Invalid response from server");
+      }
+      
       return res.data;
     },
     onSuccess: (data) => {
-      if (data?.status) {
-        testConsole.success("USER REGISTRATION", {
-          status: data.status,
-          message: data.message,
-          user: data.data?.name || 'N/A',
-          email: data.data?.email || 'N/A',
-          token: data.data?.token ? '✅ Generated' : '❌ Missing'
-        });
-        
-        toast.success(data?.message || "User created successfully");
-        const token = data?.data?.token;
-        localStorage.setItem("token", token);
-        const user = data?.data;
-        localStorage.setItem("usersignup", JSON.stringify(user));
-        navigate("/sign-in");
-      } else {
-        testConsole.error("USER REGISTRATION", data?.message || "Registration failed");
-        toast.error(data?.message || "Failed to create user");
-      }
+      testConsole.success("USER REGISTRATION", {
+        status: 'success',
+        message: 'Registration successful',
+        user: data.user?.name || 'N/A',
+        email: data.user?.email || 'N/A',
+        token: data.access_token ? '✅ Generated' : '❌ Missing',
+        otp: data.otp ? '✅ Generated' : '❌ Missing'
+      });
+      
+      toast.success("Registration successful! Please verify your email.");
+      
+      // For email verification flow, DON'T store token yet
+      // Token will be stored only after successful email verification
+      console.log('🚀 Signup Success - User registered, redirecting to email verification')
+      console.log('🚀 Signup Success - Full data object:', data)
+      console.log('🚀 Signup Success - OTP for verification:', data.otp)
+      
+      const emailToPass = data.user?.email
+      console.log('🚀 Signup Success - Navigating to email verification with email:', emailToPass)
+      
+      navigate("/email-verification", {
+        state: { 
+          email: emailToPass,
+          otp: data.otp // Pass OTP for testing purposes
+        }
+      });
     },
     onError: (error) => {
-      const message = error?.response?.data?.message || "Failed to create user";
+      console.log('❌ Registration Error:', error);
+      
+      const message = error?.response?.data?.message || error?.message || "Registration failed";
       testConsole.error("USER REGISTRATION", {
         error: message,
         status: error?.response?.status,
-        endpoint: "/auth/register"
+        endpoint: "/register",
+        fullError: error
       });
       
-      if (message.includes("email")) {
+      if (message.toLowerCase().includes("email")) {
         form.setError("email", { message });
       } else {
         toast.error(message);
@@ -126,7 +144,7 @@ export const useSignUp = () => {
   return { form, mutate, isPending };
 };
 
-// 🔑 Sign In Hook
+// 🔑 Sign In Hook - Matches your /api/login endpoint
 export const useSignIn = () => {
   const [params] = useSearchParams();
   const navigate = useNavigate();
@@ -143,53 +161,54 @@ export const useSignIn = () => {
   const { mutate, isPending } = useMutation({
     mutationFn: async (credentials) => {
       testConsole.loading("USER LOGIN");
-      const res = await axiosPublic.post("/auth/login", credentials);
+      
+      // Matches your Postman collection format exactly
+      const data = {
+        email: credentials.email,
+        password: credentials.password
+      };
+
+      const res = await axiosPublic.post("/login", data);
       return res.data;
     },
     onSuccess: (data) => {
-      if (data?.status) {
-        testConsole.success("USER LOGIN", {
-          status: data.status,
-          message: data.message,
-          user: data.data?.name || 'N/A',
-          email: data.data?.email || 'N/A',
-          token: data.token ? '✅ Generated' : '❌ Missing',
-          redirect: redirectUrl || '/'
-        });
-        
-        toast.success(data?.message || "Sign in successfully");
-        const token = data?.token;
-        localStorage.setItem("token", token);
-        const user = data?.data;
-        localStorage.setItem("user", JSON.stringify(user));
+      testConsole.success("USER LOGIN", {
+        status: data.status || 'success',
+        message: data.message || 'Login successful',
+        user: data.user?.name || data.name || 'N/A',
+        email: data.user?.email || data.email || 'N/A',
+        token: data.token ? '✅ Generated' : '❌ Missing',
+        redirect: redirectUrl || '/'
+      });
+      
+      toast.success(data?.message || "Login successful");
+      
+      // Handle token and user data with secure storage
+      if (data.token && data.user) {
+        secureTokenManager.setAuth(data.token, data.user);
+      } else if (data.token) {
+        secureTokenManager.setAuth(data.token, { name: data.name, email: data.email });
+      }
 
-        if (redirectUrl) {
-          navigate(redirectUrl);
-        } else {
-          navigate("/");
-        }
+      if (redirectUrl) {
+        navigate(redirectUrl);
       } else {
-        testConsole.error("USER LOGIN", data?.message || "Login failed");
-        toast.error(data?.message || "Failed to sign in");
+        navigate("/dashboard");
       }
     },
     onError: (error) => {
-      const message =
-        error?.response?.data?.message ||
-        error?.response?.data?.error ||
-        error.message ||
-        "Failed to sign in";
+      const message = error?.response?.data?.message || 
+                     error?.response?.data?.error || 
+                     error.message || 
+                     "Login failed";
 
       testConsole.error("USER LOGIN", {
         error: message,
         status: error?.response?.status,
-        endpoint: "/auth/login"
+        endpoint: "/login"
       });
 
-      if (
-        typeof message === "string" &&
-        message.toLowerCase().includes("email")
-      ) {
+      if (typeof message === "string" && message.toLowerCase().includes("email")) {
         form.setError("email", { message });
       } else {
         toast.error(message);
@@ -207,49 +226,42 @@ export const useSignout = () => {
   const { mutate, isPending } = useMutation({
     mutationFn: async () => {
       testConsole.loading("USER LOGOUT");
-      const { data } = await axiosPrivate.post("/auth/logout");
-      if (!data?.status) {
-        throw new Error(data?.message || "Failed to logout");
-      }
-      return data;
+      
+      // If you have a logout endpoint, uncomment and adjust:
+      // const { data } = await axiosPrivate.post("/logout");
+      // return data;
+      
+      // For now, just clear local storage
+      return { status: true, message: "Logged out successfully" };
     },
     onSuccess: (data) => {
-      if (data?.status) {
-        testConsole.success("USER LOGOUT", {
-          status: data.status,
-          message: data.message,
-          action: "Tokens cleared",
-          redirect: "/sign-in"
-        });
-        
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-        localStorage.removeItem("usersignup");
-        navigate("/sign-in");
-        toast.success(data?.message || "Logged out successfully");
-      } else {
-        testConsole.error("USER LOGOUT", "Logout failed");
-        toast.error("error");
-      }
+      testConsole.success("USER LOGOUT", {
+        status: data?.status || true,
+        message: data?.message || "Logged out successfully",
+        action: "Tokens cleared",
+        redirect: "/login"
+      });
+      
+      secureTokenManager.clearAuth();
+      navigate("/signin");
+      toast.success(data?.message || "Logged out successfully");
     },
     onError: (error) => {
       testConsole.info("USER LOGOUT", "API failed, performing local logout");
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
-      localStorage.removeItem("usersignup");
+      secureTokenManager.clearAuth();
       toast.success("You've been signed out locally.");
-      navigate("/sign-in");
+      navigate("/signin");
     },
   });
 
   return { mutate, isPending };
 };
 
-// 📧 Send OTP Hook
-export const useSendOtp = () => {
+// 📧 Forgot Password Hook - Matches your /api/forgot-password endpoint
+export const useForgotPassword = () => {
   const navigate = useNavigate();
+  
   const form = useForm({
-    resolver: zodResolver(sendOtpSchema),
     defaultValues: {
       email: "",
     },
@@ -257,124 +269,42 @@ export const useSendOtp = () => {
 
   const { mutate, isPending } = useMutation({
     mutationFn: async ({ email }) => {
-      testConsole.loading("SEND OTP");
-      const payload = { email: email };
-      const { data } = await axiosPublic.post("/auth/send-otp", payload);
-      if (!data?.status) {
-        throw new Error(data?.message || "Failed to send OTP");
-      }
-      return data;
+      testConsole.loading("FORGOT PASSWORD");
+      
+      // Matches your Postman collection format exactly
+      const data = { email: email };
+      
+      const res = await axiosPublic.post("/forgot-password", data);
+      return res.data;
     },
     onSuccess: (data) => {
-      if (data?.status) {
-        testConsole.success("SEND OTP", {
-          status: data.status,
-          message: data.message,
-          email: form.watch("email"),
-          action: "OTP sent successfully"
-        });
-        
-        navigate("/verification", {
-          state: { email: form.watch("email") },
-        });
-        toast.success(data?.message || "OTP sent successfully");
-      } else {
-        testConsole.error("SEND OTP", "Failed to send OTP");
-        toast.error("error");
-      }
+      testConsole.success("FORGOT PASSWORD", {
+        status: data.status || 'success',
+        message: data.message || 'Password reset email sent',
+        email: form.watch("email"),
+        action: "Reset email sent successfully"
+      });
+      
+      toast.success(data?.message || "Password reset email sent successfully");
+      navigate("/forget-password-otp", {
+        state: { email: form.watch("email") },
+      });
     },
     onError: (error) => {
       const message = error?.response?.data?.message || error.message;
-      testConsole.error("SEND OTP", {
+      testConsole.error("FORGOT PASSWORD", {
         error: message,
         status: error?.response?.status,
-        endpoint: "/auth/send-otp"
+        endpoint: "/forgot-password"
       });
-      toast.error(message || "Failed to send OTP");
+      toast.error(message || "Failed to send reset email");
     },
   });
 
   return { form, mutate, isPending };
 };
 
-// 🔢 Match OTP Hook
-export const useMatchOtp = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const email = location.state?.email || "";
-
-  const form = useForm({
-    resolver: zodResolver(matchOtpSchema),
-    defaultValues: {
-      email,
-      otp0: "",
-      otp1: "",
-      otp2: "",
-      otp3: "",
-    },
-  });
-
-  useEffect(() => {
-    if (email) {
-      form.reset({
-        email,
-        otp0: "",
-        otp1: "",
-        otp2: "",
-        otp3: "",
-      });
-    }
-  }, [email, form]);
-
-  const { mutate, isPending } = useMutation({
-    mutationFn: async (formData) => {
-      testConsole.loading("VERIFY OTP");
-      
-      const otp =
-        `${formData.otp0}${formData.otp1}${formData.otp2}${formData.otp3}`
-          .replace(/\s/g, "")
-          .toUpperCase();
-
-      const payload = {
-        email: formData.email,
-        otp,
-      };
-
-      const { data } = await axiosPublic.post("/auth/verify-otp", payload);
-      return data;
-    },
-    onSuccess: (data) => {
-      testConsole.success("VERIFY OTP", {
-        status: data.status || true,
-        message: data.message,
-        email: form.watch("email"),
-        action: "OTP verified successfully"
-      });
-      
-      navigate("/verificationsuccess", {
-        state: { email: form.watch("email") },
-      });
-      toast.success(data.message || "OTP Verified");
-    },
-    onError: (error) => {
-      const message = error?.response?.data?.message || error.message;
-      testConsole.error("VERIFY OTP", {
-        error: message,
-        status: error?.response?.status,
-        endpoint: "/auth/verify-otp"
-      });
-      toast.error(message || "OTP verification failed");
-    },
-  });
-
-  return {
-    form,
-    matchOtp: mutate,
-    isMatching: isPending,
-  };
-};
-
-// 🔄 Reset Password Hook
+// 🔄 Reset Password Hook - Matches your /api/reset-password endpoint
 export const useResetPassword = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -383,6 +313,7 @@ export const useResetPassword = () => {
   const form = useForm({
     resolver: zodResolver(resetPasswordSchema),
     defaultValues: {
+      name: "",
       email,
       password: "",
       password_confirmation: "",
@@ -392,6 +323,7 @@ export const useResetPassword = () => {
   useEffect(() => {
     if (email) {
       form.reset({
+        name: "",
         email,
         password: "",
         password_confirmation: "",
@@ -403,39 +335,34 @@ export const useResetPassword = () => {
     mutationFn: async (formData) => {
       testConsole.loading("RESET PASSWORD");
       
-      const payload = {
+      // Matches your Postman collection format exactly
+      const data = {
+        name: formData.name,
         email: formData.email,
         password: formData.password,
         password_confirmation: formData.password_confirmation,
       };
 
-      const { data } = await axiosPublic.post("/auth/reset-password", payload);
-
-      if (!data?.status) {
-        throw new Error(data?.message || "Reset failed");
-      }
-
-      return data;
+      const res = await axiosPublic.post("/reset-password", data);
+      return res.data;
     },
     onSuccess: (data) => {
-      if (data?.status) {
-        testConsole.success("RESET PASSWORD", {
-          status: data.status,
-          message: data.message,
-          email: form.watch("email"),
-          action: "Password reset successful"
-        });
-        
-        toast.success(data.message || "Password reset successful");
-        navigate("/sign-in");
-      }
+      testConsole.success("RESET PASSWORD", {
+        status: data.status || 'success',
+        message: data.message || 'Password reset successful',
+        email: form.watch("email"),
+        action: "Password reset successful"
+      });
+      
+      toast.success(data.message || "Password reset successful");
+      navigate("/login");
     },
     onError: (error) => {
       const message = error?.response?.data?.message || error.message;
       testConsole.error("RESET PASSWORD", {
         error: message,
         status: error?.response?.status,
-        endpoint: "/auth/reset-password"
+        endpoint: "/reset-password"
       });
       toast.error(message || "Password reset failed");
     },
@@ -448,164 +375,79 @@ export const useResetPassword = () => {
   };
 };
 
-// 🔐 Update Password Hook
-export const useUpdatePassword = () => {
+// 🔢 Verify OTP Hook - Matches your /api/verify-otp endpoint
+export const useVerifyOTP = () => {
+  const location = useLocation();
   const navigate = useNavigate();
+  const email = location.state?.email || "";
 
   const form = useForm({
-    resolver: zodResolver(updatePasswordSchema),
     defaultValues: {
-      current_password: "",
-      new_password: "",
-      new_password_confirmation: "",
+      email,
+      otp: "",
     },
   });
 
+  useEffect(() => {
+    if (email) {
+      form.reset({
+        email,
+        otp: "",
+      });
+    }
+  }, [email, form]);
+
   const { mutate, isPending } = useMutation({
     mutationFn: async (formData) => {
-      testConsole.loading("UPDATE PASSWORD");
+      testConsole.loading("VERIFY OTP");
       
-      const payload = {
-        current_password: formData.current_password,
-        new_password: formData.new_password,
-        new_password_confirmation: formData.new_password_confirmation,
+      // Matches your Postman collection format exactly
+      const data = {
+        email: formData.email,
+        otp: formData.otp,
       };
 
-      const { data } = await axiosPrivate.post(
-        "/dashboard/password/update",
-        payload
-      );
-
-      if (!data?.status) {
-        throw new Error(data?.message || "Update failed");
-      }
-
-      return data;
+      const res = await axiosPublic.post("/verify-otp", data);
+      return res.data;
     },
     onSuccess: (data) => {
-      testConsole.success("UPDATE PASSWORD", {
-        status: data.status,
-        message: data.message,
-        action: "Password updated successfully",
-        redirect: "/sign-in"
+      testConsole.success("VERIFY OTP", {
+        status: data.status || 'success',
+        message: data.message || 'OTP verified successfully',
+        email: form.watch("email"),
+        action: "OTP verified successfully"
       });
       
-      toast.success(data.message || "Password update successful");
-      navigate("/sign-in");
+      toast.success(data.message || "Email verified successfully! Please sign in to continue.");
+      
+      // For manual login flow, DON'T store token after OTP verification
+      // User must manually sign in with email/password
+      console.log('🚀 OTP Verified - Redirecting to signin for manual login')
+      console.log('🚀 OTP Verified - Email:', form.watch("email"))
+      
+      navigate("/signin", {
+        state: { 
+          message: "Email verified successfully! Please sign in to continue.",
+          email: form.watch("email") // Pre-fill email in signin form
+        }
+      });
     },
     onError: (error) => {
       const message = error?.response?.data?.message || error.message;
-      testConsole.error("UPDATE PASSWORD", {
+      testConsole.error("VERIFY OTP", {
         error: message,
         status: error?.response?.status,
-        endpoint: "/dashboard/password/update"
+        endpoint: "/verify-otp"
       });
-      toast.error(message || "Password update failed");
+      toast.error(message || "OTP verification failed");
     },
   });
 
   return {
     form,
-    updatePassword: mutate,
-    isUpdating: isPending,
+    mutate,
+    isVerifying: isPending,
   };
-};
-
-// 👤 Update User Profile Hook
-export const useUpdateUser = () => {
-  const navigate = useNavigate();
-  const queryClient = useQueryClient();
-
-  const form = useForm({
-    resolver: zodResolver(updateProfileSchema),
-    defaultValues: {
-      name: "",
-      phone_number: "",
-      avatar: "",
-      address: "",
-    },
-  });
-
-  const { mutate: updateUser, isPending: isLoading } = useMutation({
-    mutationFn: async (data) => {
-      testConsole.loading("UPDATE USER PROFILE");
-      
-      const formData = new FormData();
-      formData.append("name", data.name);
-      formData.append("phone_number", data.phone_number);
-      formData.append("address", data.address);
-
-      if (data.avatar instanceof File) {
-        formData.append("avatar", data.avatar);
-      }
-
-      const res = await axiosPrivate.post(
-        "/dashboard/profile/update",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-
-      return res.data;
-    },
-    onSuccess: (data) => {
-      testConsole.success("UPDATE USER PROFILE", {
-        status: data.status || true,
-        message: data.message,
-        user: data?.data?.user?.name || 'Updated',
-        action: "Profile updated successfully"
-      });
-      
-      toast.success(data.message);
-      queryClient.invalidateQueries({ queryKey: ["userprofile"] });
-      navigate("/dashboard");
-    },
-    onError: (error) => {
-      const message = error?.response?.data?.message || "Something went wrong";
-      testConsole.error("UPDATE USER PROFILE", {
-        error: message,
-        status: error?.response?.status,
-        endpoint: "/dashboard/profile/update"
-      });
-      toast.error(message);
-    },
-  });
-
-  return { form, updateUser, isLoading };
-};
-
-// 👤 Get User Profile Hook
-export const useGetUser = () => {
-  const { data, isLoading } = useQuery({
-    queryKey: ["userprofile"],
-    queryFn: async () => {
-      testConsole.loading("GET USER PROFILE");
-      const res = await axiosPrivate.get("/profile");
-      
-      testConsole.success("GET USER PROFILE", {
-        status: res.data?.status || true,
-        user: res.data?.data?.name || 'N/A',
-        email: res.data?.data?.email || 'N/A',
-        phone: res.data?.data?.phone_number || 'N/A',
-        action: "Profile fetched successfully"
-      });
-      
-      return res.data;
-    },
-    refetchOnWindowFocus: false,
-    onError: (error) => {
-      testConsole.error("GET USER PROFILE", {
-        error: error.message,
-        status: error?.response?.status,
-        endpoint: "/profile"
-      });
-    }
-  });
-
-  return { user: data?.data, isLoading };
 };
 
 // 🔍 Auth Status Hook
@@ -638,7 +480,7 @@ export const useRequireAuth = () => {
   useEffect(() => {
     if (!isAuthenticated) {
       testConsole.info("PROTECTED ROUTE", "Redirecting to login - User not authenticated");
-      navigate('/sign-in', { replace: true });
+      navigate('/login', { replace: true });
     }
   }, [isAuthenticated, navigate]);
 
@@ -658,44 +500,4 @@ export const useRequireGuest = () => {
   }, [isAuthenticated, navigate]);
 
   return !isAuthenticated;
-};
-
-// 🎯 Test All APIs Hook (for development/testing)
-export const useTestAllAPIs = () => {
-  const testSignUp = useSignUp();
-  const testSignIn = useSignIn();
-  const testSendOtp = useSendOtp();
-  const testMatchOtp = useMatchOtp();
-  const testResetPassword = useResetPassword();
-  const testUpdatePassword = useUpdatePassword();
-  const testUpdateUser = useUpdateUser();
-  const testGetUser = useGetUser();
-  const testSignout = useSignout();
-
-  const runAllTests = () => {
-    console.log(`%c🚀 STARTING COMPREHENSIVE AUTH API TESTS`, 
-      'color: #10B981; font-weight: bold; font-size: 16px; background: #1F2937; padding: 10px;');
-    console.log('═'.repeat(80));
-    
-    // You can uncomment these to test individual APIs
-    // testSignUp.mutate({ /* test data */ });
-    // testSignIn.mutate({ /* test data */ });
-    // testSendOtp.mutate({ /* test data */ });
-    // ... etc
-    
-    testConsole.info("TEST SUITE", "All auth hooks initialized and ready for testing!");
-  };
-
-  return {
-    testSignUp,
-    testSignIn,
-    testSendOtp,
-    testMatchOtp,
-    testResetPassword,
-    testUpdatePassword,
-    testUpdateUser,
-    testGetUser,
-    testSignout,
-    runAllTests,
-  };
 };

@@ -1,7 +1,4 @@
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { ArrowLeft } from 'lucide-react'
@@ -13,23 +10,24 @@ import {
     FormItem,
     FormMessage,
 } from '@/components/ui/form'
-
-const emailVerificationSchema = z.object({
-    otp: z.string().length(6, 'Please enter a 6-digit code'),
-})
+import { useVerifyOTP } from '@/hooks/auth.hook'
 
 export default function EmailVerification() {
     const [otp, setOtp] = useState(['6', '', '', '', '', '']) // Pre-filled with '6' as shown in image
     const [isResending, setIsResending] = useState(false)
     const [resendCountdown, setResendCountdown] = useState(0)
     const inputRefs = useRef([])
+    const location = useLocation()
 
-    const form = useForm({
-        resolver: zodResolver(emailVerificationSchema),
-        defaultValues: {
-            otp: '6',
-        },
-    })
+    // Use the auth hook that matches your API
+    const { form, mutate, isVerifying } = useVerifyOTP()
+
+    // Debug: Check what email is being received
+    useEffect(() => {
+        console.log('📍 Email Verification Page - Location State:', location.state)
+        console.log('📍 Email Verification Page - Form Email:', form.getValues('email'))
+        console.log('📍 Email Verification Page - OTP from API:', location.state?.otp)
+    }, [location.state, form])
 
     // Handle OTP input changes
     const handleOtpChange = (index, value) => {
@@ -89,16 +87,15 @@ export default function EmailVerification() {
         }
     }, [resendCountdown])
 
-    const onSubmit = async (data) => {
-        try {
-            console.log('Email verification data:', data)
-            // API call to verify email
-            await new Promise(resolve => setTimeout(resolve, 1000)) // Simulate API call
-            console.log('Email verified successfully')
-            // Redirect to dashboard or show success message
-        } catch (error) {
-            console.error('Email verification error:', error)
+    const onSubmit = (data) => {
+        // Prepare data for your API format
+        const email = form.getValues('email') || location.state?.email
+        const apiData = {
+            email: email, // Get email from form or location state
+            otp: otp.join('') // Convert array to string
         }
+        console.log('🚀 Submitting OTP with email:', email)
+        mutate(apiData)
     }
 
     return (
@@ -120,11 +117,39 @@ export default function EmailVerification() {
                 <p className="text-gray-600">
                     Please Verify Your Email Address
                 </p>
+                {(form.getValues('email') || location.state?.email) && (
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mt-4">
+                        <p className="text-sm text-gray-600 mb-1">Verification code sent to:</p>
+                        <p className="text-sm text-blue-600 font-medium">
+                            {form.getValues('email') || location.state?.email}
+                        </p>
+                        {location.state?.otp && (
+                            <div className="mt-2 p-2 bg-yellow-50 border border-yellow-200 rounded">
+                                <p className="text-xs text-yellow-700">
+                                    <strong>For Testing:</strong> OTP is {location.state.otp}
+                                </p>
+                            </div>
+                        )}
+                    </div>
+                )}
             </div>
 
             {/* Form */}
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                    {/* Hidden Email Field */}
+                    <FormField
+                        control={form.control}
+                        name="email"
+                        render={({ field }) => (
+                            <FormItem className="hidden">
+                                <FormControl>
+                                    <Input type="hidden" {...field} />
+                                </FormControl>
+                            </FormItem>
+                        )}
+                    />
+
                     {/* OTP Input Fields */}
                     <FormField
                         control={form.control}
@@ -166,9 +191,9 @@ export default function EmailVerification() {
                     <Button
                         type="submit"
                         className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg"
-                        disabled={form.formState.isSubmitting || otp.join('').length !== 6}
+                        disabled={isVerifying || otp.join('').length !== 6}
                     >
-                        {form.formState.isSubmitting ? 'Verifying...' : 'Submit'}
+                        {isVerifying ? 'Verifying...' : 'Submit'}
                     </Button>
 
                     {/* Resend Code */}

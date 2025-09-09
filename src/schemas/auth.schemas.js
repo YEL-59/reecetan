@@ -1,16 +1,11 @@
 import { z } from 'zod'
 
-// Sign Up Schema
+// Sign Up Schema - Matches your /api/register endpoint
 export const signUpSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
   email: z.string().email('Please enter a valid email address'),
   password: z.string().min(6, 'Password must be at least 6 characters'),
   password_confirmation: z.string().min(6, 'Password confirmation is required'),
-  phone_number: z.string().min(10, 'Phone number must be at least 10 digits'),
-  address: z.string().min(5, 'Address must be at least 5 characters'),
-  terms_and_conditions: z.boolean().refine(val => val === true, {
-    message: 'You must accept the terms and conditions'
-  }),
 }).refine((data) => data.password === data.password_confirmation, {
   message: "Passwords don't match",
   path: ["password_confirmation"],
@@ -36,8 +31,9 @@ export const matchOtpSchema = z.object({
   otp3: z.string().min(1, 'Required').max(1, 'Only 1 character allowed'),
 })
 
-// Reset Password Schema
+// Reset Password Schema - Matches your /api/reset-password endpoint
 export const resetPasswordSchema = z.object({
+  name: z.string().min(2, 'Name must be at least 2 characters'),
   email: z.string().email('Please enter a valid email address'),
   password: z.string().min(6, 'Password must be at least 6 characters'),
   password_confirmation: z.string().min(6, 'Password confirmation is required'),

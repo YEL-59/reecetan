@@ -1,6 +1,7 @@
 import axios from 'axios'
+import { secureTokenManager } from './secure-auth'
 
-const baseURL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api'
+const baseURL = import.meta.env.VITE_API_BASE_URL || 'https://reecetan.softvencefsd.xyz/api'
 
 // Create public axios instance (for non-authenticated requests)
 export const axiosPublic = axios.create({
@@ -23,7 +24,7 @@ export const axiosPrivate = axios.create({
 // Request interceptor for private instance to add token
 axiosPrivate.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token')
+    const token = secureTokenManager.getAccessToken()
     if (token) {
       config.headers.Authorization = `Bearer ${token}`
     }
@@ -42,10 +43,8 @@ axiosPrivate.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       // Token expired or invalid
-      localStorage.removeItem('token')
-      localStorage.removeItem('user')
-      localStorage.removeItem('usersignup')
-      window.location.href = '/sign-in'
+      secureTokenManager.clearTokens()
+      window.location.href = '/signin'
     }
     return Promise.reject(error)
   }

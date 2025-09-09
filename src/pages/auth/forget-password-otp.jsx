@@ -1,6 +1,3 @@
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
 import { Link } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -13,23 +10,16 @@ import {
     FormItem,
     FormMessage,
 } from '@/components/ui/form'
-
-const otpSchema = z.object({
-    otp: z.string().length(6, 'Please enter a 6-digit code'),
-})
+import { useVerifyOTP, useForgotPassword } from '@/hooks/auth.hook'
 
 export default function ForgetPasswordOtp() {
     const [otp, setOtp] = useState(['6', '', '', '', '', '']) // Pre-filled with '6' as shown in image
-    const [isResending, setIsResending] = useState(false)
     const [resendCountdown, setResendCountdown] = useState(0)
     const inputRefs = useRef([])
 
-    const form = useForm({
-        resolver: zodResolver(otpSchema),
-        defaultValues: {
-            otp: '6',
-        },
-    })
+    // Use auth hooks for API integration
+    const { form, mutate: verifyOTP, isVerifying } = useVerifyOTP()
+    const { mutate: resendEmail, isPending: isResending } = useForgotPassword()
 
     // Handle OTP input changes
     const handleOtpChange = (index, value) => {
@@ -67,18 +57,11 @@ export default function ForgetPasswordOtp() {
     }
 
     // Resend OTP functionality
-    const handleResendOtp = async () => {
-        setIsResending(true)
-        try {
-            // API call to resend OTP
-            await new Promise(resolve => setTimeout(resolve, 1000)) // Simulate API call
-            console.log('OTP resent successfully')
-            setResendCountdown(60) // Start 60-second countdown
-        } catch (error) {
-            console.error('Failed to resend OTP:', error)
-        } finally {
-            setIsResending(false)
-        }
+    const handleResendOtp = () => {
+        // Get email from form or location state
+        const email = form.watch('email') || 'user@example.com' // You might need to get this from navigation state
+        resendEmail({ email })
+        setResendCountdown(60) // Start 60-second countdown
     }
 
     // Countdown timer for resend
@@ -89,16 +72,13 @@ export default function ForgetPasswordOtp() {
         }
     }, [resendCountdown])
 
-    const onSubmit = async (data) => {
-        try {
-            console.log('OTP verification data:', data)
-            // API call to verify OTP
-            await new Promise(resolve => setTimeout(resolve, 1000)) // Simulate API call
-            console.log('OTP verified successfully')
-            // Redirect to reset password page or show success
-        } catch (error) {
-            console.error('OTP verification error:', error)
+    const onSubmit = (data) => {
+        // Prepare data for OTP verification API
+        const apiData = {
+            email: form.watch('email') || 'user@example.com', // You might need to get this from navigation state
+            otp: otp.join('') // Convert array to string
         }
+        verifyOTP(apiData)
     }
 
     return (
@@ -164,9 +144,9 @@ export default function ForgetPasswordOtp() {
                     <Button
                         type="submit"
                         className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg"
-                        disabled={form.formState.isSubmitting || otp.join('').length !== 6}
+                        disabled={isVerifying || otp.join('').length !== 6}
                     >
-                        {form.formState.isSubmitting ? 'Verifying...' : 'Submit'}
+                        {isVerifying ? 'Verifying...' : 'Submit'}
                     </Button>
 
                     {/* Resend Code */}

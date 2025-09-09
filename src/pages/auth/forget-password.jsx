@@ -1,6 +1,3 @@
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
 import { Link } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -13,29 +10,15 @@ import {
     FormLabel,
     FormMessage,
 } from '@/components/ui/form'
-
-const forgotPasswordSchema = z.object({
-    email: z.string().email('Please enter a valid email address'),
-})
+import { useForgotPassword } from '@/hooks/auth.hook'
 
 export default function ForgetPassword() {
-    const form = useForm({
-        resolver: zodResolver(forgotPasswordSchema),
-        defaultValues: {
-            email: 'ticketvilla@gmail.com',
-        },
-    })
+    // Use the auth hook that matches your API
+    const { form, mutate, isPending } = useForgotPassword()
 
-    const onSubmit = async (data) => {
-        try {
-            console.log('Forgot password data:', data)
-            // Here you would typically make an API call to send reset email
-            // For now, we'll just simulate a delay
-            await new Promise(resolve => setTimeout(resolve, 1000))
-            // Show success message or redirect
-        } catch (error) {
-            console.error('Forgot password error:', error)
-        }
+    const onSubmit = (data) => {
+        // Call the API using the auth hook
+        mutate(data)
     }
 
     return (
@@ -89,9 +72,9 @@ export default function ForgetPassword() {
                     <Button
                         type="submit"
                         className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg"
-                        disabled={form.formState.isSubmitting}
+                        disabled={isPending}
                     >
-                        {form.formState.isSubmitting ? 'Submitting...' : 'Submit Now'}
+                        {isPending ? 'Submitting...' : 'Submit Now'}
                     </Button>
                 </form>
             </Form>

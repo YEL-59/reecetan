@@ -1,39 +1,26 @@
-import { createContext, useContext, useEffect, useState } from "react"
+import { createContext, useContext, useEffect } from "react"
 
 const ThemeContext = createContext()
 
-export function ThemeProvider({ children, defaultTheme = "system", storageKey = "vite-ui-theme", ...props }) {
-  const [theme, setTheme] = useState(
-    () => localStorage.getItem(storageKey) || defaultTheme
-  )
-
+// Simplified Theme Provider - Light Mode Only
+export function ThemeProvider({ children, ...props }) {
   useEffect(() => {
     const root = window.document.documentElement
-    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)")
 
-    const applyTheme = (resolved) => {
-      root.classList.remove("light", "dark")
-      root.classList.add(resolved)
-      // Ensure native form controls and scrollbars match
-      root.style.colorScheme = resolved
-    }
+    // Always apply light theme
+    root.classList.remove("light", "dark")
+    root.classList.add("light")
+    root.style.colorScheme = "light"
 
-    if (theme === "system") {
-      const resolved = mediaQuery.matches ? "dark" : "light"
-      applyTheme(resolved)
-      const handler = (e) => applyTheme(e.matches ? "dark" : "light")
-      mediaQuery.addEventListener("change", handler)
-      return () => mediaQuery.removeEventListener("change", handler)
-    } else {
-      applyTheme(theme)
-    }
-  }, [theme])
+    // Remove any stored theme preferences
+    localStorage.removeItem("vite-ui-theme")
+  }, [])
 
   const value = {
-    theme,
-    setTheme: (theme) => {
-      localStorage.setItem(storageKey, theme)
-      setTheme(theme)
+    theme: "light",
+    setTheme: () => {
+      // No-op since we only support light mode
+      console.info("Theme is locked to light mode")
     },
   }
 

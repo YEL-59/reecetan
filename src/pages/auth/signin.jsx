@@ -1,12 +1,9 @@
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Eye, EyeOff } from 'lucide-react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
   Form,
   FormControl,
@@ -15,36 +12,26 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-
-const loginSchema = z.object({
-  email: z.string().email('Please enter a valid email address'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
-  rememberMe: z.boolean().optional(),
-})
+import { useSignIn } from '@/hooks/auth.hook'
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false)
   const [rememberMe, setRememberMe] = useState(false)
+  const location = useLocation()
 
-  const form = useForm({
-    resolver: zodResolver(loginSchema),
-    defaultValues: {
-      email: 'zsdhdhij@gmail.com',
-      password: '************',
-      rememberMe: false,
-    },
-  })
+  // Use the auth hook that matches your API
+  const { form, mutate, isPending } = useSignIn()
 
-  const onSubmit = async (data) => {
-    try {
-      console.log('Login data:', data)
-      // Here you would typically make an API call to authenticate
-      // For now, we'll just simulate a delay
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      // Redirect to dashboard after successful login
-    } catch (error) {
-      console.error('Login error:', error)
+  // Handle pre-filled email from email verification
+  useEffect(() => {
+    if (location.state?.email) {
+      form.setValue('email', location.state.email)
     }
+  }, [location.state?.email, form])
+
+  const onSubmit = (data) => {
+    // Call the API using the auth hook
+    mutate(data)
   }
 
   return (
@@ -55,6 +42,15 @@ export default function Login() {
         <p className="text-gray-600">
           Welcome Back, Please Enter your Details to Log in.
         </p>
+
+        {/* Success message from email verification */}
+        {location.state?.message && (
+          <div className="bg-green-50 border border-green-200 rounded-lg p-3 mt-4">
+            <p className="text-sm text-green-600 font-medium">
+              {location.state.message}
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Form */}
@@ -139,9 +135,9 @@ export default function Login() {
           <Button
             type="submit"
             className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg"
-            disabled={form.formState.isSubmitting}
+            disabled={isPending}
           >
-            {form.formState.isSubmitting ? 'Signing in...' : 'Log in'}
+            {isPending ? 'Signing in...' : 'Log in'}
           </Button>
 
           {/* Divider */}

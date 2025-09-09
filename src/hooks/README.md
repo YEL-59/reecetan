@@ -23,7 +23,7 @@ The auth hook system is already integrated into your app. TanStack Query is conf
 Make sure to set your API base URL:
 
 ```env
-VITE_API_BASE_URL=https://your-api-domain.com/api
+VITE_API_BASE_URL=https://reecetan.softvencefsd.xyz/api
 ```
 
 ## Usage

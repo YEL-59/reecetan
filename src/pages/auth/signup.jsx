@@ -1,6 +1,3 @@
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
 import { Link } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -15,46 +12,19 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-
-const registerSchema = z.object({
-  fullName: z.string().min(2, 'Full name must be at least 2 characters'),
-  email: z.string().email('Please enter a valid email address'),
-  password: z.string().min(8, 'Password must be at least 8 characters'),
-  confirmPassword: z.string(),
-  terms: z.boolean().refine((val) => val === true, {
-    message: 'You must accept the terms and conditions',
-  }),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ["confirmPassword"],
-})
+import { useSignUp } from '@/hooks/auth.hook'
 
 export default function Register() {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [termsAccepted, setTermsAccepted] = useState(false)
 
-  const form = useForm({
-    resolver: zodResolver(registerSchema),
-    defaultValues: {
-      fullName: '',
-      email: '',
-      password: '',
-      confirmPassword: '',
-      terms: false,
-    },
-  })
+  // Use the auth hook that matches your API
+  const { form, mutate, isPending } = useSignUp()
 
-  const onSubmit = async (data) => {
-    try {
-      console.log('Register data:', data)
-      // Here you would typically make an API call to register
-      // For now, we'll just simulate a delay
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      // Redirect to dashboard after successful registration
-    } catch (error) {
-      console.error('Registration error:', error)
-    }
+  const onSubmit = (data) => {
+    // Form data already matches API format
+    mutate(data)
   }
 
   return (
@@ -73,7 +43,7 @@ export default function Register() {
           {/* Full Name Field */}
           <FormField
             control={form.control}
-            name="fullName"
+            name="name"
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="text-[#1E1E1E] text-[18px] font-normal leading-none">
@@ -148,7 +118,7 @@ export default function Register() {
           {/* Confirm Password Field */}
           <FormField
             control={form.control}
-            name="confirmPassword"
+            name="password_confirmation"
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="text-[#1E1E1E] text-[18px] font-normal leading-none">
@@ -206,9 +176,9 @@ export default function Register() {
           <Button
             type="submit"
             className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg"
-            disabled={form.formState.isSubmitting}
+            disabled={isPending}
           >
-            {form.formState.isSubmitting ? 'Creating account...' : 'Sign Up'}
+            {isPending ? 'Creating account...' : 'Sign Up'}
           </Button>
 
           {/* Divider */}

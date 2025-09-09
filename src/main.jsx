@@ -13,8 +13,13 @@ import { QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { queryClient } from '@/lib/queryClient'
 import { Toaster } from 'react-hot-toast'
+import { useSessionActivity, useSessionWarning } from '@/hooks/useSessionActivity'
 
 function AppRoot() {
+  // Enable secure session management
+  useSessionActivity()
+  useSessionWarning()
+
   useEffect(() => {
     AOS.init({
       duration: 700,
@@ -42,7 +47,7 @@ function AppRoot() {
   return (
     <ReduxProvider store={store}>
       <QueryClientProvider client={queryClient}>
-        <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
+        <ThemeProvider>
           <CartProvider>
             <RouterProvider router={router} />
           </CartProvider>
@@ -53,9 +58,9 @@ function AppRoot() {
           toastOptions={{
             duration: 4000,
             style: {
-              background: 'var(--background)',
-              color: 'var(--foreground)',
-              border: '1px solid var(--border)',
+              background: '#ffffff',
+              color: '#1f2937',
+              border: '1px solid #e5e7eb',
             },
             success: {
               iconTheme: {

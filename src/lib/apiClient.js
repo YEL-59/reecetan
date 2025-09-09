@@ -7,7 +7,7 @@ export async function apiFetch(path, options = {}) {
   if (token) headers.set('Authorization', `Bearer ${token}`)
   headers.set('Content-Type', 'application/json')
 
-  const res = await fetch(`${import.meta.env.VITE_API_BASE_URL || ''}${path}`, {
+  const res = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'https://reecetan.softvencefsd.xyz/api'}${path}`, {
     ...options,
     headers,
   })

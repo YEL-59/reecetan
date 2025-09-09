@@ -30,7 +30,7 @@ import {
   SheetClose,
 } from "@/components/ui/sheet";
 import { useCart } from "@/contexts/cart-context";
-import { ThemeToggle } from "@/components/theme-toggle";
+// import { ThemeToggle } from "@/components/theme-toggle"; // Theme toggle removed - Light mode only
 
 const Navbar = () => {
   const location = useLocation();
@@ -96,7 +96,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-background border-b border-border shadow-sm">
+    <nav className="bg-white border-b border-gray-200 shadow-sm">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
@@ -117,8 +117,8 @@ const Navbar = () => {
                   key={link.to}
                   to={link.to}
                   className={`transition-colors ${isActive
-                    ? "text-foreground font-semibold"
-                    : "text-muted-foreground hover:text-foreground font-medium hover:font-semibold"
+                    ? "text-gray-900 font-semibold"
+                    : "text-gray-700 hover:text-gray-900 font-medium hover:font-semibold"
                     }`}
                 >
                   {link.label}
@@ -153,13 +153,13 @@ const Navbar = () => {
                   onOpenChange={setNotificationOpen}
                 >
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" className="relative">
-                      <Bell className="w-5 h-5" />
-                      {unreadCount > 0 && (
+                    <Button variant="ghost" size="icon" className="relative bg-gray-300 rounded-full hover:bg-gray-300">
+                      <Bell className="w-5 h-5 text-[#071431]" />
+                      {/* {unreadCount > 0 && (
                         <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                           {unreadCount}
                         </span>
-                      )}
+                      )} */}
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="w-80 p-0" align="end">
@@ -238,20 +238,20 @@ const Navbar = () => {
                   <DropdownMenuTrigger asChild>
                     <Button
                       variant="ghost"
-                      className="flex items-center space-x-2 rounded-lg"
+                      className="flex items-center space-x-2 rounded-lg bg-transparent hover:bg-transparent"
                     >
                       <img
                         src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=40&h=40&fit=crop&crop=face"
                         alt="Profile"
                         className="w-8 h-8 rounded-full object-cover"
                       />
-                      <span className="text-sm font-medium text-foreground">
+                      <span className="text-sm font-medium text-[#071431]">
                         Olivia Rhye
                       </span>
-                      <ChevronDown className="w-4 h-4 text-muted-foreground" />
+                      <ChevronDown className="w-4 h-4 text-[#071431]" />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent className="w-56" align="end">
+                  <DropdownMenuContent className="w-56 bg-white  text-[#071431]" align="end">
                     <DropdownMenuLabel>
                       <div className="flex items-center space-x-2">
                         <img
@@ -260,10 +260,10 @@ const Navbar = () => {
                           className="w-10 h-10 rounded-full object-cover"
                         />
                         <div>
-                          <p className="text-sm font-medium text-foreground">
+                          <p className="text-sm font-medium text-[#071431]">
                             Olivia Rhye
                           </p>
-                          <p className="text-xs text-muted-foreground">
+                          <p className="text-xs text-[#071431]">
                             olivia@untitledui.com
                           </p>
                         </div>
@@ -272,20 +272,20 @@ const Navbar = () => {
                     <DropdownMenuSeparator />
                     <DropdownMenuItem asChild>
                       <Link to="/dashboard" className="flex items-center gap-2">
-                        <Home className="w-4 h-4" />
+                        <Home className="w-4 h-4 text-[#071431]" />
                         Dashboard
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                      <Link to="/myaccount" className="flex items-center gap-2">
-                        <User className="w-4 h-4" />
+                      <Link to="/myaccount" className="flex items-center gap-2 ">
+                        <User className="w-4 h-4 text-[#071431]" />
                         My Account
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem className="flex items-center gap-2">
                       <Link to="/signin" className="flex items-center gap-2">
-                        <LogOut className="w-4 h-4" />
+                        <LogOut className="w-4 h-4 text-[#071431]" />
                         Log out
                       </Link>
                     </DropdownMenuItem>
@@ -294,9 +294,7 @@ const Navbar = () => {
               </>
             ) : (
               <div className="flex items-center space-x-4">
-                {/* Theme Toggle for non-authenticated users */}
-                <ThemeToggle />
-                <Link to="/login">
+                <Link to="/signin">
                   <Button variant="outline">Login</Button>
                 </Link>
                 <Link to="/register">

@@ -1,6 +1,3 @@
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
 import { Link } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -14,39 +11,18 @@ import {
     FormLabel,
     FormMessage,
 } from '@/components/ui/form'
-
-const resetPasswordSchema = z.object({
-    email: z.string().email('Please enter a valid email address'),
-    password: z.string().min(8, 'Password must be at least 8 characters'),
-    confirmPassword: z.string(),
-}).refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
-    path: ["confirmPassword"],
-})
+import { useResetPassword } from '@/hooks/auth.hook'
 
 export default function ResetPassword() {
     const [showPassword, setShowPassword] = useState(false)
     const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
-    const form = useForm({
-        resolver: zodResolver(resetPasswordSchema),
-        defaultValues: {
-            email: 'sdfdsgheh',
-            password: '************',
-            confirmPassword: '',
-        },
-    })
+    // Use the auth hook that matches your API
+    const { form, mutate, isResetting } = useResetPassword()
 
-    const onSubmit = async (data) => {
-        try {
-            console.log('Reset password data:', data)
-            // API call to reset password
-            await new Promise(resolve => setTimeout(resolve, 1000)) // Simulate API call
-            console.log('Password reset successfully')
-            // Redirect to login page or show success message
-        } catch (error) {
-            console.error('Password reset error:', error)
-        }
+    const onSubmit = (data) => {
+        // Call the API using the auth hook (includes name field as per your API)
+        mutate(data)
     }
 
     return (
@@ -71,6 +47,28 @@ export default function ResetPassword() {
             {/* Form */}
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                    {/* Name Field - Required by your API */}
+                    <FormField
+                        control={form.control}
+                        name="name"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel className="text-[#1E1E1E] text-[18px] font-normal leading-none">
+                                    Full Name
+                                </FormLabel>
+                                <FormControl>
+                                    <Input
+                                        type="text"
+                                        placeholder="Enter your full name"
+                                        className="bg-[#EDFCFF] p-4 rounded-full w-full focus-visible:ring-0 shadow-none mt-2 py-5"
+                                        {...field}
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+
                     {/* Email Field */}
                     <FormField
                         control={form.control}
@@ -159,9 +157,9 @@ export default function ResetPassword() {
                     <Button
                         type="submit"
                         className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg"
-                        disabled={form.formState.isSubmitting}
+                        disabled={isResetting}
                     >
-                        {form.formState.isSubmitting ? 'Resetting...' : 'Submit Now'}
+                        {isResetting ? 'Resetting...' : 'Submit Now'}
                     </Button>
                 </form>
             </Form>
