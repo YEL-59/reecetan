@@ -5,6 +5,13 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogClose,
+} from '@/components/ui/dialog'
 
 const COURSES = [
   'All Courses',
@@ -149,8 +156,8 @@ const TestimonialAll = () => {
     review: ''
   })
 
-  const filteredTestimonials = selectedCourse === 'All Courses' 
-    ? TESTIMONIALS 
+  const filteredTestimonials = selectedCourse === 'All Courses'
+    ? TESTIMONIALS
     : TESTIMONIALS.filter(t => t.course === selectedCourse)
 
   const handleSubmit = (e) => {
@@ -175,8 +182,8 @@ const TestimonialAll = () => {
 
         {/* Filter and Action Bar */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
-          <Select 
-            value={selectedCourse} 
+          <Select
+            value={selectedCourse}
             onChange={(e) => setSelectedCourse(e.target.value)}
             className="w-full sm:w-48"
           >
@@ -184,8 +191,8 @@ const TestimonialAll = () => {
               <SelectItem key={course} value={course}>{course}</SelectItem>
             ))}
           </Select>
-          
-          <Button 
+
+          <Button
             onClick={() => setIsModalOpen(true)}
             className="bg-primary hover:bg-primary/90 text-white px-6 py-2 rounded-lg"
           >
@@ -203,16 +210,16 @@ const TestimonialAll = () => {
                   <Star key={i} className="w-5 h-5 text-yellow-400 fill-yellow-400" />
                 ))}
               </div>
-              
+
               {/* Testimonial Text */}
               <p className="text-gray-700 mb-4 leading-relaxed">
                 {testimonial.text}
               </p>
-              
+
               {/* Author */}
               <div className="flex items-center gap-3">
-                <img 
-                  src={testimonial.avatar} 
+                <img
+                  src={testimonial.avatar}
                   alt={testimonial.name}
                   className="w-10 h-10 rounded-full object-cover"
                 />
@@ -227,20 +234,21 @@ const TestimonialAll = () => {
       </div>
 
       {/* Modal */}
-      {isModalOpen && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl max-w-md w-full p-6 relative">
-            {/* Close Button */}
-            <button 
-              onClick={() => setIsModalOpen(false)}
-              className="absolute top-4 right-4 p-2 hover:bg-gray-100 rounded-full"
-            >
-              <X className="w-5 h-5" />
-            </button>
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogContent className="max-w-md p-0">
+          {/* Header */}
+          <DialogHeader className="p-6 pb-0">
+            <div className="flex items-center justify-between">
+              <DialogTitle className="text-xl font-bold">Share Your Experience</DialogTitle>
+              <DialogClose className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+                <X className="w-5 h-5 text-gray-500" />
+              </DialogClose>
+            </div>
+          </DialogHeader>
 
-            {/* Modal Content */}
-            <h2 className="text-xl font-bold mb-6">Share Your Experience</h2>
-            
+          {/* Scrollable Content */}
+          <div className="max-h-[70vh] overflow-y-auto p-6">
+
             <form onSubmit={handleSubmit} className="space-y-4">
               {/* Name */}
               <div>
@@ -249,7 +257,7 @@ const TestimonialAll = () => {
                   id="name"
                   placeholder="Enter your name"
                   value={formData.name}
-                  onChange={(e) => setFormData({...formData, name: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   required
                 />
               </div>
@@ -257,9 +265,9 @@ const TestimonialAll = () => {
               {/* Course */}
               <div>
                 <Label htmlFor="course">Course</Label>
-                <Select 
-                  value={formData.course} 
-                  onChange={(e) => setFormData({...formData, course: e.target.value})}
+                <Select
+                  value={formData.course}
+                  onChange={(e) => setFormData({ ...formData, course: e.target.value })}
                   required
                 >
                   <SelectItem value="">Select course</SelectItem>
@@ -277,11 +285,11 @@ const TestimonialAll = () => {
                     <button
                       key={i}
                       type="button"
-                      onClick={() => setFormData({...formData, rating: i + 1})}
+                      onClick={() => setFormData({ ...formData, rating: i + 1 })}
                       className="p-1"
                     >
-                      <Star 
-                        className={`w-6 h-6 ${i < formData.rating ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'}`} 
+                      <Star
+                        className={`w-6 h-6 ${i < formData.rating ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'}`}
                       />
                     </button>
                   ))}
@@ -295,7 +303,7 @@ const TestimonialAll = () => {
                   id="review"
                   placeholder="Share your experience with the course..."
                   value={formData.review}
-                  onChange={(e) => setFormData({...formData, review: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, review: e.target.value })}
                   rows={4}
                   required
                 />
@@ -317,8 +325,8 @@ const TestimonialAll = () => {
               </div>
             </form>
           </div>
-        </div>
-      )}
+        </DialogContent>
+      </Dialog>
     </section>
   )
 }

@@ -48,7 +48,7 @@ export default function CourseCard({ course, onEnroll, onOpen, trigger = 'hover'
 
 	return (
 		<div
-			className="relative h-64 rounded-xl overflow-hidden shadow-md cursor-pointer"
+			className="relative h-64 rounded-xl overflow-hidden shadow-md cursor-pointer "
 			onMouseEnter={handleMouseEnter}
 			onMouseLeave={handleMouseLeave}
 			onClick={handleClick}

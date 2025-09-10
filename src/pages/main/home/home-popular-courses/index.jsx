@@ -5,12 +5,12 @@ import CourseModal from '@/components/course/CourseModal'
 import { useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import {
-	Sheet,
-	SheetContent,
-	SheetHeader,
-	SheetTitle,
-	SheetTrigger,
-} from '@/components/ui/sheet'
+	Dialog,
+	DialogContent,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger,
+} from '@/components/ui/dialog'
 
 const ALL_TABS = [
 	'All',
@@ -92,7 +92,7 @@ const Tab = ({ label, active, onClick }) => (
 const HomePopularCourses = () => {
 	const [activeTab, setActiveTab] = useState('All')
 	const [openCourse, setOpenCourse] = useState(null)
-	const [isSheetOpen, setIsSheetOpen] = useState(false)
+	const [isDialogOpen, setIsDialogOpen] = useState(false)
 	const navigate = useNavigate()
 
 	const courses = useMemo(() => seedCourses, [])
@@ -129,48 +129,50 @@ const HomePopularCourses = () => {
 
 				{/* Mobile: View All Button */}
 				<div className="md:hidden flex justify-center mb-8">
-					<Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-						<SheetTrigger asChild>
+					<Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+						<DialogTrigger asChild>
 							<Button className="bg-primary hover:bg-primary/90 text-white px-8 py-3 rounded-full">
 								View All Courses
 							</Button>
-						</SheetTrigger>
-						<SheetContent side="bottom" className="h-[80vh] overflow-y-auto">
-							<SheetHeader className="mb-6">
-								<SheetTitle className="text-2xl font-bold text-center">
+						</DialogTrigger>
+						<DialogContent className="max-w-4xl max-h-[80vh] p-0">
+							<DialogHeader className="p-6 pb-0">
+								<DialogTitle className="text-2xl font-bold text-center">
 									Popular Courses
-								</SheetTitle>
-							</SheetHeader>
+								</DialogTitle>
+							</DialogHeader>
 
-							{/* Mobile Tabs in Sheet */}
-							<div className="flex flex-wrap gap-2 justify-center mb-6">
-								{ALL_TABS.map((label) => (
-									<Tab key={label} label={label} active={activeTab === label} onClick={() => setActiveTab(label)} />
-								))}
-							</div>
+							<div className="overflow-y-auto max-h-[60vh] p-6">
+								{/* Mobile Tabs in Dialog */}
+								<div className="flex flex-wrap gap-2 justify-center mb-6">
+									{ALL_TABS.map((label) => (
+										<Tab key={label} label={label} active={activeTab === label} onClick={() => setActiveTab(label)} />
+									))}
+								</div>
 
-							{/* Mobile Course Grid in Sheet */}
-							<div className="grid grid-cols-1 gap-4 pb-6">
-								{filtered.map((c, idx) => (
-									<div key={c.id}>
-										<CourseCard
-											course={c}
-											onEnroll={enroll}
-											onOpen={(course) => {
-												setOpenCourse(course)
-												setIsSheetOpen(false)
-											}}
-											trigger="click"
-										/>
-									</div>
-								))}
+								{/* Mobile Course Grid in Dialog */}
+								<div className="grid grid-cols-1 gap-4 pb-6">
+									{filtered.map((c, idx) => (
+										<div key={c.id}>
+											<CourseCard
+												course={c}
+												onEnroll={enroll}
+												onOpen={(course) => {
+													setOpenCourse(course)
+													setIsDialogOpen(false)
+												}}
+												trigger="click"
+											/>
+										</div>
+									))}
+								</div>
 							</div>
-						</SheetContent>
-					</Sheet>
+						</DialogContent>
+					</Dialog>
 				</div>
 
 				{/* Desktop: Grid */}
-				<div className="hidden md:grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+				<div className="hidden md:grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 ">
 					{filtered.slice(0, 6).map((c, idx) => (
 						<div key={c.id} data-aos="fade-up" data-aos-delay={idx * 50}>
 							<CourseCard course={c} onEnroll={enroll} onOpen={(course) => setOpenCourse(course)} trigger="click" />

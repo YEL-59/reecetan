@@ -1,13 +1,17 @@
 import { X, Star, CheckCircle2, PlayCircle } from 'lucide-react'
 import CourseCard from '@/components/course/CourseCard'
 import { Button } from '@/components/ui/button'
-import { motion, AnimatePresence } from 'framer-motion'
 import { useState } from 'react'
 import OrderSummaryModal from '@/components/OrderSummaryModal'
 import { useNavigate } from 'react-router-dom'
+import {
+	Dialog,
+	DialogContent,
+	DialogClose,
+} from '@/components/ui/dialog'
 
 export default function CourseModal({ course, open, onClose, onBuy }) {
-	if (!open || !course) return null
+	if (!course) return null
 	const { title, image, rating, students, price } = course
 	const [showOrderModal, setShowOrderModal] = useState(false)
 	const navigate = useNavigate()
@@ -24,11 +28,7 @@ export default function CourseModal({ course, open, onClose, onBuy }) {
 		navigate('/checkout', { state: { orderData } })
 	}
 
-	const handleModalClose = (e) => {
-		if (e) {
-			e.stopPropagation()
-			e.preventDefault()
-		}
+	const handleModalClose = () => {
 		setShowOrderModal(false)
 	}
 
@@ -65,142 +65,120 @@ export default function CourseModal({ course, open, onClose, onBuy }) {
 	]
 
 	return (
-		<AnimatePresence>
-			{open && (
-				<motion.div className="fixed inset-0 z-50" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-					{/* Backdrop */}
-					<motion.div
-						className="absolute inset-0 bg-black/60"
-						onClick={onClose}
-						initial={{ opacity: 0 }}
-						animate={{ opacity: 1 }}
-						exit={{ opacity: 0 }}
-					/>
+		<Dialog open={open} onOpenChange={onClose}>
+			<DialogContent className="max-w-4xl max-h-[90vh] p-0">
+				{/* Header image - Fixed */}
+				<div className="relative h-48 sm:h-56 flex-shrink-0">
+					<img src={image} alt={title} className="absolute inset-0 w-full h-full object-cover" />
+					<div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/85 via-black/50 to-transparent" />
+					<DialogClose className="absolute top-3 right-3 w-9 h-9 rounded-full bg-black/50 hover:bg-black/60 flex items-center justify-center text-white transition-colors">
+						<X className="w-5 h-5" />
+					</DialogClose>
 
-					{/* Modal Container with Custom Scrolling */}
-					<div className="absolute inset-0 flex items-center justify-center p-4">
-						<motion.div
-							className="w-full max-w-5xl max-h-[90vh] bg-white rounded-2xl shadow-xl overflow-hidden flex flex-col"
-							initial={{ y: 24, scale: 0.98 }}
-							animate={{ y: 0, scale: 1 }}
-							exit={{ y: 24, scale: 0.98 }}
-							transition={{ type: 'spring', stiffness: 240, damping: 24 }}
-						>
-							{/* Header image - Fixed */}
-							<div className="relative h-52 sm:h-64 md:h-72 flex-shrink-0">
-								<img src={image} alt={title} className="absolute inset-0 w-full h-full object-cover" />
-								<div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/85 via-black/50 to-transparent" />
-								<button onClick={onClose} className="absolute top-3 right-3 w-9 h-9 rounded-full bg-black/50 hover:bg-black/60 flex items-center justify-center text-white">
-									<X className="w-5 h-5" />
-								</button>
-
-								<div className="absolute inset-x-0 bottom-0 p-4 sm:p-6 text-white">
-									<h3 className="text-base sm:text-lg md:text-xl font-semibold">{title}</h3>
-									<div className="mt-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-sm">
-										<div className="flex items-center gap-2">
-											<Star className="w-4 h-4 text-amber-400 fill-amber-400" />
-											<span className="font-medium">{rating.toFixed(1)}</span>
-											<span className="text-white/80">{students.toLocaleString()} Students</span>
-										</div>
-										<div className="flex items-center gap-3">
-											<span className="font-semibold">${price}</span>
-											<Button onClick={handleBuyNow} className="rounded-full bg-primary hover:bg-primary/90 h-9 px-5">Buy Now</Button>
-										</div>
-									</div>
-								</div>
+					<div className="absolute inset-x-0 bottom-0 p-4 sm:p-6 text-white">
+						<h3 className="text-base sm:text-lg md:text-xl font-semibold">{title}</h3>
+						<div className="mt-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-sm">
+							<div className="flex items-center gap-2">
+								<Star className="w-4 h-4 text-amber-400 fill-amber-400" />
+								<span className="font-medium">{rating.toFixed(1)}</span>
+								<span className="text-white/80">{students.toLocaleString()} Students</span>
 							</div>
-
-							{/* Body - Scrollable */}
-							<div className="flex-1 scrollbar-blue modal-scroll-container">
-								<div className="p-4 sm:p-6 pb-8 space-y-8">
-									<p className="text-sm sm:text-base text-gray-600">
-										Master essential nursing skills and prepare for your CNA certification with comprehensive training covering patient care, safety protocols, and professionalism in healthcare environments.
-									</p>
-
-									{/* What you'll learn */}
-									<div>
-										<h4 className="font-semibold mb-3">What You'll Learn</h4>
-										<div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-gray-700">
-											<p className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-primary" /> Provide basic patient care and comfort</p>
-											<p className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-primary" /> Provide basic patient care and comfort</p>
-											<p className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-primary" /> Provide basic patient care and comfort</p>
-											<p className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-primary" /> Provide basic patient care and comfort</p>
-										</div>
-									</div>
-
-									{/* Curriculum */}
-									<div>
-										<h4 className="font-semibold mb-3">Course Curriculum</h4>
-										<div className="space-y-3">
-											{modules.map((m, idx) => (
-												<details key={idx} className="group rounded-lg bg-[#0A0F1E] text-white overflow-hidden">
-													<summary className="cursor-pointer list-none p-4 flex items-center justify-between">
-														<span>{m.title}</span>
-														<span className="text-xs text-white/70">{m.duration}</span>
-													</summary>
-													<div className="grid grid-rows-[0fr] group-open:grid-rows-[1fr] transition-all duration-300">
-														<div className="overflow-hidden">
-															<ul className="px-4 pb-4 space-y-2 text-sm">
-																{m.lessons.map((l, i) => (
-																	<li key={i} className="flex items-center justify-between text-white/90">
-																		<span className="flex items-center gap-2"><PlayCircle className="w-4 h-4 text-primary" /> {l.title}</span>
-																		<span className="text-xs text-white/60">{l.duration}</span>
-																	</li>
-																))}
-															</ul>
-														</div>
-													</div>
-												</details>
-											))}
-										</div>
-									</div>
-
-									{/* Reviews */}
-									<div>
-										<h4 className="font-semibold mb-3">Student Reviews</h4>
-										<div className="space-y-3">
-											<div className="rounded-lg bg-[#0A0F1E] text-white p-4">
-												<div className="flex items-center gap-1 text-amber-400 mb-1">
-													{Array.from({ length: 5 }).map((_, i) => (
-														<Star key={i} className="w-4 h-4 fill-amber-400" />
-													))}
-												</div>
-												<p className="text-sm text-white/90">Great preparation for the CNA exam. Passed on my first try thanks to this comprehensive training program.</p>
-												<p className="mt-2 text-xs text-white/60">James Simon</p>
-											</div>
-											<div className="rounded-lg bg-[#0A0F1E] text-white p-4">
-												<div className="flex items-center gap-1 text-amber-400 mb-1">
-													{Array.from({ length: 5 }).map((_, i) => (
-														<Star key={i} className="w-4 h-4 fill-amber-400" />
-													))}
-												</div>
-												<p className="text-sm text-white/90">Great preparation for the CNA exam. Passed on my first try thanks to this comprehensive training program.</p>
-												<p className="mt-2 text-xs text-white/60">Alena Stark</p>
-											</div>
-										</div>
-									</div>
-
-									{/* More like this */}
-									<div>
-										<h4 className="font-semibold mb-3">More Like This</h4>
-										<div className="max-w-xs">
-											<CourseCard course={course} onEnroll={() => { }} />
-										</div>
-									</div>
-								</div>
+							<div className="flex items-center gap-3">
+								<span className="font-semibold">${price}</span>
+								<Button onClick={handleBuyNow} className="rounded-full bg-primary hover:bg-primary/90 h-9 px-5 transition-colors">Buy Now</Button>
 							</div>
-
-							{/* Order Summary Modal */}
-							<OrderSummaryModal
-								course={course}
-								isOpen={showOrderModal}
-								onClose={handleModalClose}
-								onPaymentNow={handlePaymentNow}
-							/>
-						</motion.div>
+						</div>
 					</div>
-				</motion.div>
-			)}
-		</AnimatePresence>
+				</div>
+
+				{/* Body - Scrollable */}
+				<div className="flex-1 overflow-y-auto bg-white max-h-[50vh]">
+					<div className="p-4 sm:p-6 pb-8 space-y-8">
+						<p className="text-sm sm:text-base text-gray-600">
+							Master essential nursing skills and prepare for your CNA certification with comprehensive training covering patient care, safety protocols, and professionalism in healthcare environments.
+						</p>
+
+						{/* What you'll learn */}
+						<div>
+							<h4 className="font-semibold mb-3">What You'll Learn</h4>
+							<div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-gray-700">
+								<p className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-primary" /> Provide basic patient care and comfort</p>
+								<p className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-primary" /> Provide basic patient care and comfort</p>
+								<p className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-primary" /> Provide basic patient care and comfort</p>
+								<p className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-primary" /> Provide basic patient care and comfort</p>
+							</div>
+						</div>
+
+						{/* Curriculum */}
+						<div>
+							<h4 className="font-semibold mb-3">Course Curriculum</h4>
+							<div className="space-y-3">
+								{modules.map((m, idx) => (
+									<details key={idx} className="group rounded-lg bg-[#0A0F1E] text-white overflow-hidden">
+										<summary className="cursor-pointer list-none p-4 flex items-center justify-between">
+											<span>{m.title}</span>
+											<span className="text-xs text-white/70">{m.duration}</span>
+										</summary>
+										<div className="grid grid-rows-[0fr] group-open:grid-rows-[1fr] transition-all duration-300">
+											<div className="overflow-hidden">
+												<ul className="px-4 pb-4 space-y-2 text-sm">
+													{m.lessons.map((l, i) => (
+														<li key={i} className="flex items-center justify-between text-white/90">
+															<span className="flex items-center gap-2"><PlayCircle className="w-4 h-4 text-primary" /> {l.title}</span>
+															<span className="text-xs text-white/60">{l.duration}</span>
+														</li>
+													))}
+												</ul>
+											</div>
+										</div>
+									</details>
+								))}
+							</div>
+						</div>
+
+						{/* Reviews */}
+						<div>
+							<h4 className="font-semibold mb-3">Student Reviews</h4>
+							<div className="space-y-3">
+								<div className="rounded-lg bg-[#0A0F1E] text-white p-4">
+									<div className="flex items-center gap-1 text-amber-400 mb-1">
+										{Array.from({ length: 5 }).map((_, i) => (
+											<Star key={i} className="w-4 h-4 fill-amber-400" />
+										))}
+									</div>
+									<p className="text-sm text-white/90">Great preparation for the CNA exam. Passed on my first try thanks to this comprehensive training program.</p>
+									<p className="mt-2 text-xs text-white/60">James Simon</p>
+								</div>
+								<div className="rounded-lg bg-[#0A0F1E] text-white p-4">
+									<div className="flex items-center gap-1 text-amber-400 mb-1">
+										{Array.from({ length: 5 }).map((_, i) => (
+											<Star key={i} className="w-4 h-4 fill-amber-400" />
+										))}
+									</div>
+									<p className="text-sm text-white/90">Great preparation for the CNA exam. Passed on my first try thanks to this comprehensive training program.</p>
+									<p className="mt-2 text-xs text-white/60">Alena Stark</p>
+								</div>
+							</div>
+						</div>
+
+						{/* More like this */}
+						<div>
+							<h4 className="font-semibold mb-3">More Like This</h4>
+							<div className="max-w-xs">
+								<CourseCard course={course} onEnroll={() => { }} />
+							</div>
+						</div>
+					</div>
+				</div>
+
+				{/* Order Summary Modal */}
+				<OrderSummaryModal
+					course={course}
+					isOpen={showOrderModal}
+					onClose={handleModalClose}
+					onPaymentNow={handlePaymentNow}
+				/>
+			</DialogContent>
+		</Dialog>
 	)
 }

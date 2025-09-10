@@ -35,6 +35,8 @@
   /* Dark mode removed - Light mode only */
 }
 
+/* Custom styles for react-hot-toast */
+
 @layer base {
   * {
     @apply border-border;
@@ -132,4 +134,38 @@
 /* Hide scrollbar for Chrome, Safari and Opera */
 .scrollbar-hidden::-webkit-scrollbar {
   display: none;
+}
+
+/* Shadcn Dialog customizations - Maximum z-index */
+.dialog-overlay {
+  z-index: 2147483647 !important;
+  position: fixed !important;
+  inset: 0 !important;
+}
+
+.dialog-content {
+  z-index: 2147483647 !important;
+  position: relative !important;
+}
+
+/* Ensure dialog appears above all content */
+[data-dialog-overlay] {
+  z-index: 2147483647 !important;
+  position: fixed !important;
+  inset: 0 !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+}
+
+[data-dialog-content] {
+  z-index: 2147483647 !important;
+  position: relative !important;
+}
+
+/* Force dialog backdrop to cover everything */
+.dialog-overlay {
+  background: rgba(0, 0, 0, 0.6) !important;
+  backdrop-filter: blur(4px) !important;
 }

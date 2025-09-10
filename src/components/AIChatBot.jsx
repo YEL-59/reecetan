@@ -59,19 +59,19 @@ const AIChatBot = () => {
                 <img src={aiChatIcon} alt="AI Chat" className="w-8 h-8" />
             </button>
 
-            {/* Chat Modal */}
+            {/* Floating Chat Modal */}
             {isOpen && (
-                <div className="fixed inset-0 z-50 flex items-end justify-end p-4">
+                <div className="fixed bottom-20 right-4 sm:right-6 z-50">
                     {/* Backdrop */}
                     <div
-                        className="absolute inset-0 bg-black/20"
+                        className="fixed inset-0 bg-black/20 backdrop-blur-sm"
                         onClick={() => setIsOpen(false)}
                     />
 
                     {/* Chat Window */}
-                    <div className="relative w-full max-w-md h-96 bg-white rounded-lg shadow-xl flex flex-col">
+                    <div className="relative w-72 sm:w-80 h-96 bg-white rounded-xl shadow-2xl border border-gray-200 flex flex-col animate-in slide-in-from-bottom-2 duration-300">
                         {/* Header */}
-                        <div className="bg-blue-600 text-white p-4 rounded-t-lg flex items-center justify-between">
+                        <div className="bg-blue-600 text-white p-4 flex items-center justify-between flex-shrink-0 rounded-t-xl">
                             <div className="flex items-center gap-2">
                                 <Bot className="w-5 h-5" />
                                 <div>
@@ -88,14 +88,14 @@ const AIChatBot = () => {
                         </div>
 
                         {/* Messages */}
-                        <div className="flex-1 p-4 overflow-y-auto space-y-4">
+                        <div className="flex-1 p-4 overflow-y-auto space-y-4 bg-white">
                             {messages.map((message) => (
                                 <div
                                     key={message.id}
                                     className={`flex ${message.type === 'outgoing' ? 'justify-end' : 'justify-start'}`}
                                 >
                                     <div
-                                        className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${message.type === 'outgoing'
+                                        className={`max-w-xs px-4 py-2 rounded-lg ${message.type === 'outgoing'
                                             ? 'bg-blue-600 text-white'
                                             : 'bg-gray-100 text-gray-800'
                                             }`}
@@ -111,7 +111,7 @@ const AIChatBot = () => {
                         </div>
 
                         {/* Input */}
-                        <div className="p-4 border-t">
+                        <div className="p-4 border-t bg-white flex-shrink-0 rounded-b-xl">
                             <div className="flex items-center gap-2">
                                 <input
                                     type="text"
@@ -130,6 +130,9 @@ const AIChatBot = () => {
                                 </Button>
                             </div>
                         </div>
+
+                        {/* Arrow pointing to chat button */}
+                        <div className="absolute -bottom-2 right-8 w-4 h-4 bg-white border-r border-b border-gray-200 transform rotate-45"></div>
                     </div>
                 </div>
             )}
