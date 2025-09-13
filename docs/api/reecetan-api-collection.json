@@ -1,10 +1,10 @@
 {
 	"info": {
-		"_postman_id": "3f6f958c-2a08-47e1-a128-feac162f3a3a",
+		"_postman_id": "6ff2f395-1635-453a-acdb-edfbe6496e68",
 		"name": "Reccent",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "39143077",
-		"_collection_link": "https://reecent.postman.co/workspace/reecent~855a58c2-9e58-45af-aba7-3e4aa5409f41/collection/39143077-3f6f958c-2a08-47e1-a128-feac162f3a3a?action=share&source=collection_link&creator=39143077"
+		"_collection_link": "https://reecent.postman.co/workspace/reecent~855a58c2-9e58-45af-aba7-3e4aa5409f41/collection/48219281-6ff2f395-1635-453a-acdb-edfbe6496e68?action=share&source=collection_link&creator=39143077"
 	},
 	"item": [
 		{
@@ -17,7 +17,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"sadaf\"\r\n}",
+							"raw": "{\r\n  \"name\": \"lizu Khan\",\r\n  \"email\": \"lizukhan1@example.com\",\r\n  \"description\": \"This is a demo contact.\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -25,16 +25,13 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8000/api/contact-us/11",
-							"protocol": "http",
+							"raw": "{{base_url}}/contact-us/1",
 							"host": [
-								"localhost"
+								"{{base_url}}"
 							],
-							"port": "8000",
 							"path": [
-								"api",
 								"contact-us",
-								"11"
+								"1"
 							]
 						}
 					},
@@ -55,16 +52,13 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8000/api/contact-us/7",
-							"protocol": "http",
+							"raw": "{{base_url}}/contact-us/1",
 							"host": [
-								"localhost"
+								"{{base_url}}"
 							],
-							"port": "8000",
 							"path": [
-								"api",
 								"contact-us",
-								"7"
+								"1"
 							]
 						}
 					},
@@ -77,7 +71,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"name\": \"lizu Doe\",\r\n  \"email\": \"lizu@example.com\",\r\n  \"contact_number\": \"01768198718\",\r\n  \"image\": \"contact_us/zyj1234.jpg\",\r\n  \"address\": \"Dhaka, Bangladesh\",\r\n  \"description\": \"This is a demo contact.\"\r\n}",
+							"raw": "{\r\n  \"name\": \"lizu Doe\",\r\n  \"email\": \"lizu333@example.com\",\r\n  \"contact_number\": \"01768198718\",\r\n  \"image\": \"contact_us/zyj1234.jpg\",\r\n  \"address\": \"Dhaka, Bangladesh\",\r\n  \"description\": \"This is a demo contact.\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -85,14 +79,11 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8000/api/contact-us",
-							"protocol": "http",
+							"raw": "{{base_url}}/contact-us",
 							"host": [
-								"localhost"
+								"{{base_url}}"
 							],
-							"port": "8000",
 							"path": [
-								"api",
 								"contact-us"
 							]
 						}
@@ -112,16 +103,13 @@
 							"raw": "{\r\n  \"name\": \"lizu Doe\",\r\n  \"email\": \"lizu@example.com\",\r\n  \"contact_number\": \"01768198718\",\r\n  \"image\": \"contact_us/zyj1234.jpg\",\r\n  \"address\": \"Dhaka, Bangladesh\",\r\n  \"description\": \"This is a demo contact.\"\r\n}"
 						},
 						"url": {
-							"raw": "http://localhost:8000/api/contact-us/2",
-							"protocol": "http",
+							"raw": "{{base_url}}/contact-us/1",
 							"host": [
-								"localhost"
+								"{{base_url}}"
 							],
-							"port": "8000",
 							"path": [
-								"api",
 								"contact-us",
-								"2"
+								"1"
 							]
 						}
 					},
@@ -140,14 +128,11 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "http://localhost:8000/api/contact-us/",
-							"protocol": "http",
+							"raw": "{{base_url}}/contact-us/",
 							"host": [
-								"localhost"
+								"{{base_url}}"
 							],
-							"port": "8000",
 							"path": [
-								"api",
 								"contact-us",
 								""
 							]
@@ -316,14 +301,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8000/api/subscriptions",
-							"protocol": "http",
+							"raw": "{{base_url}}/subscriptions",
 							"host": [
-								"localhost"
+								"{{base_url}}"
 							],
-							"port": "8000",
 							"path": [
-								"api",
 								"subscriptions"
 							]
 						}
@@ -345,14 +327,11 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8000/api/subscriptions/1",
-							"protocol": "http",
+							"raw": "{{base_url}}/subscriptions/1",
 							"host": [
-								"localhost"
+								"{{base_url}}"
 							],
-							"port": "8000",
 							"path": [
-								"api",
 								"subscriptions",
 								"1"
 							]
@@ -370,14 +349,11 @@
 							"raw": "{\r\n    \"email\" : \"lizukhan@gmail.com\"\r\n}"
 						},
 						"url": {
-							"raw": "http://localhost:8000/api/subscriptions/1",
-							"protocol": "http",
+							"raw": "{{base_url}}/subscriptions/1",
 							"host": [
-								"localhost"
+								"{{base_url}}"
 							],
-							"port": "8000",
 							"path": [
-								"api",
 								"subscriptions",
 								"1"
 							]
@@ -400,14 +376,11 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8000/api/subscriptions",
-							"protocol": "http",
+							"raw": "{{base_url}}/subscriptions",
 							"host": [
-								"localhost"
+								"{{base_url}}"
 							],
-							"port": "8000",
 							"path": [
-								"api",
 								"subscriptions"
 							]
 						}
@@ -420,15 +393,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8000/api/subscriptions",
-							"protocol": "http",
+							"raw": "{{base_url}}/subscriptions/1",
 							"host": [
-								"localhost"
+								"{{base_url}}"
 							],
-							"port": "8000",
 							"path": [
-								"api",
-								"subscriptions"
+								"subscriptions",
+								"1"
 							]
 						}
 					},
@@ -454,16 +425,13 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8000/api/ratings/4",
-							"protocol": "http",
+							"raw": "{{base_url}}/ratings/1",
 							"host": [
-								"localhost"
+								"{{base_url}}"
 							],
-							"port": "8000",
 							"path": [
-								"api",
 								"ratings",
-								"4"
+								"1"
 							]
 						}
 					},
@@ -479,14 +447,11 @@
 							"raw": "{\r\n  \"name\": \"Web Development\",\r\n  \"description\": \"Learn HTML, CSS, JS\"\r\n}"
 						},
 						"url": {
-							"raw": "http://localhost:8000/api/ratings/1",
-							"protocol": "http",
+							"raw": "{{base_url}}/ratings/1",
 							"host": [
-								"localhost"
+								"{{base_url}}"
 							],
-							"port": "8000",
 							"path": [
-								"api",
 								"ratings",
 								"1"
 							]
@@ -507,14 +472,11 @@
 							"raw": "{\r\n  \"name\": \"Web Development\",\r\n  \"description\": \"Learn HTML, CSS, JS\"\r\n}"
 						},
 						"url": {
-							"raw": "http://localhost:8000/api/ratings/1",
-							"protocol": "http",
+							"raw": "{{base_url}}/ratings/1",
 							"host": [
-								"localhost"
+								"{{base_url}}"
 							],
-							"port": "8000",
 							"path": [
-								"api",
 								"ratings",
 								"1"
 							]
@@ -537,14 +499,11 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8000/api/ratings",
-							"protocol": "http",
+							"raw": "{{base_url}}/ratings",
 							"host": [
-								"localhost"
+								"{{base_url}}"
 							],
-							"port": "8000",
 							"path": [
-								"api",
 								"ratings"
 							]
 						}
@@ -564,14 +523,11 @@
 							"raw": "{\r\n  \"name\": \"Web Development\",\r\n  \"description\": \"Learn HTML, CSS, JS\"\r\n}"
 						},
 						"url": {
-							"raw": "http://localhost:8000/api/ratings",
-							"protocol": "http",
+							"raw": "{{base_url}}/ratings",
 							"host": [
-								"localhost"
+								"{{base_url}}"
 							],
-							"port": "8000",
 							"path": [
-								"api",
 								"ratings"
 							]
 						}
@@ -590,7 +546,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"title\": \"React Beginner Course\",\r\n  \"description\": \"React Laravel step by step\",\r\n  \"price\": 49.99,\r\n  \"level\": \"Beginner\",\r\n  \"duration\": \"10 hours\",\r\n  \"language\": \"English\",\r\n  \"user_id\": 1,\r\n  \"rating_id\": 4,\r\n  \"category_id\": 1,\r\n  \"created_by\": 1,\r\n  \"updated_by\": 1\r\n}",
+							"raw": "{\r\n  \"title\": \"React Beginner Course\",\r\n  \"description\": \"React Laravel step by step\",\r\n  \"price\": 50.99,\r\n  \"level\": \"Beginner\",\r\n  \"duration\": \"10 hours\",\r\n  \"language\": \"English\",\r\n  \"user_id\": 1,\r\n  \"rating_id\": 1,\r\n  \"category_id\": 1,\r\n  \"created_by\": 1,\r\n  \"updated_by\": 1\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -598,14 +554,11 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8000/api/online-courses/1",
-							"protocol": "http",
+							"raw": "{{base_url}}/online-courses/1",
 							"host": [
-								"localhost"
+								"{{base_url}}"
 							],
-							"port": "8000",
 							"path": [
-								"api",
 								"online-courses",
 								"1"
 							]
@@ -626,15 +579,13 @@
 							"raw": "{\r\n  \"title\": \"Laravel Beginner Course\",\r\n  \"description\": \"Learn Laravel step by step\",\r\n  \"price\": 49.99,\r\n  \"level\": \"Beginner\",\r\n  \"duration\": \"10 hours\",\r\n  \"language\": \"English\",\r\n  \"user_id\": 1,\r\n  \"rating_id\": 4,\r\n  \"category_id\": 1,\r\n  \"created_by\": 1,\r\n  \"updated_by\": 1\r\n}"
 						},
 						"url": {
-							"raw": "http://localhost:8000/api/online-courses",
-							"protocol": "http",
+							"raw": "{{base_url}}/online-courses/1",
 							"host": [
-								"localhost"
+								"{{base_url}}"
 							],
-							"port": "8000",
 							"path": [
-								"api",
-								"online-courses"
+								"online-courses",
+								"1"
 							]
 						}
 					},
@@ -653,15 +604,13 @@
 							"raw": "{\r\n  \"title\": \"Laravel Beginner Course\",\r\n  \"description\": \"Learn Laravel step by step\",\r\n  \"price\": 49.99,\r\n  \"level\": \"Beginner\",\r\n  \"duration\": \"10 hours\",\r\n  \"language\": \"English\",\r\n  \"user_id\": 1,\r\n  \"rating_id\": 4,\r\n  \"category_id\": 1,\r\n  \"created_by\": 1,\r\n  \"updated_by\": 1\r\n}"
 						},
 						"url": {
-							"raw": "http://localhost:8000/api/online-courses",
-							"protocol": "http",
+							"raw": "{{base_url}}/online-courses/1",
 							"host": [
-								"localhost"
+								"{{base_url}}"
 							],
-							"port": "8000",
 							"path": [
-								"api",
-								"online-courses"
+								"online-courses",
+								"1"
 							]
 						}
 					},
@@ -673,7 +622,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": ""
+							"raw": "{{base_url}}/online-courses/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"online-courses",
+								"1"
+							]
 						}
 					},
 					"response": []
@@ -685,7 +641,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"title\": \"Laravel Beginner Course\",\r\n  \"description\": \"Learn Laravel step by step\",\r\n  \"price\": 49.99,\r\n  \"level\": \"Beginner\",\r\n  \"duration\": \"10 hours\",\r\n  \"language\": \"English\",\r\n  \"user_id\": 1,\r\n  \"rating_id\": 4,\r\n  \"category_id\": 1,\r\n  \"created_by\": 1,\r\n  \"updated_by\": 1\r\n}",
+							"raw": "{\r\n  \"title\": \"Laravel Beginner Course\",\r\n  \"description\": \"Learn Laravel step by step\",\r\n  \"price\": 49.99,\r\n  \"level\": \"Beginner\",\r\n  \"duration\": \"10 hours\",\r\n  \"language\": \"English\",\r\n  \"user_id\": 1,\r\n  \"rating_id\": 1,\r\n  \"category_id\": 1,\r\n  \"created_by\": 1,\r\n  \"updated_by\": 1\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -693,14 +649,11 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8000/api/online-courses",
-							"protocol": "http",
+							"raw": "{{base_url}}/online-courses",
 							"host": [
-								"localhost"
+								"{{base_url}}"
 							],
-							"port": "8000",
 							"path": [
-								"api",
 								"online-courses"
 							]
 						}
@@ -718,14 +671,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8000/api/categories",
-							"protocol": "http",
+							"raw": "{{base_url}}/categories",
 							"host": [
-								"localhost"
+								"{{base_url}}"
 							],
-							"port": "8000",
 							"path": [
-								"api",
 								"categories"
 							]
 						}
@@ -747,14 +697,11 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8000/api/categories",
-							"protocol": "http",
+							"raw": "{{base_url}}/categories",
 							"host": [
-								"localhost"
+								"{{base_url}}"
 							],
-							"port": "8000",
 							"path": [
-								"api",
 								"categories"
 							]
 						}
@@ -774,15 +721,13 @@
 							"raw": "{\r\n  \"name\": \"Web Development\",\r\n  \"description\": \"Learn HTML, CSS, JS\"\r\n}"
 						},
 						"url": {
-							"raw": "http://localhost:8000/api/categories",
-							"protocol": "http",
+							"raw": "{{base_url}}/categories/2",
 							"host": [
-								"localhost"
+								"{{base_url}}"
 							],
-							"port": "8000",
 							"path": [
-								"api",
-								"categories"
+								"categories",
+								"2"
 							]
 						}
 					},
@@ -798,14 +743,11 @@
 							"raw": "{\r\n  \"name\": \"Laravel Development\",\r\n  \"description\": \"Learn HTML, CSS, JS\"\r\n}"
 						},
 						"url": {
-							"raw": "http://localhost:8000/api/categories/1",
-							"protocol": "http",
+							"raw": "{{base_url}}/categories/1",
 							"host": [
-								"localhost"
+								"{{base_url}}"
 							],
-							"port": "8000",
 							"path": [
-								"api",
 								"categories",
 								"1"
 							]
@@ -819,14 +761,11 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8000/api/categories/2",
-							"protocol": "http",
+							"raw": "{{base_url}}/categories/2",
 							"host": [
-								"localhost"
+								"{{base_url}}"
 							],
-							"port": "8000",
 							"path": [
-								"api",
 								"categories",
 								"2"
 							]
@@ -857,14 +796,11 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8000/api/about-us",
-							"protocol": "http",
+							"raw": "{{base_url}}/about-us",
 							"host": [
-								"localhost"
+								"{{base_url}}"
 							],
-							"port": "8000",
 							"path": [
-								"api",
 								"about-us"
 							]
 						}
@@ -892,14 +828,11 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8000/api/about-us",
-							"protocol": "http",
+							"raw": "{{base_url}}/about-us",
 							"host": [
-								"localhost"
+								"{{base_url}}"
 							],
-							"port": "8000",
 							"path": [
-								"api",
 								"about-us"
 							]
 						}
@@ -908,11 +841,30 @@
 				},
 				{
 					"name": "AboutUs_show",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
 					"request": {
 						"method": "GET",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": ""
+							"raw": "{{base_url}}/about-us/2",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"about-us",
+								"2"
+							]
 						}
 					},
 					"response": []
@@ -929,23 +881,22 @@
 							}
 						],
 						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"title\": \"C Development\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "",
+									"type": "text",
+									"disabled": true
 								}
-							}
+							]
 						},
 						"url": {
-							"raw": "http://localhost:8000/api/about-us/2",
-							"protocol": "http",
+							"raw": "{{base_url}}/about-us/2",
 							"host": [
-								"localhost"
+								"{{base_url}}"
 							],
-							"port": "8000",
 							"path": [
-								"api",
 								"about-us",
 								"2"
 							]
@@ -957,18 +908,32 @@
 					"name": "AboutUs_delete",
 					"request": {
 						"method": "DELETE",
-						"header": [],
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
 						"url": {
-							"raw": "http://localhost:8000/api/about-us/7",
-							"protocol": "http",
+							"raw": "{{base_url}}/about-us/2",
 							"host": [
-								"localhost"
+								"{{base_url}}"
 							],
-							"port": "8000",
 							"path": [
-								"api",
 								"about-us",
-								"7"
+								"2"
 							]
 						}
 					},
@@ -986,7 +951,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"email\": \"tuly@gmail.com\",\r\n  \"otp\": \"622848\"\r\n}",
+							"raw": "{\r\n  \"email\": \"lizukhan13@gmail.com\",\r\n  \"otp\": \"278605\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -994,14 +959,11 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8000/api/verify-otp",
-							"protocol": "http",
+							"raw": "{{base_url}}/verify-otp",
 							"host": [
-								"localhost"
+								"{{base_url}}"
 							],
-							"port": "8000",
 							"path": [
-								"api",
 								"verify-otp"
 							]
 						}
@@ -1012,10 +974,21 @@
 					"name": "Register-store",
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"name\": \"nirob Doe\",\r\n  \"email\": \"nirob@gmail.com\",\r\n  \"password\": \"password123\",\r\n  \"password_confirmation\": \"password123\"\r\n}",
+							"raw": "{\r\n  \"name\": \"fahim Doe\",\r\n  \"email\": \"fahim@gmail.com\",\r\n  \"password\": \"123456789\",\r\n  \"password_confirmation\": \"123456789\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1023,14 +996,11 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8000/api/register",
-							"protocol": "http",
+							"raw": "{{base_url}}/register",
 							"host": [
-								"localhost"
+								"{{base_url}}"
 							],
-							"port": "8000",
 							"path": [
-								"api",
 								"register"
 							]
 						}
@@ -1044,7 +1014,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "\r\n{\r\n  \"email\": \"tuly1@gmail.com\",\r\n  \"password\": \"password123\"\r\n}",
+							"raw": "\r\n{\r\n  \"email\": \"lizu437@gmail.com\",\r\n  \"password\": \"123456789\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1052,11 +1022,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/login",
+							"raw": "http://localhost:8000/api/login",
+							"protocol": "http",
 							"host": [
-								"{{base_url}}"
+								"localhost"
 							],
+							"port": "8000",
 							"path": [
+								"api",
 								"login"
 							]
 						}
@@ -1070,7 +1043,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"email\": \"litu@gmail.com\"\r\n}",
+							"raw": "{\r\n  \"email\": \"tuly@gmail.com\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1078,16 +1051,12 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8000/api/forgot-password/",
-							"protocol": "http",
+							"raw": "{{base_url}}/forgot-password",
 							"host": [
-								"localhost"
+								"{{base_url}}"
 							],
-							"port": "8000",
 							"path": [
-								"api",
-								"forgot-password",
-								""
+								"forgot-password"
 							]
 						}
 					},
@@ -1100,7 +1069,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"name\": \"tuly Doe\",\r\n  \"email\": \"tuly@gmail.com\",\r\n  \"password\": \"123456789\",\r\n  \"password_confirmation\": \"123456789\"\r\n}",
+							"raw": "\r\n{\r\n    \"email\": \"tuly@gmail.com\",\r\n    \"password\": \"123456789\",\r\n    \"password_confirmation\": \"123456789\"\r\n}\r\n\r\n\r\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1108,7 +1077,359 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8000/api/reset-password",
+							"raw": "{{base_url}}/reset-password",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"reset-password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "otpVarifyRegister",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\":\"tuly@gmail.com\",\r\n     \"otp\": \"281761\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/reset-verify-otp",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"reset-verify-otp"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Hero_Image",
+			"item": [
+				{
+					"name": "list",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\r\n        \"title\": \"Laravel Mid\",\r\n        \"subtitle\": \"Learn step by step\",\r\n        \"image\": \"laravel.png\",\r\n        \"description\": \"A mid friendly Laravel course\",\r\n        \"created_at\": \"2025-09-03T12:00:00.000000Z\",\r\n        \"updated_at\": \"2025-09-03T12:05:00.000000Z\"\r\n    }"
+						},
+						"url": {
+							"raw": "{{base_url}}/hero-images",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"hero-images"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "store",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.expect(pm.response.code).to.equal(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response content type is text/html\", function () {\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.equal('text/html');\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response body is empty as expected\", function () {\r",
+									"    pm.expect(pm.response.text()).to.be.empty;\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response schema matches expected structure\", function () {\r",
+									"    const responseData = pm.response.text();\r",
+									"    \r",
+									"    pm.expect(responseData).to.be.a('string').that.is.empty;\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "images[]",
+									"type": "file",
+									"src": [
+										"/C:/Users/Softvence/Downloads/Frame 95 (1).png",
+										"/C:/Users/Softvence/Downloads/Frame 95.png",
+										"/C:/Users/Softvence/Downloads/Frame 45.png"
+									]
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/hero-images",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"hero-images"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "show",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "images[]",
+									"type": "file",
+									"src": [
+										"/C:/Users/Softvence/Downloads/Frame 51 (4).png",
+										"/C:/Users/Softvence/Downloads/Frame 51 (3).png",
+										"/C:/Users/Softvence/Downloads/Frame 45 (1).png",
+										"/C:/Users/Softvence/Downloads/Frame 101 (1).png"
+									]
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/hero-images/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"hero-images",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "images[]",
+									"type": "file",
+									"src": [
+										"/C:/Users/Softvence/Downloads/Frame 51 (4).png",
+										"/C:/Users/Softvence/Downloads/Frame 51 (3).png",
+										"/C:/Users/Softvence/Downloads/Frame 45 (1).png",
+										"/C:/Users/Softvence/Downloads/Frame 101 (1).png"
+									]
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/hero-images/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"hero-images",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "images[]",
+									"type": "file",
+									"src": [
+										"/C:/Users/Softvence/Downloads/Frame 66 (1).png",
+										"/C:/Users/Softvence/Downloads/Frame 66.png",
+										"/C:/Users/Softvence/Downloads/Web Mockup 37.jpg",
+										"/C:/Users/Softvence/Downloads/Desktop - 1.jpg"
+									]
+								},
+								{
+									"key": "",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/hero-images/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"hero-images",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Hero_Section",
+			"item": [
+				{
+					"name": "list",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/hero-sections",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"hero-sections"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "store",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "online Course ",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Some description is important bro ",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/C:/Users/Softvence/Downloads/Frame 101 (1).png"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/hero-sections",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"hero-sections"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "show",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/api/hero-sections/2",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1116,7 +1437,158 @@
 							"port": "8000",
 							"path": [
 								"api",
-								"reset-password"
+								"hero-sections",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/hero-sections/2",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"hero-sections",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \" new Hero Titllfhsjfase99\",\r\n    \"description\": \"Some description is important bro\"\r\n    // \"image\": \"hero_images/7j6MvBJ0GH4KuoCOGv4Pyf9seUBCJUsyyfEPdsFg.png\"\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/update-hero-section/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"update-hero-section",
+								"1"
+							],
+							"query": [
+								{
+									"key": "title",
+									"value": "new hero 42",
+									"disabled": true
+								},
+								{
+									"key": "description",
+									"value": "description Some description is important bro",
+									"disabled": true
+								},
+								{
+									"key": "image",
+									"value": "ChatGPT Image Sep 2, 2025, 11_37_54 AM.png",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "share_experience",
+			"item": [
+				{
+					"name": "store",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"My Laravel Experience\",\r\n  \"description\": \"Loved the course\",\r\n  \"online_course_id\": 1,\r\n  \"rating_point\": 5,\r\n  \"user_id\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/share-experiance",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"share-experiance"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"My Laravel Experience\",\r\n  \"description\": \"Loved the course\",\r\n  \"online_course_id\": 1,\r\n  \"rating_point\": 5,\r\n  \"user_id\": 1\r\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/share-experiance",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"share-experiance"
 							]
 						}
 					},

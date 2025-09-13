@@ -10,15 +10,15 @@ import {
     FormItem,
     FormMessage,
 } from '@/components/ui/form'
-import { useVerifyOTP, useForgotPassword } from '@/hooks/auth.hook'
+import { useResetPasswordOTP, useForgotPassword } from '@/hooks/auth.hook'
 
 export default function ForgetPasswordOtp() {
-    const [otp, setOtp] = useState(['6', '', '', '', '', '']) // Pre-filled with '6' as shown in image
+    const [otp, setOtp] = useState(['', '', '', '', '', '']) // Empty initially
     const [resendCountdown, setResendCountdown] = useState(0)
     const inputRefs = useRef([])
 
-    // Use auth hooks for API integration
-    const { form, mutate: verifyOTP, isVerifying } = useVerifyOTP()
+    // Use auth hooks for API integration - Reset Password OTP flow
+    const { form, mutate: verifyOTP, isVerifying } = useResetPasswordOTP()
     const { mutate: resendEmail, isPending: isResending } = useForgotPassword()
 
     // Handle OTP input changes

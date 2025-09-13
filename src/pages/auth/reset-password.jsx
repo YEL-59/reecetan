@@ -125,7 +125,7 @@ export default function ResetPassword() {
                     {/* Confirm Password Field */}
                     <FormField
                         control={form.control}
-                        name="confirmPassword"
+                        name="password_confirmation"
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel className="text-[#1E1E1E] text-[18px] font-normal leading-none">

@@ -10,17 +10,16 @@ import Subscribcard from '@/components/main/shared/Subscribcard'
 const AboutUs = () => {
   return (
     <>
-    <div>
+      <div>
         <AboutHero />
         <AboutMarketplace />
         <AboutLearningProcess />
         <AboutBanner />
         <AboutChooseUs />
         <HomeFeedback />
-    
         <Subscribcard />
-    </div>
-    
+      </div>
+
     </>
   )
 }

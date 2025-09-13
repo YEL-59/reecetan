@@ -43,7 +43,7 @@ axiosPrivate.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       // Token expired or invalid
-      secureTokenManager.clearTokens()
+      secureTokenManager.clearAuth()
       window.location.href = '/signin'
     }
     return Promise.reject(error)

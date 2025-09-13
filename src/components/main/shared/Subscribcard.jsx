@@ -2,22 +2,55 @@ import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import homeSubs from '@/assets/home/home-subs.png'
+import { subscribeToNewsletter } from '@/lib/subscriptionApi'
+import toast from 'react-hot-toast'
 
 const Subscribcard = () => {
   const [email, setEmail] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    // Handle subscription logic here
-    console.log('Subscribing email:', email)
-    setEmail('')
+
+    if (!email.trim()) {
+      toast.error('Please enter your email address')
+      return
+    }
+
+    setIsLoading(true)
+
+    try {
+      const result = await subscribeToNewsletter(email.trim())
+
+      if (result.success) {
+        toast.success('🎉 Successfully subscribed to newsletter!', {
+          duration: 4000,
+          style: {
+            background: '#10B981',
+            color: 'white',
+          },
+          iconTheme: {
+            primary: 'white',
+            secondary: '#10B981',
+          },
+        })
+        setEmail('')
+      } else {
+        toast.error(result.message || 'Subscription failed. Please try again.')
+      }
+    } catch (error) {
+      console.error('Subscription error:', error)
+      toast.error('Something went wrong. Please try again later.')
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
     <section className="py-16 bg-white">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
-          <div 
+          <div
             className="relative rounded-2xl p-8 sm:p-12 overflow-hidden"
             style={{
               backgroundImage: `url(${homeSubs})`,
@@ -45,14 +78,16 @@ const Subscribcard = () => {
                   placeholder="Enter Your Email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="flex-1 bg-white text-gray-900 placeholder-gray-500 border-0 rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-[#0A0F1E]"
+                  className="flex-1 bg-white text-gray-900 placeholder-gray-500 border-0 rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-[#0A0F1E] disabled:opacity-50"
                   required
+                  disabled={isLoading}
                 />
                 <Button
                   type="submit"
-                  className="bg-primary hover:bg-primary/90 text-white px-8 py-3 rounded-lg font-medium shadow-lg hover:shadow-xl transition-all duration-200"
+                  disabled={isLoading}
+                  className="bg-primary hover:bg-primary/90 text-white px-8 py-3 rounded-lg font-medium shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Submit
+                  {isLoading ? 'Subscribing...' : 'Submit'}
                 </Button>
               </form>
             </div>

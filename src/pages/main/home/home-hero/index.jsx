@@ -3,15 +3,37 @@ import { Button } from "@/components/ui/button";
 import homeBg from "@/assets/home/home-bg.png";
 import homeRight from "@/assets/home/home-right.png";
 import { useAOS } from "@/hooks/useAOS";
+import { useGetHeroSection } from "../api";
+import HeroSkeleton from "./components/HeroSkeleton";
+import HeroError from "./components/HeroError";
 
 const HomeHero = () => {
   useAOS(); // Initialize AOS for this component
+
+  // Fetch hero section data from API - Simple and clean (data is already formatted)
+  const { data: heroData, isLoading, isError } = useGetHeroSection();
+
+  // Show loading skeleton
+  if (isLoading) {
+    return <HeroSkeleton />;
+  }
+
+  // Show error component
+  if (isError) {
+    return <HeroError error={{ message: "Failed to load hero section" }} onRetry={() => window.location.reload()} />;
+  }
+
+  // Use API data with fallbacks (data is already formatted in the hook)
+  const heroTitle = heroData?.title || "Get Our Online Courses\nAnywhere Anytime";
+  const heroDescription = heroData?.description || "Take the next step in your learning & Caregiving journey with courses designed by top professionals. Enjoy flexible online learning, engaging video content, interactive assessments, and a supportive community.";
+  const heroImage = heroData?.image || null;
+  const backgroundImage = heroImage || homeBg;
 
   return (
     <section
       className="relative min-h-[550px] sm:min-h-[600px] md:min-h-[650px] overflow-hidden"
       style={{
-        backgroundImage: `url(${homeBg})`,
+        backgroundImage: `url(${backgroundImage})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
@@ -43,22 +65,26 @@ const HomeHero = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center min-h-[450px] sm:min-h-[500px]">
           {/* Left Side - Text Content */}
           <div className="space-y-6 lg:space-y-8 text-white" data-aos="fade-up">
-            {/* Main Headline */}
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
-              Get Our Online Courses
-            </h1>
+            {/* Dynamic Headline from API */}
+            {heroTitle.includes('\n') ? (
+              // Handle multi-line titles
+              <>
+                {heroTitle.split('\n').map((line, index) => (
+                  <h1 key={index} className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight ${index === 1 ? 'text-[#14D27B]' : ''}`}>
+                    {line}
+                  </h1>
+                ))}
+              </>
+            ) : (
+              // Single line title
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
+                {heroTitle}
+              </h1>
+            )}
 
-            {/* Sub-headline */}
-            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold" style={{ color: '#14D27B' }}>
-              Anywhere Anytime
-            </h2>
-
-            {/* Body Text */}
+            {/* Body Text from API */}
             <p className="text-base sm:text-lg text-gray-200 leading-relaxed max-w-2xl">
-              Take the next step in your learning & Caregiving journey with
-              courses designed by top professionals. Enjoy flexible online
-              learning, engaging video content, interactive assessments, and a
-              supportive community.
+              {heroDescription}
             </p>
 
             {/* Search Bar */}

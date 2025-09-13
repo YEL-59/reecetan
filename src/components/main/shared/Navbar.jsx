@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { useAuthStatus, useSignout } from "@/hooks/auth.hook";
 import {
   Bell,
   ChevronDown,
@@ -34,7 +35,9 @@ import { useCart } from "@/contexts/cart-context";
 
 const Navbar = () => {
   const location = useLocation();
-  const [isAuthenticated] = useState(true); // demo
+  // Use actual authentication status
+  const { isAuthenticated, user } = useAuthStatus();
+  const { mutate: logout, isPending: isLoggingOut } = useSignout();
   const [notificationOpen, setNotificationOpen] = useState(false);
   const [mobileNotificationOpen, setMobileNotificationOpen] = useState(false);
   const [notifications, setNotifications] = useState([
@@ -283,11 +286,13 @@ const Navbar = () => {
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem className="flex items-center gap-2">
-                      <Link to="/signin" className="flex items-center gap-2">
-                        <LogOut className="w-4 h-4 text-[#071431]" />
-                        Log out
-                      </Link>
+                    <DropdownMenuItem
+                      className="flex items-center gap-2 cursor-pointer"
+                      onClick={() => logout()}
+                      disabled={isLoggingOut}
+                    >
+                      <LogOut className="w-4 h-4 text-[#071431]" />
+                      {isLoggingOut ? 'Signing out...' : 'Log out'}
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -454,9 +459,13 @@ const Navbar = () => {
                           My Account
                         </Link>
                       </SheetClose>
-                      <button className="w-full flex items-center gap-2 px-3 py-2 hover:bg-accent rounded-md">
+                      <button
+                        className="w-full flex items-center gap-2 px-3 py-2 hover:bg-accent rounded-md disabled:opacity-50"
+                        onClick={() => logout()}
+                        disabled={isLoggingOut}
+                      >
                         <LogOut className="w-5 h-5" />
-                        Log out
+                        {isLoggingOut ? 'Signing out...' : 'Log out'}
                       </button>
                     </div>
                   ) : (

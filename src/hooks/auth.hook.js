@@ -87,7 +87,10 @@ export const useSignUp = () => {
       }
       
       // Check if we have the required fields for successful registration
-      if (!res.data.access_token || !res.data.user) {
+      const token = res.data.access_token || res.data.token;
+      const user = res.data.user;
+      
+      if (!token || !user) {
         console.log('❌ API response missing required fields:', res.data);
         throw new Error("Invalid response from server");
       }
@@ -100,7 +103,7 @@ export const useSignUp = () => {
         message: 'Registration successful',
         user: data.user?.name || 'N/A',
         email: data.user?.email || 'N/A',
-        token: data.access_token ? '✅ Generated' : '❌ Missing',
+        token: (data.access_token || data.token) ? '✅ Generated' : '❌ Missing',
         otp: data.otp ? '✅ Generated' : '❌ Missing'
       });
       
@@ -177,23 +180,32 @@ export const useSignIn = () => {
         message: data.message || 'Login successful',
         user: data.user?.name || data.name || 'N/A',
         email: data.user?.email || data.email || 'N/A',
-        token: data.token ? '✅ Generated' : '❌ Missing',
-        redirect: redirectUrl || '/'
+        token: data.access_token || data.token ? '✅ Generated' : '❌ Missing',
+        redirect: redirectUrl || '/dashboard'
       });
       
       toast.success(data?.message || "Login successful");
       
-      // Handle token and user data with secure storage
-      if (data.token && data.user) {
-        secureTokenManager.setAuth(data.token, data.user);
-      } else if (data.token) {
-        secureTokenManager.setAuth(data.token, { name: data.name, email: data.email });
-      }
-
-      if (redirectUrl) {
-        navigate(redirectUrl);
+      // Handle token and user data with secure storage - check for access_token first
+      const token = data.access_token || data.token;
+      const user = data.user || { name: data.name, email: data.email };
+      
+      if (token && user) {
+        console.log('🔑 Setting auth with token:', token.substring(0, 20) + '...');
+        console.log('👤 Setting auth with user:', user);
+        secureTokenManager.setAuth(token, user);
+        
+        // Wait a bit for the auth to be set, then navigate
+        setTimeout(() => {
+          console.log('🔍 Auth status after setting:', secureTokenManager.isAuthenticated());
+          if (redirectUrl) {
+            navigate(redirectUrl);
+          } else {
+            navigate("/dashboard");
+          }
+        }, 100);
       } else {
-        navigate("/dashboard");
+        console.error('❌ Missing token or user data:', { token: !!token, user: !!user });
       }
     },
     onError: (error) => {
@@ -227,11 +239,15 @@ export const useSignout = () => {
     mutationFn: async () => {
       testConsole.loading("USER LOGOUT");
       
+      // Clear auth first to prevent redirect loops
+      console.log('🔓 Clearing authentication...');
+      secureTokenManager.clearAuth();
+      
       // If you have a logout endpoint, uncomment and adjust:
       // const { data } = await axiosPrivate.post("/logout");
       // return data;
       
-      // For now, just clear local storage
+      // For now, just return success
       return { status: true, message: "Logged out successfully" };
     },
     onSuccess: (data) => {
@@ -239,18 +255,23 @@ export const useSignout = () => {
         status: data?.status || true,
         message: data?.message || "Logged out successfully",
         action: "Tokens cleared",
-        redirect: "/login"
+        redirect: "/signin"
       });
       
-      secureTokenManager.clearAuth();
-      navigate("/signin");
+      console.log('🚪 Logout successful, redirecting to signin...');
       toast.success(data?.message || "Logged out successfully");
+      
+      // Force navigation to signin
+      window.location.href = '/signin';
     },
     onError: (error) => {
       testConsole.info("USER LOGOUT", "API failed, performing local logout");
+      console.log('🔓 Clearing auth due to logout error...');
       secureTokenManager.clearAuth();
       toast.success("You've been signed out locally.");
-      navigate("/signin");
+      
+      // Force navigation to signin
+      window.location.href = '/signin';
     },
   });
 
@@ -450,10 +471,80 @@ export const useVerifyOTP = () => {
   };
 };
 
+// 🔢 Reset Password OTP Verification Hook - Matches your /api/reset-verify-otp endpoint
+export const useResetPasswordOTP = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const email = location.state?.email || "";
+
+  const form = useForm({
+    defaultValues: {
+      email,
+      otp: "",
+    },
+  });
+
+  useEffect(() => {
+    if (email) {
+      form.reset({
+        email,
+        otp: "",
+      });
+    }
+  }, [email, form]);
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: async (formData) => {
+      testConsole.loading("RESET PASSWORD OTP VERIFICATION");
+      
+      // Matches your Postman collection format exactly
+      const data = {
+        email: formData.email,
+        otp: formData.otp,
+      };
+
+      const res = await axiosPublic.post("/reset-verify-otp", data);
+      return res.data;
+    },
+    onSuccess: (data) => {
+      testConsole.success("RESET PASSWORD OTP VERIFICATION", {
+        status: data.status || 'success',
+        message: data.message || 'OTP verified successfully',
+        email: form.watch("email"),
+        action: "OTP verified for password reset"
+      });
+      
+      toast.success(data.message || "OTP verified! You can now reset your password.");
+      
+      navigate("/reset-password", {
+        state: { 
+          email: form.watch("email"),
+          verified: true
+        }
+      });
+    },
+    onError: (error) => {
+      const message = error?.response?.data?.message || error.message;
+      testConsole.error("RESET PASSWORD OTP VERIFICATION", {
+        error: message,
+        status: error?.response?.status,
+        endpoint: "/reset-verify-otp"
+      });
+      toast.error(message || "OTP verification failed");
+    },
+  });
+
+  return {
+    form,
+    mutate,
+    isVerifying: isPending,
+  };
+};
+
 // 🔍 Auth Status Hook
 export const useAuthStatus = () => {
-  const token = localStorage.getItem('token');
-  const user = JSON.parse(localStorage.getItem('user') || 'null');
+  const token = secureTokenManager.getAccessToken();
+  const user = secureTokenManager.getUser();
   
   const isAuthenticated = !!token && !!user;
   

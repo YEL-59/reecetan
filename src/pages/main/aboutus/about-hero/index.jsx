@@ -3,10 +3,10 @@ import aboutHeroBg from '@/assets/aboutus/abouthero.png'
 
 const AboutHero = () => {
   return (
-   <>
-   
-     {/* Hero Section */}
-     <div 
+    <>
+
+      {/* Hero Section */}
+      <div
         className="relative h-64 md:h-80 lg:h-96 w-full flex items-center justify-center"
         style={{
           backgroundImage: `url(${aboutHeroBg})`,
@@ -22,9 +22,9 @@ const AboutHero = () => {
         </div>
       </div>
 
-    
-   
-   </>
+
+
+    </>
   )
 }
 

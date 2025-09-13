@@ -2,6 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 import MainLayout from "@/layouts/MainLayout";
 import AuthLayout from "@/layouts/AuthLayout";
 import DashboardLayout from "@/layouts/DashboardLayout";
+import { ProtectedRoute, GuestRoute } from "@/components/auth/AuthGuard";
 import Login from "@/pages/auth/signin";
 import Register from "@/pages/auth/signup";
 import Dashboard from "@/pages/dashboard/Dashboard";
@@ -52,17 +53,17 @@ export const router = createBrowserRouter([
     path: "/",
     element: <AuthLayout />,
     children: [
-      { path: "signin", element: <Login /> },
-      { path: "register", element: <Register /> },
-      { path: "forget-password", element: <ForgetPassword /> },
-      { path: "forget-password-otp", element: <ForgetPasswordOtp /> },
-      { path: "reset-password", element: <ResetPassword /> },
-      { path: "email-verification", element: <EmailVerification /> },
+      { path: "signin", element: <GuestRoute><Login /></GuestRoute> },
+      { path: "register", element: <GuestRoute><Register /></GuestRoute> },
+      { path: "forget-password", element: <GuestRoute><ForgetPassword /></GuestRoute> },
+      { path: "forget-password-otp", element: <GuestRoute><ForgetPasswordOtp /></GuestRoute> },
+      { path: "reset-password", element: <GuestRoute><ResetPassword /></GuestRoute> },
+      { path: "email-verification", element: <GuestRoute><EmailVerification /></GuestRoute> },
     ],
   },
   {
     path: "/dashboard",
-    element: <DashboardLayout />,
+    element: <ProtectedRoute><DashboardLayout /></ProtectedRoute>,
     children: [
       { index: true, element: <Dashboard /> },
       { path: "my-courses", element: <MyCourses /> },
