@@ -21,11 +21,32 @@ export {
   getAboutUsImageUrl
 } from './aboutUs.api'
 
-// Future home APIs can be added here:
-// export { coursesApi, usePopularCourses } from './courses.api'
-// export { testimonialsApi, useTestimonials } from './testimonials.api'
+// Categories API
+export {
+  useGetCategories,
+  formatCategoriesData,
+  categoriesApi
+} from './categories.api'
 
-// Example of how you can add more APIs:
-// export * from './popularCourses.api'
-// export * from './testimonials.api'
+// Courses API
+export {
+  useGetCourses,
+  useSearchCourses,
+  formatCoursesData,
+  getCourseImageUrl,
+  coursesApi
+} from './courses.api'
+
+// Testimonials API
+export {
+  useGetTestimonials,
+  useSubmitTestimonial,
+  formatTestimonialsData,
+  formatSingleTestimonialData,
+  getTestimonialCourseImageUrl,
+  generateAvatarUrl,
+  testimonialsApi
+} from './testimonials.api'
+
+// Future home APIs can be added here:
 // export * from './statistics.api'

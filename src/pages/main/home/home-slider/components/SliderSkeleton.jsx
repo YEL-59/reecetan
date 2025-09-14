@@ -29,3 +29,4 @@ const SliderSkeleton = () => {
 
 export default SliderSkeleton
 
+

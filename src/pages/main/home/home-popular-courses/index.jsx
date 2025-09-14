@@ -11,8 +11,12 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from '@/components/ui/dialog'
+import { useGetCategories, useGetCourses } from '../api'
+import CoursesSkeleton from './components/CoursesSkeleton'
+import CoursesError from './components/CoursesError'
 
-const ALL_TABS = [
+// Fallback categories if API fails
+const FALLBACK_CATEGORIES = [
 	'All',
 	'Nursing Programs',
 	'Health Care',
@@ -20,63 +24,6 @@ const ALL_TABS = [
 	'Emotional Care',
 	'Professional Skills',
 	'Exam Prep',
-]
-
-const seedCourses = [
-	{
-		id: 1,
-		title: 'Complete Medical Terminology Course',
-		category: 'Health Care',
-		rating: 4.8,
-		students: 123,
-		price: 50,
-		image: 'https://images.unsplash.com/photo-1580281658208-2cf4e1b1d4b3?q=80&w=1200&auto=format&fit=crop',
-	},
-	{
-		id: 2,
-		title: 'Complete Medical Terminology Course',
-		category: 'Nursing Programs',
-		rating: 4.8,
-		students: 123,
-		price: 50,
-		image: 'https://images.unsplash.com/photo-1579154204601-01588f351e74?q=80&w=1200&auto=format&fit=crop',
-	},
-	{
-		id: 3,
-		title: 'Complete Medical Terminology Course',
-		category: 'Medical Basics',
-		rating: 4.8,
-		students: 123,
-		price: 50,
-		image: 'https://images.unsplash.com/photo-1583316175707-1ff2d1f2f4d5?q=80&w=1200&auto=format&fit=crop',
-	},
-	{
-		id: 4,
-		title: 'Complete Medical Terminology Course',
-		category: 'Professional Skills',
-		rating: 4.8,
-		students: 123,
-		price: 50,
-		image: 'https://images.unsplash.com/photo-1551601651-8fc8fd76d297?q=80&w=1200&auto=format&fit=crop',
-	},
-	{
-		id: 5,
-		title: 'Complete Medical Terminology Course',
-		category: 'Emotional Care',
-		rating: 4.8,
-		students: 123,
-		price: 50,
-		image: 'https://images.unsplash.com/photo-1600959907703-125ba1374a12?q=80&w=1200&auto=format&fit=crop',
-	},
-	{
-		id: 6,
-		title: 'Complete Medical Terminology Course',
-		category: 'Exam Prep',
-		rating: 4.8,
-		students: 123,
-		price: 50,
-		image: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=1200&auto=format&fit=crop',
-	},
 ]
 
 const Tab = ({ label, active, onClick }) => (
@@ -95,11 +42,56 @@ const HomePopularCourses = () => {
 	const [isDialogOpen, setIsDialogOpen] = useState(false)
 	const navigate = useNavigate()
 
-	const courses = useMemo(() => seedCourses, [])
+	// Fetch categories and courses from API
+	const { data: categoriesData, isLoading: categoriesLoading, isError: categoriesError } = useGetCategories()
+	const { data: coursesData, isLoading: coursesLoading, isError: coursesError } = useGetCourses()
+
+	// Use API data with fallbacks
+	const categories = useMemo(() => {
+		if (categoriesData && categoriesData.length > 0) {
+			return ['All', ...categoriesData.map(cat => cat.name)]
+		}
+		return FALLBACK_CATEGORIES
+	}, [categoriesData])
+
+	const courses = useMemo(() => {
+		if (!coursesData || coursesData.length === 0) return []
+
+		// Transform API data to match CourseCard expected format
+		return coursesData.map(course => ({
+			id: course.id,
+			title: course.title,
+			category: course.category?.name || 'Uncategorized',
+			rating: course.rating?.ratingPoint || Math.floor(Math.random() * 2) + 4, // Random rating 4-5 if no rating
+			students: Math.floor(Math.random() * 500) + 50, // Random student count for demo
+			price: course.price,
+			image: course.image || 'https://images.unsplash.com/photo-1580281658208-2cf4e1b1d4b3?q=80&w=1200&auto=format&fit=crop',
+			description: course.description,
+			level: course.level,
+			duration: course.duration,
+			language: course.language,
+			courseType: course.courseType,
+			instructor: course.instructor,
+		}))
+	}, [coursesData])
+
 	const filtered = useMemo(() => {
 		if (activeTab === 'All') return courses
 		return courses.filter((c) => c.category === activeTab)
 	}, [activeTab, courses])
+
+	// Show loading skeleton
+	if (coursesLoading || categoriesLoading) {
+		return <CoursesSkeleton />
+	}
+
+	// Show error component
+	if (coursesError || categoriesError) {
+		return <CoursesError
+			error={{ message: "Failed to load courses" }}
+			onRetry={() => window.location.reload()}
+		/>
+	}
 
 	// Enroll function is now handled by CourseCard component directly
 	const enroll = (course) => {
@@ -122,7 +114,7 @@ const HomePopularCourses = () => {
 
 				{/* Desktop: Tabs */}
 				<div className="hidden md:flex flex-wrap gap-3 justify-center mb-10" data-aos="zoom-in">
-					{ALL_TABS.map((label) => (
+					{categories.map((label) => (
 						<Tab key={label} label={label} active={activeTab === label} onClick={() => setActiveTab(label)} />
 					))}
 				</div>
@@ -145,7 +137,7 @@ const HomePopularCourses = () => {
 							<div className="overflow-y-auto max-h-[60vh] p-6">
 								{/* Mobile Tabs in Dialog */}
 								<div className="flex flex-wrap gap-2 justify-center mb-6">
-									{ALL_TABS.map((label) => (
+									{categories.map((label) => (
 										<Tab key={label} label={label} active={activeTab === label} onClick={() => setActiveTab(label)} />
 									))}
 								</div>

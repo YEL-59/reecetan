@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { Star, X } from 'lucide-react'
+import React, { useState, useMemo } from 'react'
+import { Star, X, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -12,9 +12,12 @@ import {
   DialogTitle,
   DialogClose,
 } from '@/components/ui/dialog'
+import { useGetTestimonials, useSubmitTestimonial, useGetCourses } from '@/pages/main/home/api'
+import { useAuthStatus } from '@/hooks/auth.hook'
+import toast from 'react-hot-toast'
 
-const COURSES = [
-  'All Courses',
+// Fallback courses if API fails
+const FALLBACK_COURSES = [
   'Nursing Programs',
   'Health Care',
   'Medical Basics',
@@ -149,22 +152,74 @@ const TESTIMONIALS = [
 const TestimonialAll = () => {
   const [selectedCourse, setSelectedCourse] = useState('All Courses')
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [currentPage, setCurrentPage] = useState(1)
   const [formData, setFormData] = useState({
     name: '',
-    course: '',
-    rating: 5,
-    review: ''
+    online_course_id: '',
+    rating_point: 5,
+    description: ''
   })
 
-  const filteredTestimonials = selectedCourse === 'All Courses'
-    ? TESTIMONIALS
-    : TESTIMONIALS.filter(t => t.course === selectedCourse)
+  // Get current user for testimonial submission
+  const { user, isAuthenticated } = useAuthStatus()
 
-  const handleSubmit = (e) => {
+  // Fetch testimonials and courses from API
+  const { data: testimonialsResponse, isLoading: testimonialsLoading, isError: testimonialsError } = useGetTestimonials(currentPage)
+  const { data: coursesData, isLoading: coursesLoading } = useGetCourses()
+
+  // Submit testimonial mutation
+  const submitTestimonialMutation = useSubmitTestimonial()
+
+  // Transform API data with fallbacks
+  const courses = useMemo(() => {
+    if (coursesData && coursesData.length > 0) {
+      return coursesData.map(course => ({
+        id: course.id,
+        title: course.title,
+        category: course.category?.name || 'Uncategorized'
+      }))
+    }
+    return FALLBACK_COURSES.map((course, index) => ({ id: index + 1, title: course, category: course }))
+  }, [coursesData])
+
+  const courseOptions = ['All Courses', ...courses.map(course => course.category)]
+
+  const testimonials = testimonialsResponse?.testimonials || []
+  const pagination = testimonialsResponse?.pagination || { currentPage: 1, lastPage: 1, total: 0 }
+
+  const filteredTestimonials = selectedCourse === 'All Courses'
+    ? testimonials
+    : testimonials.filter(t => t.course?.title?.includes(selectedCourse) || t.course?.category?.includes(selectedCourse))
+
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    console.log('Testimonial submitted:', formData)
-    setIsModalOpen(false)
-    setFormData({ name: '', course: '', rating: 5, review: '' })
+
+    if (!isAuthenticated) {
+      toast.error('Please sign in to submit a testimonial')
+      return
+    }
+
+    if (!user?.id) {
+      toast.error('User information not available')
+      return
+    }
+
+    const testimonialData = {
+      name: formData.name,
+      description: formData.description,
+      online_course_id: parseInt(formData.online_course_id),
+      rating_point: formData.rating_point,
+      user_id: user.id
+    }
+
+    try {
+      await submitTestimonialMutation.mutateAsync(testimonialData)
+      toast.success('Thank you for sharing your experience!')
+      setIsModalOpen(false)
+      setFormData({ name: '', online_course_id: '', rating_point: 5, description: '' })
+    } catch (error) {
+      toast.error(error.message || 'Failed to submit testimonial')
+    }
   }
 
   return (
@@ -182,55 +237,110 @@ const TestimonialAll = () => {
 
         {/* Filter and Action Bar */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
-          <Select
+          <select
             value={selectedCourse}
             onChange={(e) => setSelectedCourse(e.target.value)}
-            className="w-full sm:w-48"
+            className="w-full sm:w-48 border border-gray-200 rounded-lg px-3 py-2 text-sm shadow-sm"
           >
-            {COURSES.map(course => (
-              <SelectItem key={course} value={course}>{course}</SelectItem>
+            {courseOptions.map(course => (
+              <option key={course} value={course}>{course}</option>
             ))}
-          </Select>
+          </select>
 
           <Button
-            onClick={() => setIsModalOpen(true)}
+            onClick={() => {
+              if (!isAuthenticated) {
+                toast.error('Please sign in to submit a testimonial')
+                return
+              }
+              setIsModalOpen(true)
+            }}
             className="bg-primary hover:bg-primary/90 text-white px-6 py-2 rounded-lg"
           >
-            Submit Your Testimonial
+            {isAuthenticated ? 'Submit Your Testimonial' : 'Sign In to Submit'}
           </Button>
         </div>
 
+        {/* Loading State */}
+        {testimonialsLoading && (
+          <div className="flex justify-center items-center py-12">
+            <Loader2 className="w-8 h-8 animate-spin text-primary" />
+            <span className="ml-2 text-gray-600">Loading testimonials...</span>
+          </div>
+        )}
+
+        {/* Error State */}
+        {testimonialsError && (
+          <div className="text-center py-12">
+            <p className="text-red-600 mb-4">Failed to load testimonials</p>
+            <Button onClick={() => window.location.reload()} variant="outline">
+              Try Again
+            </Button>
+          </div>
+        )}
+
         {/* Testimonials Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredTestimonials.map((testimonial) => (
-            <div key={testimonial.id} className="bg-white border rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
-              {/* Rating */}
-              <div className="flex items-center gap-1 mb-4">
-                {Array.from({ length: testimonial.rating }).map((_, i) => (
-                  <Star key={i} className="w-5 h-5 text-yellow-400 fill-yellow-400" />
-                ))}
-              </div>
+        {!testimonialsLoading && !testimonialsError && (
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredTestimonials.map((testimonial) => (
+                <div key={testimonial.id} className="bg-white border rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
+                  {/* Rating */}
+                  <div className="flex items-center gap-1 mb-4">
+                    {Array.from({ length: testimonial.rating || 5 }).map((_, i) => (
+                      <Star key={i} className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+                    ))}
+                  </div>
 
-              {/* Testimonial Text */}
-              <p className="text-gray-700 mb-4 leading-relaxed">
-                {testimonial.text}
-              </p>
+                  {/* Testimonial Text */}
+                  <p className="text-gray-700 mb-4 leading-relaxed">
+                    {testimonial.description}
+                  </p>
 
-              {/* Author */}
-              <div className="flex items-center gap-3">
-                <img
-                  src={testimonial.avatar}
-                  alt={testimonial.name}
-                  className="w-10 h-10 rounded-full object-cover"
-                />
-                <div>
-                  <p className="font-semibold text-gray-900">{testimonial.name}</p>
-                  <p className="text-sm text-gray-500">{testimonial.course}</p>
+                  {/* Author */}
+                  <div className="flex items-center gap-3">
+                    <img
+                      src={testimonial.user?.avatar || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face'}
+                      alt={testimonial.user?.name || testimonial.name}
+                      className="w-10 h-10 rounded-full object-cover"
+                    />
+                    <div>
+                      <p className="font-semibold text-gray-900">{testimonial.user?.name || testimonial.name}</p>
+                      <p className="text-sm text-gray-500">{testimonial.course?.title || 'Course Student'}</p>
+                    </div>
+                  </div>
                 </div>
-              </div>
+              ))}
             </div>
-          ))}
-        </div>
+
+            {/* Pagination */}
+            {pagination.lastPage > 1 && (
+              <div className="flex justify-center items-center gap-2 mt-8">
+                <Button
+                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                  disabled={currentPage === 1}
+                  variant="outline"
+                  size="sm"
+                >
+                  Previous
+                </Button>
+
+                <span className="text-sm text-gray-600 mx-4">
+                  Page {pagination.currentPage} of {pagination.lastPage} ({pagination.total} total)
+                </span>
+
+                <Button
+                  onClick={() => setCurrentPage(p => Math.min(pagination.lastPage, p + 1))}
+                  disabled={currentPage === pagination.lastPage}
+                  variant="outline"
+                  size="sm"
+                >
+                  Next
+                </Button>
+              </div>
+            )}
+          </>
+        )}
       </div>
 
       {/* Modal */}
@@ -255,8 +365,8 @@ const TestimonialAll = () => {
                 <Label htmlFor="name">Your Name</Label>
                 <Input
                   id="name"
-                  placeholder="Enter your name"
-                  value={formData.name}
+                  placeholder={user?.name || "Enter your name"}
+                  value={formData.name || user?.name || ''}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   required
                 />
@@ -265,16 +375,20 @@ const TestimonialAll = () => {
               {/* Course */}
               <div>
                 <Label htmlFor="course">Course</Label>
-                <Select
-                  value={formData.course}
-                  onChange={(e) => setFormData({ ...formData, course: e.target.value })}
+                <select
+                  value={formData.online_course_id}
+                  onChange={(e) => setFormData({ ...formData, online_course_id: e.target.value })}
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm shadow-sm"
                   required
                 >
-                  <SelectItem value="">Select course</SelectItem>
-                  {COURSES.slice(1).map(course => (
-                    <SelectItem key={course} value={course}>{course}</SelectItem>
+                  <option value="">Select course</option>
+                  {courses.map(course => (
+                    <option key={course.id} value={course.id}>{course.title}</option>
                   ))}
-                </Select>
+                </select>
+                {coursesLoading && (
+                  <p className="text-sm text-gray-500 mt-1">Loading courses...</p>
+                )}
               </div>
 
               {/* Rating */}
@@ -285,11 +399,11 @@ const TestimonialAll = () => {
                     <button
                       key={i}
                       type="button"
-                      onClick={() => setFormData({ ...formData, rating: i + 1 })}
+                      onClick={() => setFormData({ ...formData, rating_point: i + 1 })}
                       className="p-1"
                     >
                       <Star
-                        className={`w-6 h-6 ${i < formData.rating ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'}`}
+                        className={`w-6 h-6 ${i < formData.rating_point ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'}`}
                       />
                     </button>
                   ))}
@@ -298,12 +412,12 @@ const TestimonialAll = () => {
 
               {/* Review */}
               <div>
-                <Label htmlFor="review">Your Review</Label>
+                <Label htmlFor="description">Your Experience</Label>
                 <Textarea
-                  id="review"
+                  id="description"
                   placeholder="Share your experience with the course..."
-                  value={formData.review}
-                  onChange={(e) => setFormData({ ...formData, review: e.target.value })}
+                  value={formData.description}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   rows={4}
                   required
                 />
@@ -316,11 +430,23 @@ const TestimonialAll = () => {
                   variant="outline"
                   onClick={() => setIsModalOpen(false)}
                   className="flex-1"
+                  disabled={submitTestimonialMutation.isPending}
                 >
                   Cancel
                 </Button>
-                <Button type="submit" className="flex-1 bg-gray-900 hover:bg-gray-800">
-                  Submit Review
+                <Button
+                  type="submit"
+                  className="flex-1 bg-gray-900 hover:bg-gray-800"
+                  disabled={submitTestimonialMutation.isPending}
+                >
+                  {submitTestimonialMutation.isPending ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                      Submitting...
+                    </>
+                  ) : (
+                    'Submit Review'
+                  )}
                 </Button>
               </div>
             </form>

@@ -4,8 +4,12 @@ import CourseModal from '@/components/course/CourseModal'
 import { Search } from 'lucide-react'
 // import { useCart } from '@/contexts/cart-context' // Cart system hidden
 import { useNavigate } from 'react-router-dom'
+import { useGetCategories, useGetCourses, useSearchCourses } from '@/pages/main/home/api'
+import CoursesSkeleton from '@/pages/main/home/home-popular-courses/components/CoursesSkeleton'
+import CoursesError from '@/pages/main/home/home-popular-courses/components/CoursesError'
 
-const CATEGORY_OPTIONS = [
+// Fallback categories if API fails
+const FALLBACK_CATEGORY_OPTIONS = [
   { label: 'Nursing', value: 'Nursing Programs' },
   { label: 'Home Care', value: 'Health Care' },
   { label: 'Marketing', value: 'Professional Skills' },
@@ -47,25 +51,97 @@ const ITEMS_PER_PAGE = 9
 
 const CourseAll = () => {
   const [query, setQuery] = useState('')
+  const [debouncedQuery, setDebouncedQuery] = useState('')
   const [selectedCategories, setSelectedCategories] = useState(new Set())
   const [selectedLevels, setSelectedLevels] = useState(new Set())
-  const [maxPrice, setMaxPrice] = useState(100)
+  const [maxPrice, setMaxPrice] = useState(500) // Increased for real course prices
   const [sortBy, setSortBy] = useState('default')
   const [page, setPage] = useState(1)
   const [openCourse, setOpenCourse] = useState(null)
   // const { add } = useCart() // Cart system hidden
   const navigate = useNavigate()
 
+  // Debounce search query
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedQuery(query)
+    }, 500) // 500ms delay
+
+    return () => clearTimeout(timer)
+  }, [query])
+
+  // Fetch categories and courses from API
+  const { data: categoriesData, isLoading: categoriesLoading, isError: categoriesError } = useGetCategories()
+  const { data: coursesData, isLoading: coursesLoading, isError: coursesError } = useGetCourses()
+
+  // Search API - only runs when there's a debounced query
+  const { data: searchResults, isLoading: searchLoading, isError: searchError } = useSearchCourses(debouncedQuery)
+
   useEffect(() => {
     if (window.AOS) window.AOS.refresh()
   }, [query, selectedCategories, selectedLevels, maxPrice, sortBy, page])
 
-  const courses = useMemo(() => SEED_COURSES, [])
+  // Transform API data with fallback to seed data
+  const categoryOptions = useMemo(() => {
+    if (categoriesData && categoriesData.length > 0) {
+      return categoriesData.map(cat => ({ label: cat.name, value: cat.name }))
+    }
+    return FALLBACK_CATEGORY_OPTIONS
+  }, [categoriesData])
+
+  const courses = useMemo(() => {
+    // If there's a search query, use search results
+    if (debouncedQuery && debouncedQuery.trim().length > 0) {
+      if (searchResults && searchResults.length > 0) {
+        return searchResults.map(course => ({
+          id: course.id,
+          title: course.title,
+          category: course.category?.name || 'Uncategorized',
+          rating: course.rating?.ratingPoint || Math.floor(Math.random() * 2) + 4,
+          students: Math.floor(Math.random() * 500) + 50,
+          price: course.price,
+          image: course.image || 'https://images.unsplash.com/photo-1580281658208-2cf4e1b1d4b3?q=80&w=1200&auto=format&fit=crop',
+          description: course.description,
+          level: course.level || 'Intermediate',
+          duration: course.duration,
+          language: course.language,
+          courseType: course.courseType,
+          instructor: course.instructor,
+        }))
+      }
+      // If search query exists but no results, return empty array
+      return []
+    }
+
+    // No search query - use regular courses data
+    if (!coursesData || coursesData.length === 0) {
+      // Fallback to seed data if API fails
+      return SEED_COURSES
+    }
+
+    // Transform API data to match CourseCard expected format
+    return coursesData.map(course => ({
+      id: course.id,
+      title: course.title,
+      category: course.category?.name || 'Uncategorized',
+      rating: course.rating?.ratingPoint || Math.floor(Math.random() * 2) + 4,
+      students: Math.floor(Math.random() * 500) + 50,
+      price: course.price,
+      image: course.image || 'https://images.unsplash.com/photo-1580281658208-2cf4e1b1d4b3?q=80&w=1200&auto=format&fit=crop',
+      description: course.description,
+      level: course.level || 'Intermediate',
+      duration: course.duration,
+      language: course.language,
+      courseType: course.courseType,
+      instructor: course.instructor,
+    }))
+  }, [coursesData, searchResults, debouncedQuery])
 
   const filtered = useMemo(() => {
     let list = courses
 
-    if (query.trim()) {
+    // Skip client-side text filtering if we're using search API
+    if (query.trim() && !debouncedQuery) {
       const q = query.toLowerCase()
       list = list.filter(c => c.title.toLowerCase().includes(q))
     }
@@ -126,6 +202,19 @@ const CourseAll = () => {
     console.log('Enrolling in:', course.title)
   }
 
+  // Show loading skeleton
+  if (coursesLoading || categoriesLoading) {
+    return <CoursesSkeleton />
+  }
+
+  // Show error component
+  if (coursesError || categoriesError || searchError) {
+    return <CoursesError
+      error={{ message: "Failed to load courses" }}
+      onRetry={() => window.location.reload()}
+    />
+  }
+
   return (
     <section className="py-12 bg-white" data-aos="fade-up">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -133,12 +222,12 @@ const CourseAll = () => {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
           {/* Search */}
           <div className="flex items-center w-full sm:max-w-sm bg-white border border-gray-200 rounded-lg px-3 py-2 shadow-sm">
-            <Search className="w-4 h-4 text-gray-400" />
+            <Search className={`w-4 h-4 ${searchLoading ? 'text-primary animate-pulse' : 'text-gray-400'}`} />
             <input
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search course"
+              placeholder={searchLoading ? "Searching..." : "Search course"}
               className="ml-2 w-full outline-none text-sm"
             />
           </div>
@@ -165,7 +254,7 @@ const CourseAll = () => {
             <div className="border border-gray-200 rounded-xl overflow-hidden">
               <button className="w-full flex items-center justify-between px-4 py-3 bg-gray-50 text-sm font-medium">CATEGORY <span>▾</span></button>
               <div className="p-4 space-y-2">
-                {CATEGORY_OPTIONS.map(opt => (
+                {categoryOptions.map(opt => (
                   <label key={opt.value} className="flex items-center gap-2 text-sm text-gray-700">
                     <input type="checkbox" checked={selectedCategories.has(opt.value)} onChange={() => toggleCategory(opt.value)} />
                     <span>{opt.label}</span>
@@ -191,7 +280,7 @@ const CourseAll = () => {
             <div className="border border-gray-200 rounded-xl overflow-hidden">
               <button className="w-full flex items-center justify-between px-4 py-3 bg-gray-50 text-sm font-medium">Price Range <span>▾</span></button>
               <div className="p-4 space-y-3">
-                <input type="range" min="0" max="100" value={maxPrice} onChange={(e) => setMaxPrice(Number(e.target.value))} className="w-full" />
+                <input type="range" min="0" max="500" value={maxPrice} onChange={(e) => setMaxPrice(Number(e.target.value))} className="w-full" />
                 <div className="text-xs text-gray-600">Up to ${maxPrice}</div>
               </div>
             </div>
