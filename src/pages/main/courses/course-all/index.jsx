@@ -105,7 +105,7 @@ const CourseAll = () => {
           level: course.level || 'Intermediate',
           duration: course.duration,
           language: course.language,
-          courseType: course.courseType,
+          courseType: course.courseType, // This is already formatted by formatCoursesData
           instructor: course.instructor,
         }))
       }
@@ -132,7 +132,7 @@ const CourseAll = () => {
       level: course.level || 'Intermediate',
       duration: course.duration,
       language: course.language,
-      courseType: course.courseType,
+      courseType: course.courseType, // This is already formatted by formatCoursesData
       instructor: course.instructor,
     }))
   }, [coursesData, searchResults, debouncedQuery])

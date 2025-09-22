@@ -4,6 +4,8 @@ import { Button } from '@/components/ui/button'
 import { useState } from 'react'
 import OrderSummaryModal from '@/components/OrderSummaryModal'
 import { useNavigate } from 'react-router-dom'
+import { enrollInCourse } from '@/lib/coursesApi'
+import toast from 'react-hot-toast'
 import {
 	Dialog,
 	DialogContent,
@@ -12,14 +14,75 @@ import {
 
 export default function CourseModal({ course, open, onClose, onBuy }) {
 	if (!course) return null
-	const { title, image, rating, students, price } = course
+	const { title, image, rating, students, price, courseType } = course
 	const [showOrderModal, setShowOrderModal] = useState(false)
+	const [isEnrolling, setIsEnrolling] = useState(false)
 	const navigate = useNavigate()
 
-	const handleBuyNow = (e) => {
+	const handleBuyNow = async (e) => {
 		e?.stopPropagation()
 		e?.preventDefault()
-		setShowOrderModal(true)
+
+		// Check if course is free (handle both string and potential undefined cases)
+		// Handle various possible values: 'free', 'Free', 'FREE', null, undefined, etc.
+		const normalizedCourseType = courseType?.toString().toLowerCase()
+		if (normalizedCourseType === 'free') {
+			// Directly enroll in free course
+			await handleFreeEnrollment()
+		} else {
+			// Show payment modal for paid course
+			setShowOrderModal(true)
+		}
+	}
+
+	const handleFreeEnrollment = async () => {
+		setIsEnrolling(true)
+
+		try {
+			const result = await enrollInCourse(course.id)
+
+			if (result.success) {
+				toast.success(result.message, {
+					duration: 5000,
+					style: {
+						background: '#10B981',
+						color: 'white',
+					},
+					iconTheme: {
+						primary: 'white',
+						secondary: '#10B981',
+					},
+				})
+				onClose() // Close modal after successful enrollment
+			} else {
+				toast.error(result.message, {
+					duration: 5000,
+					style: {
+						background: '#EF4444',
+						color: 'white',
+					},
+					iconTheme: {
+						primary: 'white',
+						secondary: '#EF4444',
+					},
+				})
+			}
+		} catch (error) {
+			console.error('Enrollment error:', error)
+			toast.error('Something went wrong. Please try again later.', {
+				duration: 5000,
+				style: {
+					background: '#EF4444',
+					color: 'white',
+				},
+				iconTheme: {
+					primary: 'white',
+					secondary: '#EF4444',
+				},
+			})
+		} finally {
+			setIsEnrolling(false)
+		}
 	}
 
 	const handlePaymentNow = (orderData) => {
@@ -85,7 +148,13 @@ export default function CourseModal({ course, open, onClose, onBuy }) {
 							</div>
 							<div className="flex items-center gap-3">
 								<span className="font-semibold">${price}</span>
-								<Button onClick={handleBuyNow} className="rounded-full bg-primary hover:bg-primary/90 h-9 px-5 transition-colors">Buy Now</Button>
+								<Button
+									onClick={handleBuyNow}
+									disabled={isEnrolling}
+									className="rounded-full bg-primary hover:bg-primary/90 h-9 px-5 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+								>
+									{isEnrolling ? 'Enrolling...' : (courseType?.toString().toLowerCase() === 'free' ? 'Enroll Free' : 'Buy Now')}
+								</Button>
 							</div>
 						</div>
 					</div>
