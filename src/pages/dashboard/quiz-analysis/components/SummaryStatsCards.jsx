@@ -6,28 +6,31 @@ import {
     BarChart3
 } from 'lucide-react'
 
-const SummaryStatsCards = () => {
-    // Summary stats data
+const SummaryStatsCards = ({ stats = {}, loading }) => {
+    const total = stats.total_quizzes_taken ?? 0
+    const passRate = Math.round((stats.pass_rate ?? 0) * 100)
+    const avg = Math.round((stats.average_score ?? 0))
+
     const summaryStats = [
         {
             title: "Total Quizzes Taken",
-            value: "5",
+            value: loading ? '—' : String(total),
             subtitle: "Across all courses",
             icon: FileText,
             color: "text-blue-600"
         },
         {
             title: "Pass Rate",
-            value: "80%",
+            value: loading ? '—' : `${passRate}%`,
             subtitle: "Progress bar",
             icon: TrendingUp,
             color: "text-green-600",
-            progress: 80
+            progress: loading ? 0 : passRate
         },
         {
             title: "Average Score",
-            value: "82%",
-            subtitle: "Excellent performance!",
+            value: loading ? '—' : `${avg}%`,
+            subtitle: "",
             icon: BarChart3,
             color: "text-purple-600"
         }

@@ -7,47 +7,31 @@ import {
   BookOpen,
   PlayCircle
 } from 'lucide-react'
+import { useQuery } from '@tanstack/react-query'
+import { getDashboard } from '@/lib/dashboardApi'
 
 export default function Dashboard() {
+  const { data, isLoading } = useQuery({
+    queryKey: ['dashboard'],
+    queryFn: getDashboard,
+  })
+
+  const stats = data?.stats || { totalCourses: 0, inProgress: 0, inComplete: 0, certificates: 0 }
+
   const summaryCards = [
-    {
-      title: "Enroll Courses",
-      value: "04",
-      icon: GraduationCap,
-      color: "text-blue-600"
-    },
-    {
-      title: "Completed Lessons",
-      value: "32",
-      icon: Play,
-      color: "text-blue-600"
-    },
-    {
-      title: "Certificates",
-      value: "02",
-      icon: Settings,
-      color: "text-blue-600"
-    }
+    { title: "Enroll Courses", value: isLoading ? '—' : String(stats.totalCourses), icon: GraduationCap, color: "text-blue-600" },
+    { title: "In Progress", value: isLoading ? '—' : String(stats.inProgress), icon: Play, color: "text-blue-600" },
+    { title: "Certificates", value: isLoading ? '—' : String(stats.certificates), icon: Settings, color: "text-blue-600" },
   ]
 
-  const continueLearning = [
-    {
-      id: 1,
-      title: "Certified Nursing Assistant (CNA) Training",
-      lessons: "29/45 lessons",
-      nextTopic: "Next: Patient Transfer Techniques",
-      progress: 35,
-      thumbnail: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=80&h=80&fit=crop"
-    },
-    {
-      id: 2,
-      title: "Medical Terminology & Documentation",
-      lessons: "15/30 lessons",
-      nextTopic: "Next: Medical Abbreviations",
-      progress: 50,
-      thumbnail: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=80&h=80&fit=crop"
-    }
-  ]
+  const continueLearning = (data?.enrollments || []).map((e, idx) => ({
+    id: `${e.course_id}-${idx}`,
+    title: e.course_title,
+    lessons: e.status === 'success' ? 'Completed' : 'In progress',
+    nextTopic: `Enrolled: ${e.enrolled_at.split(' ')[0]}`,
+    progress: e.status === 'success' ? 100 : 0,
+    thumbnail: 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=80&h=80&fit=crop',
+  }))
 
   const recentActivity = [
     {
@@ -75,10 +59,10 @@ export default function Dashboard() {
       {/* Welcome Banner */}
       <div className="bg-gradient-to-r from-blue-500 to-blue-700 rounded-xl p-6 text-white">
         <h1 className="text-2xl font-bold mb-2">
-          Hi Jennifer, ready to advance your healthcare career? 🏥
+          Hi {data?.user?.name || 'there'}, ready to advance your career? 🏥
         </h1>
         <p className="text-blue-100">
-          You're making excellent progress in your healthcare training!
+          Welcome to your dashboard.
         </p>
       </div>
 
@@ -169,7 +153,7 @@ export default function Dashboard() {
       </div>
 
       {/* Recent Activity */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      {/* <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
 
         <Card className="shadow-sm">
@@ -194,7 +178,7 @@ export default function Dashboard() {
             ))}
           </CardContent>
         </Card>
-      </div>
+      </div> */}
     </div>
   )
 }

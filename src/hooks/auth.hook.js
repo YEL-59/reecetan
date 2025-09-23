@@ -193,6 +193,7 @@ export const useSignIn = () => {
       if (token && user) {
         console.log('🔑 Setting auth with token:', token.substring(0, 20) + '...');
         console.log('👤 Setting auth with user:', user);
+        localStorage.setItem('user', JSON.stringify(user));
         secureTokenManager.setAuth(token, user);
         
         // Wait a bit for the auth to be set, then navigate

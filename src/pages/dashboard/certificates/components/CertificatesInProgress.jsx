@@ -7,22 +7,13 @@ import {
     Play
 } from 'lucide-react'
 
-const CertificatesInProgress = () => {
-    // Certificates in progress data
-    const certificatesInProgress = [
-        {
-            id: 1,
-            title: "Certified Nursing Assistant (CNA) Training",
-            progress: 65,
-            estimatedCompletion: "4/15/2024"
-        },
-        {
-            id: 2,
-            title: "Medical Terminology & Documentation",
-            progress: 45,
-            estimatedCompletion: "5/20/2024"
-        }
-    ]
+const CertificatesInProgress = ({ items = [], loading }) => {
+    const certificatesInProgress = items.map((item) => ({
+        id: item.enrollment_id,
+        title: item.course?.title,
+        progress: item.progress ?? 0,
+        estimatedCompletion: item.estimated_completion || '—'
+    }))
 
     return (
         <Card className="shadow-sm">
@@ -35,7 +26,10 @@ const CertificatesInProgress = () => {
                     Certificates you're currently working on
                 </p>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-4 h-[500px] overflow-y-auto">
+                {(!loading && certificatesInProgress.length === 0) && (
+                    <p className="text-sm text-gray-500">No certificates in progress.</p>
+                )}
                 {certificatesInProgress.map((certificate) => (
                     <div key={certificate.id} className="border border-gray-200 rounded-lg p-4">
                         <div className="flex items-start justify-between">

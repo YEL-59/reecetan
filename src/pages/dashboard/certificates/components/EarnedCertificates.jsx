@@ -9,26 +9,15 @@ import {
     User
 } from 'lucide-react'
 
-const EarnedCertificates = () => {
-    // Earned certificates data
-    const earnedCertificates = [
-        {
-            id: 1,
-            title: "CPR and First Aid Certification",
-            instructor: "Captain Mike Thompson, EMT-P",
-            issuedDate: "1/15/2024",
-            duration: "8 hours",
-            credentialId: "AHA-CPR-2024-001"
-        },
-        {
-            id: 2,
-            title: "Basic Life Support (BLS) Certification",
-            instructor: "Dr. Sarah Johnson, RN",
-            issuedDate: "2/20/2024",
-            duration: "6 hours",
-            credentialId: "AHA-BLS-2024-002"
-        }
-    ]
+const EarnedCertificates = ({ items = [], loading }) => {
+    const earnedCertificates = items.map((item) => ({
+        id: item.enrollment_id,
+        title: item.course?.title,
+        instructor: item.course?.instructor || '—',
+        issuedDate: item.enrolled_at?.split(' ')[0],
+        duration: item.course?.duration_hours ? `${item.course.duration_hours} hours` : item.course?.duration,
+        credentialId: `ENR-${item.enrollment_id}`
+    }))
 
     return (
         <Card className="shadow-sm">
@@ -41,7 +30,10 @@ const EarnedCertificates = () => {
                     Certificates you've successfully earned
                 </p>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-4  h-[500px] overflow-y-auto">
+                {(!loading && earnedCertificates.length === 0) && (
+                    <p className="text-sm text-gray-500">No earned certificates yet.</p>
+                )}
                 {earnedCertificates.map((certificate) => (
                     <div key={certificate.id} className="border border-gray-200 rounded-lg p-4">
                         <div className="flex items-start justify-between">

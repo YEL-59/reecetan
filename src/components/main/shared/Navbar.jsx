@@ -37,6 +37,16 @@ const Navbar = () => {
   const location = useLocation();
   // Use actual authentication status
   const { isAuthenticated, user } = useAuthStatus();
+  // Fallback to localStorage if hook user is unavailable
+  let localUser = null;
+  try {
+    const raw = localStorage.getItem('user') || localStorage.getItem('auth');
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      localUser = parsed?.user ? parsed.user : parsed;
+    }
+  } catch { }
+  const currentUser = user || localUser || {};
   const { mutate: logout, isPending: isLoggingOut } = useSignout();
   const [notificationOpen, setNotificationOpen] = useState(false);
   const [mobileNotificationOpen, setMobileNotificationOpen] = useState(false);
@@ -243,13 +253,11 @@ const Navbar = () => {
                       variant="ghost"
                       className="flex items-center space-x-2 rounded-lg bg-transparent hover:bg-transparent"
                     >
-                      <img
-                        src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=40&h=40&fit=crop&crop=face"
-                        alt="Profile"
-                        className="w-8 h-8 rounded-full object-cover"
-                      />
+                      <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
+                        <User className="w-4 h-4 text-[#071431]" />
+                      </div>
                       <span className="text-sm font-medium text-[#071431]">
-                        Olivia Rhye
+                        {currentUser?.name || 'User'}
                       </span>
                       <ChevronDown className="w-4 h-4 text-[#071431]" />
                     </Button>
@@ -257,17 +265,15 @@ const Navbar = () => {
                   <DropdownMenuContent className="w-56 bg-white  text-[#071431]" align="end">
                     <DropdownMenuLabel>
                       <div className="flex items-center space-x-2">
-                        <img
-                          src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=40&h=40&fit=crop&crop=face"
-                          alt="Profile"
-                          className="w-10 h-10 rounded-full object-cover"
-                        />
+                        <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
+                          <User className="w-5 h-5 text-[#071431]" />
+                        </div>
                         <div>
                           <p className="text-sm font-medium text-[#071431]">
-                            Olivia Rhye
+                            {currentUser?.name || 'User'}
                           </p>
                           <p className="text-xs text-[#071431]">
-                            olivia@untitledui.com
+                            {currentUser?.email || ''}
                           </p>
                         </div>
                       </div>

@@ -145,11 +145,7 @@ export default function DashboardLayout() {
                       onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                       className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-50 transition-colors"
                     >
-                      <img
-                        src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop&crop=face"
-                        alt="Profile"
-                        className="w-10 h-10 rounded-full object-cover"
-                      />
+                      <User className="w-5 h-5 text-[#071431]" />
                       <span className="hidden sm:inline text-sm font-medium text-gray-900">
                         {user?.name || user?.email || 'User'}
                       </span>

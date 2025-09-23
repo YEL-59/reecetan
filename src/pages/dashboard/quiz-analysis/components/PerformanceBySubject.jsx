@@ -5,38 +5,14 @@ import {
     XCircle
 } from 'lucide-react'
 
-const PerformanceBySubject = () => {
-    // Performance by subject data
-    const subjectPerformance = [
-        {
-            subject: "Patient Care",
-            score: 85,
-            status: "good",
-            icon: CheckCircle,
-            color: "text-green-600"
-        },
-        {
-            subject: "Medical Terminology",
-            score: 52,
-            status: "good",
-            icon: CheckCircle,
-            color: "text-green-600"
-        },
-        {
-            subject: "Pharmacology",
-            score: 65,
-            status: "needs-improvement",
-            icon: XCircle,
-            color: "text-red-600"
-        },
-        {
-            subject: "Infection Control",
-            score: 88,
-            status: "good",
-            icon: CheckCircle,
-            color: "text-green-600"
-        }
-    ]
+const PerformanceBySubject = ({ items = [], loading }) => {
+    const subjectPerformance = items.map((p) => ({
+        subject: p.course,
+        score: Math.round(p.score),
+        status: p.status,
+        icon: (p.status === 'good' || p.status === 'average') ? CheckCircle : XCircle,
+        color: (p.status === 'good' || p.status === 'average') ? 'text-green-600' : 'text-red-600'
+    }))
 
     return (
         <Card className="shadow-sm">
@@ -48,7 +24,10 @@ const PerformanceBySubject = () => {
                     Your strengths and areas for improvement
                 </p>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-4 h-[500px] overflow-y-auto">
+                {(!loading && subjectPerformance.length === 0) && (
+                    <p className="text-sm text-gray-500">No course performance data.</p>
+                )}
                 {subjectPerformance.map((subject, index) => {
                     const Icon = subject.icon
                     const progressColor = subject.status === 'good' ? 'bg-green-500' : 'bg-red-500'

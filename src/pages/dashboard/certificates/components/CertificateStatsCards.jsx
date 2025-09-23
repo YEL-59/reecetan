@@ -6,24 +6,23 @@ import {
     GraduationCap
 } from 'lucide-react'
 
-const CertificateStatsCards = () => {
-    // Summary stats data
+const CertificateStatsCards = ({ stats, loading }) => {
     const summaryStats = [
         {
             title: "Earned Certificates",
-            value: "03",
+            value: loading ? '—' : String(stats?.total_completed ?? 0),
             icon: Award,
             color: "text-blue-600"
         },
         {
             title: "In Progress",
-            value: "02",
+            value: loading ? '—' : String(stats?.total_in_progress ?? 0),
             icon: Clock,
             color: "text-blue-600"
         },
         {
             title: "Training Hours",
-            value: "26h",
+            value: loading ? '—' : `${stats?.total_training_hours ?? 0}h`,
             icon: GraduationCap,
             color: "text-blue-600"
         }

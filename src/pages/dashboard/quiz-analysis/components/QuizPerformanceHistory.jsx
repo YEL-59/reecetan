@@ -1,31 +1,14 @@
 import React from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
-const QuizPerformanceHistory = () => {
-    // Quiz performance history data
-    const quizHistory = [
-        {
-            title: "CNA Training - Ethics Quiz",
-            status: "Passed",
-            statusColor: "bg-green-100 text-green-700",
-            details: "Best Score: 85% • Attempts: 2 • Time: 12 min",
-            date: "2 days ago"
-        },
-        {
-            title: "CNA Training - Vital Signs Quiz",
-            status: "Passed",
-            statusColor: "bg-green-100 text-green-700",
-            details: "Best Score: 82% • Attempts: 1 • Time: 8 min",
-            date: "1 week ago"
-        },
-        {
-            title: "NCLEX Prep - Pharmacology",
-            status: "Failed",
-            statusColor: "bg-red-100 text-red-700",
-            details: "Best Score: 62% • Attempts: 1 • Time: 8 min",
-            date: "1 week ago"
-        }
-    ]
+const QuizPerformanceHistory = ({ items = [], loading }) => {
+    const quizHistory = items.map((q) => ({
+        title: q.title,
+        status: q.status,
+        statusColor: q.status?.toLowerCase() === 'passed' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700',
+        details: `Best Score: ${q.best_score}% • Attempts: ${q.attempts}`,
+        date: q.date
+    }))
 
     return (
         <Card className="shadow-sm">
@@ -37,7 +20,10 @@ const QuizPerformanceHistory = () => {
                     Your performance on individual quizzes
                 </p>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-4 h-[500px] overflow-y-auto">
+                {(!loading && quizHistory.length === 0) && (
+                    <p className="text-sm text-gray-500">No quiz history yet.</p>
+                )}
                 {quizHistory.map((quiz, index) => (
                     <div key={index} className="border-b border-gray-100 pb-4 last:border-b-0">
                         <div className="flex items-start justify-between mb-2">
