@@ -27,6 +27,8 @@ import ForgetPassword from "@/pages/auth/forget-password";
 import ForgetPasswordOtp from "@/pages/auth/forget-password-otp";
 import ResetPassword from "@/pages/auth/reset-password";
 import EmailVerification from "@/pages/auth/email-verifi";
+import SuccessPage from "@/pages/payment-success-error/successpage";
+import CancelPage from "@/pages/payment-success-error/canclepage";
 
 export const router = createBrowserRouter([
   {
@@ -79,5 +81,13 @@ export const router = createBrowserRouter([
   {
     path: "*",
     element: <NotFound />,
+  },
+  {
+    path: "payment-success",
+    element: <SuccessPage />,
+  },
+  {
+    path: "payment-canceled",
+    element: <CancelPage />,
   },
 ]);

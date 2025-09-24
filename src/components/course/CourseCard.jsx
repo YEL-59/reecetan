@@ -5,6 +5,7 @@ import OrderSummaryModal from '@/components/OrderSummaryModal'
 import { useNavigate } from 'react-router-dom'
 import { enrollInCourse } from '@/lib/coursesApi'
 import toast from 'react-hot-toast'
+import { useStripePayment } from '@/hooks/useStripePayment'
 
 export default function CourseCard({ course, onEnroll, onOpen, trigger = 'hover' }) {
 	const { title, image, category, rating, students, price, courseType } = course
@@ -12,6 +13,7 @@ export default function CourseCard({ course, onEnroll, onOpen, trigger = 'hover'
 	const [showOrderModal, setShowOrderModal] = useState(false)
 	const [isEnrolling, setIsEnrolling] = useState(false)
 	const navigate = useNavigate()
+	const stripePayment = useStripePayment()
 
 	const handleMouseEnter = () => {
 		if (!onOpen || trigger !== 'hover') return
@@ -96,10 +98,51 @@ export default function CourseCard({ course, onEnroll, onOpen, trigger = 'hover'
 		}
 	}
 
-	const handlePaymentNow = (orderData) => {
+	// const handlePaymentNow = (orderData) => {
+	// 	setShowOrderModal(false)
+	// 	navigate('/checkout', { state: { orderData } })
+	// }
+
+	const handlePaymentNow = async (orderData) => {
 		setShowOrderModal(false)
-		navigate('/checkout', { state: { orderData } })
+
+		const payload = {
+			...orderData,
+			payment_method: 'stripe', // or 'card' depending on backend
+			success_url: `${window.location.origin}/payment-success`,
+			cancel_url: `${window.location.origin}/payment-cancel`,
+		}
+
+		stripePayment.mutate(
+			{ courseId: course.id, paymentData: payload },
+			{
+				onSuccess: (result) => {
+					if (result.success) {
+						const sessionUrl = result.data?.payment_url
+						const paymentId = result.data?.payment_id // 👈 get payment_id
+
+						if (paymentId) {
+							// save it somewhere accessible from success page
+							localStorage.setItem("payment_id", paymentId)
+						}
+						if (sessionUrl) {
+							window.location.href = sessionUrl
+						} else {
+							toast.success(result.message || 'Payment initialized')
+						}
+					} else {
+						toast.error(result.message || 'Unable to create payment session')
+					}
+				},
+				onError: (error) => {
+					console.error('Payment mutation error:', error)
+					toast.error('Payment request failed. Please try again.')
+				},
+			}
+		)
 	}
+
+
 
 	const handleModalClose = (e) => {
 		if (e) {
@@ -150,7 +193,8 @@ export default function CourseCard({ course, onEnroll, onOpen, trigger = 'hover'
 					<Button
 						variant="outline"
 						onClick={handleEnrollClick}
-						disabled={isEnrolling}
+						//disabled={isEnrolling}
+						disabled={isEnrolling || stripePayment.isPending}
 						className="w-[140px] h-8 rounded-full border-primary text-primary bg-transparent hover:bg-primary/10 disabled:opacity-50 disabled:cursor-not-allowed"
 					>
 						{isEnrolling ? 'Enrolling...' : (courseType?.toString().toLowerCase() === 'free' ? 'Enroll Free' : 'Buy Now')}

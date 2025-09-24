@@ -1,34 +1,62 @@
-import React from 'react'
-import { 
-  ChevronDown, 
-  ChevronUp, 
-  Trash2, 
-  Bell, 
-  Mail, 
-  Phone, 
-  Lock 
+import React, { useState } from 'react'
+import {
+  ChevronDown,
+  ChevronUp,
+  Trash2,
+  Bell,
+  Mail,
+  Phone,
+  Lock
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card } from '@/components/ui/card'
+import { useUpdatePassword } from '@/hooks/useUpdatePassword'
+import toast from 'react-hot-toast'
 
-const SettingsSection = ({ 
-  openAccordions, 
-  toggleAccordion, 
-  emailNotifications, 
-  setEmailNotifications, 
-  smsNotifications, 
-  setSmsNotifications 
+const SettingsSection = ({
+  openAccordions,
+  toggleAccordion,
+  emailNotifications,
+  setEmailNotifications,
+  smsNotifications,
+  setSmsNotifications
 }) => {
+  const [currentPassword, setCurrentPassword] = useState('')
+  const [newPassword, setNewPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+
+  const { mutate: updatePassword, isPending: isUpdatingPassword } = useUpdatePassword({
+    onSuccess: (res) => {
+      toast.success(res?.message || 'Password updated successfully')
+      setCurrentPassword('')
+      setNewPassword('')
+      setConfirmPassword('')
+    },
+    onError: (err) => {
+      const responseData = err?.response?.data
+      const fieldErrors = responseData?.errors
+      if (fieldErrors && typeof fieldErrors === 'object') {
+        // Grab the first error message from the errors object
+        const firstError = Object.values(fieldErrors).flat()?.[0]
+        if (firstError) {
+          toast.error(firstError)
+          return
+        }
+      }
+      const msg = responseData?.message || err?.message || 'Failed to update password'
+      toast.error(msg)
+    }
+  })
   return (
     <div className="space-y-6">
       <h2 className="text-2xl font-semibold text-gray-900">Settings</h2>
-      
+
       {/* Account Settings Accordion */}
       <Card className="p-6">
         <h3 className="text-lg font-semibold text-gray-900 mb-4">Account Settings</h3>
-        
+
         <div className="space-y-4">
           {/* Change Password */}
           <div className="border border-gray-200 rounded-lg overflow-hidden">
@@ -49,7 +77,7 @@ const SettingsSection = ({
                 <ChevronDown className="w-5 h-5 text-gray-400" />
               )}
             </button>
-            
+
             {openAccordions.changePassword && (
               <div className="px-4 pb-4 border-t border-gray-200">
                 <div className="pt-4 space-y-4">
@@ -60,6 +88,8 @@ const SettingsSection = ({
                       type="password"
                       placeholder="Enter current password"
                       className="mt-1"
+                      value={currentPassword}
+                      onChange={(e) => setCurrentPassword(e.target.value)}
                     />
                   </div>
                   <div>
@@ -69,6 +99,8 @@ const SettingsSection = ({
                       type="password"
                       placeholder="Enter new password"
                       className="mt-1"
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
                     />
                   </div>
                   <div>
@@ -78,10 +110,12 @@ const SettingsSection = ({
                       type="password"
                       placeholder="Confirm new password"
                       className="mt-1"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
                     />
                   </div>
-                  <Button className="bg-blue-500 hover:bg-blue-600">
-                    Update Password
+                  <Button className="bg-blue-500 hover:bg-blue-600 disabled:opacity-50" onClick={() => updatePassword({ currentPassword, newPassword, confirmPassword })} disabled={isUpdatingPassword}>
+                    {isUpdatingPassword ? 'Updating...' : 'Update Password'}
                   </Button>
                 </div>
               </div>
@@ -107,7 +141,7 @@ const SettingsSection = ({
                 <ChevronDown className="w-5 h-5 text-gray-400" />
               )}
             </button>
-            
+
             {openAccordions.updateEmail && (
               <div className="px-4 pb-4 border-t border-gray-200">
                 <div className="pt-4 space-y-4">
@@ -156,7 +190,7 @@ const SettingsSection = ({
                 <ChevronDown className="w-5 h-5 text-gray-400" />
               )}
             </button>
-            
+
             {openAccordions.updatePhone && (
               <div className="px-4 pb-4 border-t border-gray-200">
                 <div className="pt-4 space-y-4">
@@ -181,7 +215,7 @@ const SettingsSection = ({
       {/* Notifications Accordion */}
       <Card className="p-6">
         <h3 className="text-lg font-semibold text-gray-900 mb-4">Notifications</h3>
-        
+
         <div className="space-y-4">
           {/* Email Notifications */}
           <div className="border border-gray-200 rounded-lg p-4">
@@ -195,14 +229,12 @@ const SettingsSection = ({
               </div>
               <button
                 onClick={() => setEmailNotifications(!emailNotifications)}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                  emailNotifications ? 'bg-blue-500' : 'bg-gray-200'
-                }`}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${emailNotifications ? 'bg-blue-500' : 'bg-gray-200'
+                  }`}
               >
                 <span
-                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                    emailNotifications ? 'translate-x-6' : 'translate-x-1'
-                  }`}
+                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${emailNotifications ? 'translate-x-6' : 'translate-x-1'
+                    }`}
                 />
               </button>
             </div>
@@ -220,14 +252,12 @@ const SettingsSection = ({
               </div>
               <button
                 onClick={() => setSmsNotifications(!smsNotifications)}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                  smsNotifications ? 'bg-blue-500' : 'bg-gray-200'
-                }`}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${smsNotifications ? 'bg-blue-500' : 'bg-gray-200'
+                  }`}
               >
                 <span
-                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                    smsNotifications ? 'translate-x-6' : 'translate-x-1'
-                  }`}
+                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${smsNotifications ? 'translate-x-6' : 'translate-x-1'
+                    }`}
                 />
               </button>
             </div>
@@ -238,7 +268,7 @@ const SettingsSection = ({
       {/* Danger Zone */}
       <Card className="p-6 bg-red-50 border-red-200">
         <h3 className="text-lg font-semibold text-gray-900 mb-4">Danger Zone</h3>
-        
+
         <div className="border border-red-200 rounded-lg p-4 bg-white">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">

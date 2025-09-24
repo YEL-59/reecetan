@@ -163,9 +163,9 @@ const HomePopularCourses = () => {
 					</Dialog>
 				</div>
 
-				{/* Desktop: Grid */}
+				{/* Desktop: Grid  slice(0, 6)*/}
 				<div className="hidden md:grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 ">
-					{filtered.slice(0, 6).map((c, idx) => (
+					{filtered.map((c, idx) => (
 						<div key={c.id} data-aos="fade-up" data-aos-delay={idx * 50}>
 							<CourseCard course={c} onEnroll={enroll} onOpen={(course) => setOpenCourse(course)} trigger="click" />
 						</div>
