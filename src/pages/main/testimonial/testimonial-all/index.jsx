@@ -205,7 +205,7 @@ const TestimonialAll = () => {
     }
 
     const testimonialData = {
-      name: formData.name,
+      name: formData.name || user?.name,
       description: formData.description,
       online_course_id: parseInt(formData.online_course_id),
       rating_point: formData.rating_point,

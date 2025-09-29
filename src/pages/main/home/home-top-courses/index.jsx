@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button'
 import { ArrowRight } from 'lucide-react'
 import topCourse from '@/assets/home/top-cource.png'
+import { useGetTopCourse } from '../api/heroSections.api'
 
 const HomeTopCourses = () => {
   const courses = [
@@ -29,7 +30,8 @@ const HomeTopCourses = () => {
       link: "Click Here"
     }
   ]
-
+  const { data } = useGetTopCourse()
+  console.log(data)
   return (
     <section className="py-16 bg-white" data-aos="fade-up">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -48,7 +50,7 @@ const HomeTopCourses = () => {
           {/* Left Side - Students Image */}
           <div className="relative" data-aos="zoom-in">
             <img
-              src={topCourse}
+              src={data?.image || topCourse}
               alt="Students in lab coats"
               className="w-full h-auto rounded-2xl shadow-lg"
             />
@@ -56,7 +58,7 @@ const HomeTopCourses = () => {
 
           {/* Right Side - Course List */}
           <div className="space-y-0">
-            {courses.map((course, index) => (
+            {/* {courses.map((course, index) => (
               <div key={course.id} data-aos="fade-left" data-aos-delay={index * 80}>
                 <div className="py-2">
                   <h3 className="text-xl font-bold text-gray-800 mb-2">
@@ -74,7 +76,21 @@ const HomeTopCourses = () => {
                 </div>
 
               </div>
-            ))}
+            ))} */}
+            <div className="py-2">
+              <h3 className="text-xl font-bold text-gray-800 mb-2">
+                {data?.title}
+              </h3>
+              <p className="text-gray-500  leading-relaxed">
+                {data?.subtitle}{' '}
+                <a
+                  href="#"
+                  className="text-green-600 hover:text-green-700 font-medium transition-colors"
+                >
+                  {data?.description}
+                </a>
+              </p>
+            </div>
 
             {/* Call to Action Button */}
             <div className="pt-8" data-aos="fade-up" data-aos-delay="200">

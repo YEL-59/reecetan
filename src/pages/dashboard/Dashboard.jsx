@@ -9,6 +9,7 @@ import {
 } from 'lucide-react'
 import { useQuery } from '@tanstack/react-query'
 import { getDashboard } from '@/lib/dashboardApi'
+import { useNavigate } from 'react-router-dom'
 
 export default function Dashboard() {
   const { data, isLoading } = useQuery({
@@ -25,9 +26,11 @@ export default function Dashboard() {
   ]
 
   const continueLearning = (data?.enrollments || []).map((e, idx) => ({
-    id: `${e.course_id}-${idx}`,
+    // id: `${e.course_id}-${idx}`,
+    id: e.course_id,
     title: e.course_title,
-    lessons: e.status === 'success' ? 'Completed' : 'In progress',
+    // lessons: e.status === 'success' ? 'Completed' : 'In progress',
+    lessons: e.status === 'success' ? 'Completed' : e.status === 'pending' ? 'Pending' : 'In progress',
     nextTopic: `Enrolled: ${e.enrolled_at.split(' ')[0]}`,
     progress: e.status === 'success' ? 100 : 0,
     thumbnail: 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=80&h=80&fit=crop',
@@ -53,6 +56,12 @@ export default function Dashboard() {
       color: "bg-yellow-500"
     }
   ]
+
+  //continue course redirect 
+  const navigate = useNavigate()
+  const handleContinueCourse = (courseId) => {
+    navigate(`/dashboard/my-courses/${courseId}`)
+  }
 
   return (
     <div className="space-y-6 px-5 py-5">
@@ -141,7 +150,7 @@ export default function Dashboard() {
                   </div>
 
                   {/* Continue Button */}
-                  <Button className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2">
+                  <Button onClick={() => handleContinueCourse(course.id)} className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2">
                     <PlayCircle className="w-4 h-4" />
                     <span>Continue</span>
                   </Button>

@@ -27,7 +27,7 @@ const HomeHero = () => {
   const heroTitle = heroData?.title || "Get Our Online Courses\nAnywhere Anytime";
   const heroDescription = heroData?.description || "Take the next step in your learning & Caregiving journey with courses designed by top professionals. Enjoy flexible online learning, engaging video content, interactive assessments, and a supportive community.";
   const heroImage = heroData?.image || null;
-  const backgroundImage = heroImage || homeBg;
+  const backgroundImage = homeBg;
 
   return (
     <section
@@ -54,7 +54,7 @@ const HomeHero = () => {
       >
         <div className="relative w-full max-w-lg h-full flex items-end">
           <img
-            src={homeRight}
+            src={heroImage || homeRight}
             alt="Education and learning illustration"
             className="w-full h-auto max-h-full object-contain object-bottom"
           />

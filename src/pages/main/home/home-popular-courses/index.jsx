@@ -63,9 +63,9 @@ const HomePopularCourses = () => {
 			title: course.title,
 			category: course.category?.name || 'Uncategorized',
 			rating: course.rating?.ratingPoint || Math.floor(Math.random() * 2) + 4, // Random rating 4-5 if no rating
-			students: Math.floor(Math.random() * 500) + 50, // Random student count for demo
+			students: Math.floor(Math.random() * 500) + 50, // Random student count for demo https://reecetan.softvencefsd.xyz/storage/
 			price: course.price,
-			image: course.image || 'https://images.unsplash.com/photo-1580281658208-2cf4e1b1d4b3?q=80&w=1200&auto=format&fit=crop',
+			image: course.image,
 			description: course.description,
 			level: course.level,
 			duration: course.duration,

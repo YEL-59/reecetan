@@ -12,7 +12,7 @@ import {
     HelpCircle,
     Loader2
 } from 'lucide-react'
-import { getQuizData } from '@/lib/myCoursesApi'
+import { getQuizData, usePostQuizAnswer } from '@/lib/myCoursesApi'
 import toast from 'react-hot-toast'
 
 const Quiz = () => {
@@ -27,6 +27,11 @@ const Quiz = () => {
     const [quizData, setQuizData] = useState(null)
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState(null)
+
+
+    const { postData: submitQuiz, loading: submitting, error: submitError } = usePostQuizAnswer(`/quizzes/${quizId}/review`)
+
+
 
     // Fetch quiz data - ALWAYS CALLED
     useEffect(() => {
@@ -98,9 +103,28 @@ const Quiz = () => {
         }))
     }
 
-    const handleSubmitQuiz = () => {
-        setShowResults(true)
+    // const handleSubmitQuiz = () => {
+    //     setShowResults(true)
+    // }
+    const handleSubmitQuiz = async () => {
+        const score = calculateScore()
+
+        try {
+            const payload = {
+                answers, // { [questionId]: optionIndex }
+                score,
+            }
+
+            await submitQuiz(payload)
+
+            toast.success("Quiz submitted successfully")
+            setShowResults(true)
+        } catch (err) {
+            toast.error(submitError || "Failed to submit quiz")
+        }
     }
+
+
 
     const calculateScore = () => {
         if (!quiz) return 0
@@ -313,7 +337,7 @@ const Quiz = () => {
                                                                 </div>
                                                             ))}
                                                         </div>
-                                                        {question.explanation && (
+                                                        {/* {question.explanation && (
                                                             <div className="bg-blue-50 border border-blue-200 rounded p-3">
                                                                 <div className="flex items-start space-x-2">
                                                                     <AlertCircle className="w-4 h-4 text-blue-600 mt-0.5" />
@@ -323,7 +347,7 @@ const Quiz = () => {
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        )}
+                                                        )} */}
                                                     </div>
                                                 </div>
                                             </CardContent>
@@ -534,7 +558,7 @@ const Quiz = () => {
                                                                 </div>
                                                             ))}
                                                         </div>
-                                                        {question.explanation && (
+                                                        {/* {question.explanation && (
                                                             <div className="bg-blue-50 border border-blue-200 rounded p-3">
                                                                 <div className="flex items-start space-x-2">
                                                                     <AlertCircle className="w-4 h-4 text-blue-600 mt-0.5" />
@@ -544,7 +568,7 @@ const Quiz = () => {
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        )}
+                                                        )} */}
                                                     </div>
                                                 </div>
                                             </CardContent>
@@ -664,7 +688,8 @@ const Quiz = () => {
                                 <Button
                                     onClick={handleSubmitQuiz}
                                     className="bg-green-600 hover:bg-green-700 text-white"
-                                    disabled={Object.keys(answers).length !== quiz.questions.length}
+
+                                    disabled={Object.keys(answers).length !== quiz.questions.length || submitting}
                                 >
                                     Submit Quiz
                                 </Button>

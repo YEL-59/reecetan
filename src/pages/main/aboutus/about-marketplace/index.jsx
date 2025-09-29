@@ -6,6 +6,8 @@ const AboutMarketplace = () => {
   // Fetch about us data from API
   const { data: aboutUsData, isLoading, isError } = useGetAboutUs()
 
+  console.log(aboutUsData)
+
   // Use API data with fallbacks
   const aboutDescription = aboutUsData?.description || "Rank One Review & Training Center is a place where dreams are nurtured, achievements are celebrated, and inspiration meets growth. We believe in the power of individual potential and the transformative impact of quality education. At Rank One, we understand that the journey to success is unique for each individual. Our dedicated team of experienced professionals is committed to creating an environment where passion meets purpose, and where every learner can unlock their full potential. We offer personalized education and tailored training programs designed to meet your specific needs. Our holistic approach combines comprehensive curriculum, innovative teaching methodologies, and state-of-the-art resources to ensure the best learning experience."
   return (
@@ -30,7 +32,7 @@ const AboutMarketplace = () => {
             <div className="order-2 lg:order-1">
               <div className="rounded-lg overflow-hidden shadow-lg">
                 <img
-                  src={aboutMarketImg}
+                  src={aboutUsData?.image || aboutMarketImg}
                   alt="Medical professionals collaborating"
                   className="w-full h-auto object-cover"
                 />

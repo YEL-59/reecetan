@@ -7,7 +7,14 @@ export const useGetHeroSection = () => {
     queryKey: ["heroSection"],
     queryFn: async () => {
       const res = await axiosPublic.get('/hero-sections');
-      const rawData = res.data || {};
+    
+      const rawArray = res.data || [];
+      
+      if (!Array.isArray(rawArray) || rawArray.length === 0) {
+        return null;
+      }
+
+      const rawData = rawArray[0];
       
       // Format data directly in the hook
       return {
@@ -65,5 +72,21 @@ export const getHeroImageUrl = (imagePath) => {
   const cleanPath = imagePath.startsWith('/') ? imagePath.slice(1) : imagePath
   
   return `${storageBaseUrl}/storage/${cleanPath}`
+}
+
+
+
+
+export const useGetTopCourse = () => {
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ['topcourse'],
+    queryFn: async () => {
+      const response = await axiosPublic.get('/top-courses')
+      return response.data?.data[0]
+    },
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    cacheTime: 10 * 60 * 1000, // 10 minutes
+  })
+  return { data, isLoading, isError };
 }
 

@@ -25,6 +25,8 @@ const CourseOutline = () => {
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState(null)
     const [selectedPart, setSelectedPart] = useState(null)
+    const VIDEO_BASE_URL = "https://reecetan.softvencefsd.xyz/storage/";
+
 
     const toggleLesson = (lessonId) => {
         setExpandedLessons(prev => ({
@@ -222,7 +224,7 @@ const CourseOutline = () => {
                     {selectedPart && (
                         <Card>
                             <CardContent className="p-0">
-                                <div className="relative aspect-video bg-gray-900 rounded-t-lg overflow-hidden">
+                                {/* <div className="relative aspect-video bg-gray-900 rounded-t-lg overflow-hidden">
                                     {selectedPart.video ? (
                                         <iframe
                                             src={selectedPart.video}
@@ -238,7 +240,27 @@ const CourseOutline = () => {
                                             </div>
                                         </div>
                                     )}
+                                </div> */}
+                                <div className="relative aspect-video bg-black rounded-t-lg overflow-hidden">
+                                    {selectedPart.video ? (
+                                        <video
+                                            controls
+                                            className="w-full h-full"
+                                            src={`${VIDEO_BASE_URL}${selectedPart.video}`.replace(/([^:]\/)\/+/g, "$1")}
+                                        >
+                                            Your browser does not support the video tag.
+                                        </video>
+
+                                    ) : (
+                                        <div className="w-full h-full flex items-center justify-center">
+                                            <div className="text-center text-white">
+                                                <Video className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                                                <p>No video available for this part</p>
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
+
                                 <div className="p-4">
                                     <h2 className="text-xl font-bold text-gray-900 mb-2">{selectedPart.title}</h2>
                                     <div className="flex items-center text-sm text-gray-600 space-x-4">

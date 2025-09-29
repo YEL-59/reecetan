@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { axiosPrivate } from './axios.config'
 
 /**
@@ -60,6 +61,31 @@ export const getQuizData = async (courseId, quizId) => {
       message: 'Failed to load quiz data. Please try again'
     }
   }
+}
+
+
+export const usePostQuizAnswer = (endpoint) => {
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
+  const [data, setData] = useState(null)
+
+  const postData = async (payload) => {
+    setLoading(true)
+    setError(null)
+
+    try {
+      const res = await axiosPrivate.post(endpoint, payload)
+      setData(res.data)
+      return res.data
+    } catch (err) {
+      setError(err.response?.data || err.message)
+      throw err
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return { postData, data, loading, error }
 }
 
 /**
@@ -317,9 +343,13 @@ export const getMyEnrolledCourses = async () => {
  * @returns {Object} Formatted course details
  */
 export const formatCourseDetails = (courseDetailsData) => {
-  const course = courseDetailsData.course
-  const lessons = courseDetailsData.lessons || []
+  // const course = courseDetailsData.course
+  // const lessons = courseDetailsData.lessons || []
+  const course = courseDetailsData
+  const lessons = course.lessons || []
   
+console.log("course details",course)
+
   return {
     // Course basic info
     id: course.id,
@@ -333,12 +363,22 @@ export const formatCourseDetails = (courseDetailsData) => {
     courseType: course.course_type,
     
     // Instructor/Creator info
-    instructor: course.creator ? {
-      id: course.creator.id,
-      name: course.creator.name,
-      email: course.creator.email,
-      isVerified: course.creator.is_verified
-    } : null,
+    // instructor: course.creator ? {
+    //   id: course.creator.id,
+    //   name: course.creator.name,
+    //   email: course.creator.email,
+    //   isVerified: course.creator.is_verified
+    // } : null,
+
+     // Instructor/Creator info (your API has `instructors` null)
+     instructor: course.instructors
+     ? {
+         id: course.instructors.id,
+         name: course.instructors.name,
+         email: course.instructors.email,
+         isVerified: course.instructors.is_verified,
+       }
+     : null,
     
     // Lesson and progress info
     lessons: lessons.map(lesson => ({

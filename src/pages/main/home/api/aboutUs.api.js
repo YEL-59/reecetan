@@ -15,23 +15,41 @@ export const useGetAboutUs = () => {
 }
 
 // Format raw API data to ensure consistency
-export const formatAboutUsData = (data) => {
-  if (!data || !Array.isArray(data) || data.length === 0) {
+// export const formatAboutUsData = (data) => {
+//   if (!data || !Array.isArray(data) || data.length === 0) {
+//     return null
+//   }
+
+//   // Get the first about us entry (assuming there's only one main about us section)
+//   const aboutUs = data[0]
+  
+//   return {
+//     id: aboutUs.id,
+//     title: aboutUs.title || 'About Us',
+//     description: aboutUs.description || '',
+//     image: getAboutUsImageUrl(aboutUs.image),
+//     createdAt: aboutUs.created_at,
+//     updatedAt: aboutUs.updated_at,
+//   }
+// }
+// Format raw API data to ensure consistency
+export const formatAboutUsData = (response) => {
+  if (!response || !response.data) {
     return null
   }
 
-  // Get the first about us entry (assuming there's only one main about us section)
-  const aboutUs = data[0]
-  
+  const aboutUs = response.data
+
   return {
-    id: aboutUs.id,
+    id: aboutUs.id || null,
     title: aboutUs.title || 'About Us',
     description: aboutUs.description || '',
     image: getAboutUsImageUrl(aboutUs.image),
-    createdAt: aboutUs.created_at,
-    updatedAt: aboutUs.updated_at,
+    createdAt: aboutUs.created_at || null,
+    updatedAt: aboutUs.updated_at || null,
   }
 }
+
 
 // Convert relative image path to full URL
 export const getAboutUsImageUrl = (imagePath) => {

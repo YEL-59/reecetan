@@ -23,7 +23,7 @@ const CourseDetails = () => {
     const [course, setCourse] = useState(null)
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState(null)
-
+    console.log(courseId)
     // Fetch course details on component mount
     useEffect(() => {
         const fetchCourseDetails = async () => {
@@ -34,6 +34,7 @@ const CourseDetails = () => {
 
             try {
                 const result = await getCourseDetails(courseId)
+                console.log("API result:", result)
 
                 if (result.success) {
                     const formattedCourse = formatCourseDetails(result.data)
@@ -171,8 +172,8 @@ const CourseDetails = () => {
                             </div>
                             <div className="flex items-center">
                                 <span className={`px-2 py-1 rounded-full text-xs font-medium ${course.courseType === 'free'
-                                        ? 'bg-green-100 text-green-800'
-                                        : 'bg-blue-100 text-blue-800'
+                                    ? 'bg-green-100 text-green-800'
+                                    : 'bg-blue-100 text-blue-800'
                                     }`}>
                                     {course.courseType === 'free' ? 'Free Course' : 'Paid Course'}
                                 </span>
